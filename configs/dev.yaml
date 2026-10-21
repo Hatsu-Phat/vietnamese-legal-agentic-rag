@@ -1,0 +1,77 @@
+# ==============================================================================
+# Development Configuration (configs/dev.yaml)
+# Vietnamese Legal Agentic RAG Pipeline Parameters
+# ==============================================================================
+
+pipeline:
+  name: "vietnamese-legal-agentic-rag"
+  version: "0.1.0"
+  environment: "development"
+
+# ------------------------------------------------------------------------------
+# Chunking Strategy Configuration
+# ------------------------------------------------------------------------------
+chunking:
+  # Primary legal chunking: splits by Chương/Mục/Điều/Khoản/Điểm
+  strategy: "hierarchical_provision"
+  # Fallback to token/character windows only when structural parsing fails
+  fallback_chunk_size: 512
+  fallback_chunk_overlap: 64
+  # Preserve legal breadcrumb (e.g., "Luật Doanh nghiệp 2020 > Chương II > Điều 17 > Khoản 2")
+  include_breadcrumb: true
+  min_chunk_length: 20
+
+# ------------------------------------------------------------------------------
+# Hybrid Retrieval Configuration
+# ------------------------------------------------------------------------------
+retrieval:
+  # Dense Retrieval via BGE-M3
+  dense:
+    enabled: true
+    model_name: "BAAI/bge-m3"
+    top_k: 10
+    batch_size: 16
+
+  # Sparse Keyword Retrieval via BM25
+  sparse:
+    enabled: true
+    engine: "rank_bm25"
+    top_k: 10
+    # Enable word segmentation for Vietnamese sparse query matching
+    segment_vietnamese: true
+
+  # Rank Fusion via Reciprocal Rank Fusion (RRF)
+  fusion:
+    method: "rrf"
+    rrf_k: 60
+    top_candidates: 10
+
+  # Cross-Encoder Reranking (Disabled in baseline MVP, evaluated in Phase 5)
+  reranking:
+    enabled: false
+    model_name: "BAAI/bge-reranker-v2-m3"
+    top_n: 5
+
+# ------------------------------------------------------------------------------
+# LangGraph Agentic Workflow Configuration
+# ------------------------------------------------------------------------------
+agent:
+  # Strict loop bounds to prevent infinite tool calling
+  max_retrieval_rounds: 2
+  # Enforce citation audit before generating final answer
+  require_citation_verification: true
+  # Abstention policy: reject if evidence confidence is insufficient or ambiguous
+  abstention_threshold: 0.4
+  timeout_seconds: 30
+
+# ------------------------------------------------------------------------------
+# Storage & Persistence
+# ------------------------------------------------------------------------------
+storage:
+  vector_store:
+    provider: "chroma"
+    persist_dir: "./data/indexes/chroma"
+    collection_name: "legal_provisions_v1"
+  metadata_store:
+    provider: "sqlite"
+    db_path: "./data/metadata.db"
