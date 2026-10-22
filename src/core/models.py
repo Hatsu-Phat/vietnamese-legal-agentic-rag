@@ -6,6 +6,7 @@ Invariants:
 - Content hashes are computed deterministically on normalized Unicode NFC text.
 """
 
+import uuid
 from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -153,6 +154,116 @@ class LegalProvision(BaseModel):
         default=LegalValidityStatus.UNKNOWN,
         description="Trạng thái hiệu lực của điều khoản (mặc định UNKNOWN)",
     )
+
+
+class LegalChunk(BaseModel):
+    """Đơn vị phân mảnh văn bản pháp lý (Điều/Khoản/Điểm) phục vụ lập chỉ mục và truy xuất.
+
+    Invariants:
+    - point_uuid là UUIDv5 tất định sinh từ chunk_id thông qua uuid.uuid5(uuid.NAMESPACE_DNS, chunk_id).
+    - text là nội dung nguyên văn dùng cho trích dẫn chính xác (Grounding).
+    - embedding_text kết hợp breadcrumb và title để tối ưu hóa ngữ cảnh truy xuất dense & sparse.
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        str_strip_whitespace=True,
+        validate_assignment=True,
+    )
+
+    chunk_id: str = Field(
+        ...,
+        description="Định danh duy nhất của chunk (ví dụ: {provision_id}__c0)",
+    )
+    point_uuid: str = Field(
+        ...,
+        description="UUIDv5 tất định sinh từ chunk_id dùng làm Point ID cho Qdrant",
+    )
+    document_id: str = Field(
+        ...,
+        description="ID văn bản cha tham chiếu đến LegalDocument",
+    )
+    document_number: str = Field(
+        ...,
+        description="Số hiệu văn bản cha",
+    )
+    provision_id: str = Field(
+        ...,
+        description="ID Điều luật cha tham chiếu đến LegalProvision",
+    )
+    article_id: str = Field(
+        ...,
+        description="ID gốc để chấm điểm Recall@k / MRR với qa_dev và qa_test",
+    )
+    chunk_index: int = Field(
+        ...,
+        description="Thứ tự chunk trong cùng một Điều: 0, 1, 2...",
+    )
+    total_chunks_in_provision: int = Field(
+        ...,
+        description="Tổng số chunk sinh ra từ Điều luật cha",
+    )
+    is_full_article: bool = Field(
+        ...,
+        description="Đánh dấu chunk có chứa trọn vẹn toàn bộ Điều hay không",
+    )
+    clause_number: str | None = Field(
+        default=None,
+        description="Số thứ tự Khoản nếu tách theo Khoản (ví dụ: 'Khoản 1', 'Khoản 2')",
+    )
+    breadcrumb: str = Field(
+        ...,
+        description="Đường dẫn phân cấp pháp lý (ví dụ: '100/2015/QH13 > Điều 15 > Khoản 2')",
+    )
+    title: str = Field(
+        ...,
+        description="Tiêu đề của Điều luật hoặc tiêu đề kèm ngữ cảnh",
+    )
+    text: str = Field(
+        ...,
+        description="Nội dung câu chữ nguyên văn của đoạn (dùng để hiển thị citation)",
+    )
+    embedding_text: str = Field(
+        ...,
+        description="Nội dung kèm breadcrumb/title để encode vector và BM25",
+    )
+    word_count: int = Field(
+        ...,
+        description="Số lượng từ tiếng Việt trong text",
+    )
+    char_length: int = Field(
+        ...,
+        description="Số ký tự trong text",
+    )
+    content_hash: str = Field(
+        ...,
+        description="Mã băm SHA-256 của text chuẩn hóa NFC",
+    )
+    is_duplicate_content: bool = Field(
+        default=False,
+        description="Đánh dấu nội dung trùng lặp",
+    )
+    document_type: str | None = Field(
+        default=None,
+        description="Loại văn bản (Luật, Nghị định, Thông tư...)",
+    )
+    issuing_authority: str | None = Field(
+        default=None,
+        description="Cơ quan ban hành",
+    )
+    issued_year: int | None = Field(
+        default=None,
+        description="Năm ban hành",
+    )
+    status: LegalValidityStatus = Field(
+        default=LegalValidityStatus.UNKNOWN,
+        description="Trạng thái hiệu lực của văn bản/điều khoản",
+    )
+
+    @classmethod
+    def generate_point_uuid(cls, chunk_id: str) -> str:
+        """Sinh UUIDv5 tất định từ chunk_id theo chuẩn namespace DNS."""
+        return str(uuid.uuid5(uuid.NAMESPACE_DNS, chunk_id))
 
 
 class DocumentRelation(BaseModel):
