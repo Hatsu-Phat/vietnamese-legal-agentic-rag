@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-10-22T00:10:57.030933+00:00",
+  "collection_name": "vn_legal_bge_m3",
+  "embedding_model_id": "BAAI/bge-m3",
+  "vector_size": 1024,
+  "distance": "Cosine",
+  "total_vectors": 85745,
+  "mode": "local",
+  "local_path": "data/indexes/qdrant",
+  "device": "cuda",
+  "normalize_embeddings": true,
+  "max_seq_length": 512,
+  "on_disk_payload": true
+}

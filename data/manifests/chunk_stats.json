@@ -1,0 +1,32 @@
+{
+  "audit_timestamp": "2026-10-21T17:15:49.573668+00:00",
+  "total_original_provisions": 60679,
+  "total_chunks_generated": 85745,
+  "covered_provisions_count": 60679,
+  "missing_provisions_count": 0,
+  "provision_coverage_rate": 1.0,
+  "empty_chunks_count": 0,
+  "full_article_chunks": 48766,
+  "sub_clause_chunks": 36979,
+  "duplicate_content_hashes": 1278,
+  "word_count_stats": {
+    "min": 1,
+    "max": 417,
+    "mean": 207.22,
+    "median": 196,
+    "distribution": {
+      "<=50": 6548,
+      "51-100": 13667,
+      "101-200": 23479,
+      "201-300": 18120,
+      "301-400": 23927,
+      ">400": 4
+    }
+  },
+  "char_length_stats": {
+    "min": 2,
+    "max": 3466,
+    "mean": 934.81
+  },
+  "missing_provision_ids_sample": []
+}
