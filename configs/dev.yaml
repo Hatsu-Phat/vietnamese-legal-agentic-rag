@@ -22,14 +22,39 @@ llm:
 # Chunking Strategy Configuration
 # ------------------------------------------------------------------------------
 chunking:
-  # Primary legal chunking: splits by Chương/Mục/Điều/Khoản/Điểm
   strategy: "hierarchical_provision"
-  # Fallback to token/character windows only when structural parsing fails
-  fallback_chunk_size: 512
-  fallback_chunk_overlap: 64
-  # Preserve legal breadcrumb (e.g., "Luật Doanh nghiệp 2020 > Chương II > Điều 17 > Khoản 2")
-  include_breadcrumb: true
-  min_chunk_length: 20
+  max_words_per_chunk: 400        # Tương đương ~512 subword tokens của BGE-M3
+  overlap_words: 50               # Tương đương ~64 subword tokens
+  min_words_per_chunk: 15
+  include_breadcrumb_in_embedding_text: true
+  output_chunks_path: "data/processed/chunks.jsonl"
+  chunk_stats_path: "data/manifests/chunk_stats.json"
+
+# ------------------------------------------------------------------------------
+# Indexing Configuration (BM25 + Qdrant)
+# ------------------------------------------------------------------------------
+indexing:
+  manifest_path: "data/manifests/index_manifest.json"
+  bm25:
+    index_path: "data/indexes/bm25/bm25_index.pkl"
+    corpus_meta_path: "data/indexes/bm25/bm25_chunk_ids.json"
+    segment_vietnamese: true
+    stopwords_path: "data/raw/stopwords.txt"
+    k1: 1.2
+    b: 0.65
+  qdrant:
+    mode: "local"                 # "local" (lưu trên đĩa) hoặc "server" (Docker Qdrant)
+    local_path: "data/indexes/qdrant"
+    url: "http://localhost:6333"
+    collection_name: "vn_legal_bge_m3"
+    embedding_model_id: "BAAI/bge-m3"
+    vector_size: 1024
+    distance: "Cosine"
+    normalize_embeddings: true
+    batch_size: 32
+    max_seq_length: 512
+    on_disk_payload: true
+
 
 # ------------------------------------------------------------------------------
 # Hybrid Retrieval Configuration
