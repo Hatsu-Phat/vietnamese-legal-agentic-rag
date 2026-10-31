@@ -1,5 +1,8 @@
 # ADR-001: Lựa chọn Phạm vi MVP và Stack Công nghệ
 
+> Quyết định ban đầu được giữ để truy vết. Phần vector storage đã được cập nhật bằng [ADR-002](ADR-002-qdrant-index-reuse.md); xem README để biết runtime hiện tại.
+
+
 - **Trạng thái:** Được chấp thuận (Accepted)
 - **Ngày:** 2026-10-21
 - **Người đề xuất:** AI Engineer Team

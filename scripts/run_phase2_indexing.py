@@ -11,13 +11,15 @@ Usage:
 import argparse
 import sys
 from pathlib import Path
+from typing import Any
 
 # Thêm thư mục gốc dự án vào sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.chunking.chunk_audit import ChunkAuditor
 from src.chunking.legal_chunker import LegalChunker
-from src.common.config import load_yaml_config
+from src.common.atomic import atomic_open
+from src.common.config import DEFAULT_CONFIG_PATH, load_data_paths, load_yaml_config, settings
 from src.common.logger import logger
 from src.core.models import LegalChunk, LegalDocument, LegalProvision
 from src.retrieval.bm25_indexer import BM25Indexer
@@ -32,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--config-path",
         type=str,
-        default="configs/dev.yaml",
+        default=str(DEFAULT_CONFIG_PATH),
         help="Đường dẫn file cấu hình YAML (mặc định: configs/dev.yaml)",
     )
     parser.add_argument(
@@ -137,7 +139,7 @@ def load_chunks_from_file(chunks_path: Path) -> list[LegalChunk]:
 
 
 def run_chunking_step(
-    cfg: dict,
+    cfg: dict[str, Any],
     sample_only: bool,
     sample_size: int,
 ) -> list[LegalChunk]:
@@ -147,14 +149,17 @@ def run_chunking_step(
     logger.info("=" * 70)
 
     chunk_cfg = cfg.get("chunking", {})
-    output_chunks_path = Path(chunk_cfg.get("output_chunks_path", "data/processed/chunks.jsonl"))
-    chunk_stats_path = Path(chunk_cfg.get("chunk_stats_path", "data/manifests/chunk_stats.json"))
+    paths = load_data_paths(cfg)
+    if sample_only and paths.processed_dir.parent.name != "sample":
+        paths = paths.sample_outputs()
+    output_chunks_path = paths.chunks
+    chunk_stats_path = paths.chunk_stats
     max_words = int(chunk_cfg.get("max_words_per_chunk", 400))
     overlap_words = int(chunk_cfg.get("overlap_words", 50))
     min_words = int(chunk_cfg.get("min_words_per_chunk", 15))
     inc_breadcrumb = bool(chunk_cfg.get("include_breadcrumb_in_embedding_text", True))
 
-    doc_map = load_documents_map(Path("data/processed/documents.jsonl"))
+    doc_map = load_documents_map(paths.documents)
 
     target_doc_ids: set[str] | None = None
     if sample_only:
@@ -163,7 +168,7 @@ def run_chunking_step(
         logger.info(f"Chế độ --sample-only: Giới hạn xử lý {len(target_doc_ids)} văn bản mẫu.")
 
     provisions = load_provisions(
-        Path("data/processed/provisions.jsonl"),
+        paths.provisions,
         target_document_ids=target_doc_ids,
     )
 
@@ -179,7 +184,7 @@ def run_chunking_step(
 
     # Lưu chunks.jsonl
     output_chunks_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_chunks_path, "w", encoding="utf-8") as f:
+    with atomic_open(output_chunks_path) as f:
         for chunk in chunks:
             f.write(chunk.model_dump_json() + "\n")
 
@@ -187,24 +192,24 @@ def run_chunking_step(
 
     # Chạy kiểm toán chunking
     auditor = ChunkAuditor(
-        report_path="docs/reports/chunk_audit.md",
+        report_path=str(paths.reports_dir / "chunk_audit.md"),
         manifest_path=str(chunk_stats_path),
     )
     original_prov_ids = {p.provision_id for p in provisions}
     stats = auditor.compute_stats(chunks, original_provision_ids=original_prov_ids)
     auditor.export_stats_json(stats, chunk_stats_path)
-    auditor.generate_markdown_report(stats, "docs/reports/chunk_audit.md")
+    auditor.generate_markdown_report(stats)
 
     logger.info(
         f"Hoàn thành kiểm toán phân mảnh! Tỷ lệ phủ điều luật: {stats['provision_coverage_rate'] * 100:.2f}%"
     )
-    logger.info(f"Báo cáo Markdown: docs/reports/chunk_audit.md | Manifest: {chunk_stats_path}")
+    logger.info(f"Báo cáo Markdown: {auditor.report_path} | Manifest: {chunk_stats_path}")
 
     return chunks
 
 
 def run_bm25_step(
-    cfg: dict,
+    cfg: dict[str, Any],
     chunks: list[LegalChunk] | None = None,
 ) -> BM25Indexer:
     """Thực thi Bước 2: Xây dựng chỉ mục từ khóa BM25."""
@@ -212,19 +217,19 @@ def run_bm25_step(
     logger.info("BẮT ĐẦU BƯỚC 2: BM25 LEXICAL INDEXING")
     logger.info("=" * 70)
 
-    chunk_cfg = cfg.get("chunking", {})
-    output_chunks_path = Path(chunk_cfg.get("output_chunks_path", "data/processed/chunks.jsonl"))
+    paths = load_data_paths(cfg)
 
     if chunks is None:
-        chunks = load_chunks_from_file(output_chunks_path)
+        chunks = load_chunks_from_file(paths.chunks)
 
     idx_cfg = cfg.get("indexing", {})
     bm25_cfg = idx_cfg.get("bm25", {})
 
     indexer = BM25Indexer(
-        index_path=bm25_cfg.get("index_path", "data/indexes/bm25/bm25_index.pkl"),
-        corpus_meta_path=bm25_cfg.get("corpus_meta_path", "data/indexes/bm25/bm25_chunk_ids.json"),
-        stopwords_path=bm25_cfg.get("stopwords_path", "data/raw/stopwords.txt"),
+        index_path=str(paths.bm25_index),
+        corpus_meta_path=str(paths.bm25_metadata),
+        stopwords_path=str(paths.stopwords),
+        chunks_path=paths.chunks,
         k1=float(bm25_cfg.get("k1", 1.2)),
         b=float(bm25_cfg.get("b", 0.65)),
         segment_vietnamese=bool(bm25_cfg.get("segment_vietnamese", True)),
@@ -238,7 +243,7 @@ def run_bm25_step(
 
 
 def run_qdrant_step(
-    cfg: dict,
+    cfg: dict[str, Any],
     chunks: list[LegalChunk] | None = None,
     qdrant_mode: str | None = None,
     device: str = "auto",
@@ -250,22 +255,22 @@ def run_qdrant_step(
     logger.info("BẮT ĐẦU BƯỚC 3: QDRANT DENSE VECTOR INDEXING (BGE-M3)")
     logger.info("=" * 70)
 
-    chunk_cfg = cfg.get("chunking", {})
-    output_chunks_path = Path(chunk_cfg.get("output_chunks_path", "data/processed/chunks.jsonl"))
+    paths = load_data_paths(cfg)
 
     if chunks is None:
-        chunks = load_chunks_from_file(output_chunks_path)
+        chunks = load_chunks_from_file(paths.chunks)
 
     idx_cfg = cfg.get("indexing", {})
     qdrant_cfg = idx_cfg.get("qdrant", {})
-    manifest_path = idx_cfg.get("manifest_path", "data/manifests/index_manifest.json")
 
-    mode = qdrant_mode or qdrant_cfg.get("mode", "local")
+    mode = qdrant_mode or settings.qdrant_mode or qdrant_cfg.get("mode", "local")
+    url = settings.qdrant_url or qdrant_cfg.get("url", "http://localhost:6333")
+    api_key = settings.qdrant_api_key.get_secret_value() if settings.qdrant_api_key else None
 
     indexer = QdrantIndexer(
         mode=mode,
-        local_path=qdrant_cfg.get("local_path", "data/indexes/qdrant"),
-        url=qdrant_cfg.get("url", "http://localhost:6333"),
+        local_path=str(paths.qdrant_dir),
+        url=url,
         collection_name=qdrant_cfg.get("collection_name", "vn_legal_bge_m3"),
         embedding_model_id=qdrant_cfg.get("embedding_model_id", "BAAI/bge-m3"),
         vector_size=int(qdrant_cfg.get("vector_size", 1024)),
@@ -274,8 +279,11 @@ def run_qdrant_step(
         batch_size=batch_size,
         max_seq_length=int(qdrant_cfg.get("max_seq_length", 512)),
         on_disk_payload=bool(qdrant_cfg.get("on_disk_payload", True)),
-        manifest_path=manifest_path,
+        manifest_path=str(paths.index_manifest),
         device=device,
+        api_key=api_key,
+        timeout=settings.tool_timeout_seconds,
+        embedding_revision=qdrant_cfg.get("embedding_revision"),
     )
 
     uploaded_count = indexer.index_chunks(chunks, resume=resume)
@@ -299,6 +307,13 @@ def main() -> int:
     logger.info("=" * 70)
 
     cfg = load_yaml_config(args.config_path)
+    if args.sample_only:
+        cfg["paths"] = {
+            k: str(v) for k, v in load_data_paths(cfg).sample_outputs().model_dump().items()
+        }
+        cfg.setdefault("indexing", {}).setdefault("qdrant", {})["collection_name"] = (
+            "vn_legal_bge_m3_sample"
+        )
 
     active_chunks: list[LegalChunk] | None = None
 

@@ -80,6 +80,7 @@ class LegalDocument(BaseModel):
         default="thiemcun169_data_for_gui",
         description="Tên tập dữ liệu nguồn",
     )
+    source_aliases: list[str] = Field(default_factory=list)
     source_last_verified_at: datetime | None = Field(
         default=None,
         description="Thời điểm kiểm tra/xác minh metadata lần cuối",

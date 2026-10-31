@@ -1,0 +1,20 @@
+{
+  "mode": "server",
+  "collection_name": "vn_legal_bge_m3_v2",
+  "query_alias": "vn_legal_bge_m3",
+  "total_vectors": 85115,
+  "embedding_model_id": "BAAI/bge-m3",
+  "vector_size": 1024,
+  "distance": "Cosine",
+  "normalize_embeddings": true,
+  "max_seq_length": 512,
+  "source_fingerprint": "59b8a7d07fc8f17f1209d0e915c748ddbe76bebaafaf123af23043637e900610",
+  "reused_vectors": 85115,
+  "encoded_vectors": 0,
+  "verified_payloads": 85115,
+  "verified_vectors": 256,
+  "query_embedding_revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "source_embedding_revision": null,
+  "truncation_count": 1420,
+  "max_input_tokens": 943
+}

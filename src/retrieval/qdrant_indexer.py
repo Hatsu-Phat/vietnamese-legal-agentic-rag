@@ -10,35 +10,24 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import torch
 from qdrant_client import QdrantClient
-from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import (
     Distance,
     FieldCondition,
     Filter,
     MatchValue,
-    PayloadSchemaType,
     PointStruct,
     Range,
-    VectorParams,
 )
-from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.common.logger import logger
 from src.core.models import LegalChunk
-
-
-def resolve_device(device: str = "auto") -> str:
-    """Tự động phát hiện phần cứng tăng tốc (CUDA / MPS / CPU)."""
-    if device == "auto":
-        if torch.cuda.is_available():
-            return "cuda"
-        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-            return "mps"
-        return "cpu"
-    return device
+from src.retrieval.embedding import BGEEncoder
+from src.retrieval.embedding import resolve_device as resolve_device
+from src.retrieval.qdrant_store import QdrantStore, payload_fingerprint
 
 
 class QdrantIndexer:
@@ -47,7 +36,7 @@ class QdrantIndexer:
     def __init__(
         self,
         mode: str = "local",
-        local_path: str = "data/indexes/qdrant",
+        local_path: str | Path | None = None,
         url: str = "http://localhost:6333",
         collection_name: str = "vn_legal_bge_m3",
         embedding_model_id: str = "BAAI/bge-m3",
@@ -57,24 +46,41 @@ class QdrantIndexer:
         batch_size: int = 32,
         max_seq_length: int = 512,
         on_disk_payload: bool = True,
-        manifest_path: str = "data/manifests/index_manifest.json",
+        manifest_path: str | Path | None = None,
         device: str = "auto",
         client: QdrantClient | None = None,
         embedding_model: Any | None = None,
+        api_key: str | None = None,
+        timeout: int = 15,
+        embedding_revision: str | None = None,
     ) -> None:
         self.mode = mode
-        self.local_path = local_path
+        paths = load_data_paths()
+        self.local_path = (
+            ":memory:"
+            if str(local_path) == ":memory:"
+            else str(
+                resolve_project_path(local_path if local_path is not None else paths.qdrant_dir)
+            )
+        )
         self.url = url
         self.collection_name = collection_name
         self.embedding_model_id = embedding_model_id
         self.vector_size = vector_size
+        if distance.lower() not in {"cosine", "dot"}:
+            raise ValueError("Distance must be Cosine or Dot")
+        if batch_size <= 0 or vector_size <= 0:
+            raise ValueError("batch_size and vector_size must be positive")
         self.distance = Distance.COSINE if distance.lower() == "cosine" else Distance.DOT
         self.normalize_embeddings = normalize_embeddings
         self.batch_size = batch_size
         self.max_seq_length = max_seq_length
         self.on_disk_payload = on_disk_payload
-        self.manifest_path = Path(manifest_path)
-        self.device = resolve_device(device)
+        self.manifest_path = resolve_project_path(
+            manifest_path if manifest_path is not None else paths.index_manifest
+        )
+        self.device = device
+        self.encoder = BGEEncoder(embedding_model_id, device, max_seq_length, embedding_revision)
 
         # Quản lý QdrantClient
         if client is not None:
@@ -83,7 +89,7 @@ class QdrantIndexer:
             self.client = QdrantClient(":memory:")
         elif self.mode == "server":
             logger.info(f"Kết nối tới Qdrant Server tại {self.url}")
-            self.client = QdrantClient(url=self.url)
+            self.client = QdrantClient(url=self.url, api_key=api_key, timeout=timeout)
         else:
             # Chế độ local lưu trữ trực tiếp trên đĩa
             Path(self.local_path).mkdir(parents=True, exist_ok=True)
@@ -92,6 +98,9 @@ class QdrantIndexer:
 
         # Quản lý embedding model (lazy load nếu chưa truyền vào)
         self._model = embedding_model
+        self.store = QdrantStore(
+            self.client, collection_name, vector_size, self.distance, on_disk_payload
+        )
 
     @property
     def model(self) -> Any:
@@ -100,9 +109,8 @@ class QdrantIndexer:
             logger.info(
                 f"Đang tải Embedding Model '{self.embedding_model_id}' trên thiết bị '{self.device}'..."
             )
-            model = SentenceTransformer(self.embedding_model_id, device=self.device)
-            model.max_seq_length = self.max_seq_length
-            self._model = model
+            self._model = self.encoder.model
+            self.device = str(getattr(self._model, "device", self.device))
             logger.info(
                 f"Tải thành công model '{self.embedding_model_id}' (max_seq_len={self.max_seq_length})"
             )
@@ -110,51 +118,9 @@ class QdrantIndexer:
 
     def init_collection(self, recreate: bool = False) -> None:
         """Khởi tạo Collection và thiết lập các trường Payload Index."""
-        exists = self.client.collection_exists(self.collection_name)
-        if exists:
-            if recreate:
-                logger.warning(f"Xóa và tạo lại Collection '{self.collection_name}'...")
-                self.client.delete_collection(self.collection_name)
-            else:
-                logger.info(f"Collection '{self.collection_name}' đã tồn tại, bỏ qua tạo mới.")
-                return
-
-        logger.info(
-            f"Tạo mới Collection '{self.collection_name}' (size={self.vector_size}, distance={self.distance})..."
-        )
-        self.client.create_collection(
-            collection_name=self.collection_name,
-            vectors_config=VectorParams(
-                size=self.vector_size,
-                distance=self.distance,
-                on_disk=self.on_disk_payload,
-            ),
-        )
-
-        # Tạo Payload Index phục vụ lọc tốc độ cao
-        indexed_fields = [
-            ("document_id", PayloadSchemaType.KEYWORD),
-            ("provision_id", PayloadSchemaType.KEYWORD),
-            ("article_id", PayloadSchemaType.KEYWORD),
-            ("document_type", PayloadSchemaType.KEYWORD),
-            ("issuing_authority", PayloadSchemaType.KEYWORD),
-            ("issued_year", PayloadSchemaType.INTEGER),
-            ("status", PayloadSchemaType.KEYWORD),
-        ]
-
-        for field_name, field_type in indexed_fields:
-            try:
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name=field_name,
-                    field_schema=field_type,
-                )
-            except (UnexpectedResponse, Exception) as exc:
-                logger.debug(f"Bỏ qua tạo payload index '{field_name}' ({exc})")
-
-        logger.info(
-            f"Đã khởi tạo thành công Collection '{self.collection_name}' và Payload Indexes."
-        )
+        if recreate and self.client.collection_exists(self.collection_name):
+            self.client.delete_collection(self.collection_name)
+        self.store.ensure_collection()
 
     def get_existing_point_uuids(self) -> set[str]:
         """Thu thập danh sách point_uuid đã có trong collection để phục vụ resume."""
@@ -193,23 +159,21 @@ class QdrantIndexer:
         Returns:
             Tổng số lượng point đã nạp mới vào Qdrant.
         """
+        if len({c.point_uuid for c in chunks}) != len(chunks):
+            raise ValueError("Duplicate chunk UUIDs: normalize the source before indexing")
         self.init_collection(recreate=False)
 
-        existing_ids: set[str] = set()
-        if resume:
-            existing_ids = self.get_existing_point_uuids()
-            logger.info(
-                f"Chế độ --resume: phát hiện {len(existing_ids):,} chunks đã tồn tại trong Qdrant."
-            )
-
-        pending_chunks = (
-            [c for c in chunks if c.point_uuid not in existing_ids] if resume else list(chunks)
-        )
+        fingerprints = self.store.existing_fingerprints() if resume else {}
+        pending_chunks = [
+            c
+            for c in chunks
+            if fingerprints.get(c.point_uuid) != payload_fingerprint(c.model_dump(mode="json"))
+        ]
         total_pending = len(pending_chunks)
 
         if total_pending == 0:
             logger.info("Không có chunk mới nào cần nạp vào Qdrant.")
-            self.write_manifest(total_vectors=len(existing_ids))
+            self.write_manifest(total_vectors=self.store.count())
             return 0
 
         logger.info(
@@ -243,11 +207,7 @@ class QdrantIndexer:
                     )
                 )
 
-            self.client.upsert(
-                collection_name=self.collection_name,
-                points=points,
-                wait=True,
-            )
+            self.store.upload(points)
             total_uploaded += len(points)
             pbar.update(len(points))
 
@@ -255,7 +215,7 @@ class QdrantIndexer:
         logger.info(f"Nạp thành công {total_uploaded:,} chunks mới vào Qdrant!")
 
         # Cập nhật manifest
-        total_vectors = len(existing_ids) + total_uploaded
+        total_vectors = self.store.count()
         self.write_manifest(total_vectors=total_vectors)
 
         return total_uploaded
@@ -267,6 +227,7 @@ class QdrantIndexer:
             "created_at": datetime.now(UTC).isoformat(),
             "collection_name": self.collection_name,
             "embedding_model_id": self.embedding_model_id,
+            "embedding_revision": self.encoder.revision,
             "vector_size": self.vector_size,
             "distance": "Cosine" if self.distance == Distance.COSINE else "Dot",
             "total_vectors": total_vectors,
@@ -277,7 +238,7 @@ class QdrantIndexer:
             "max_seq_length": self.max_seq_length,
             "on_disk_payload": self.on_disk_payload,
         }
-        with open(self.manifest_path, "w", encoding="utf-8") as f:
+        with atomic_open(self.manifest_path) as f:
             json.dump(manifest_data, f, ensure_ascii=False, indent=2)
         logger.info(f"Đã lưu index manifest tại: {self.manifest_path}")
 

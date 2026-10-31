@@ -28,6 +28,11 @@ class LegalChunker:
         min_words_per_chunk: int = 15,
         include_breadcrumb_in_embedding_text: bool = True,
     ) -> None:
+        if (
+            not 0 <= overlap_words < max_words_per_chunk
+            or not 0 < min_words_per_chunk <= max_words_per_chunk
+        ):
+            raise ValueError("Require 0 <= overlap < max_words and 0 < min_words <= max_words")
         self.max_words_per_chunk = max_words_per_chunk
         self.overlap_words = overlap_words
         self.min_words_per_chunk = min_words_per_chunk

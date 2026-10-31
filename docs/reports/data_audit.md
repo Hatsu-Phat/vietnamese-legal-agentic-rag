@@ -1,5 +1,8 @@
 # Báo cáo Kiểm toán Dữ liệu Pháp luật (Phase 1 — Data Audit Report)
 
+> Báo cáo lịch sử của lần chạy ghi trong tài liệu. Số tests, trạng thái Cloud và tính năng ở thời điểm đó không thay thế hiện trạng trong [README](../../README.md).
+
+
 > **Dự án:** Vietnamese Legal Agentic RAG System
 > **Thời điểm kiểm toán:** `2026-10-21T13:48:09.157130+00:00`
 > **Phiên bản Ingestion:** `1.0.0`

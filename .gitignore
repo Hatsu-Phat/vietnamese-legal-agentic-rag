@@ -89,20 +89,26 @@ qdrant_storage/
 faiss_index/
 
 # Data Files (Keep structure via .gitkeep, ignore actual bulky artifacts)
+data/imports/
+vietnamese_legal_rag_phase2_outputs/
 data/raw/*
 !data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-data/embeddings/*
-!data/embeddings/.gitkeep
-data/indexes/*
-!data/indexes/.gitkeep
+data/artifacts/processed/*
+!data/artifacts/processed/.gitkeep
+data/artifacts/indexes/*
+!data/artifacts/indexes/.gitkeep
 
 # Allow sample data and evaluation benchmarks to be tracked if needed
 # (Ensure sample laws and gold evaluation pairs are vetted and small)
-!data/sample_laws/
-!data/gold_eval/
-!data/manifests/
+!data/samples/
+!data/benchmarks/
+!data/artifacts/manifests/
+# Per-run inventory/checkpoints are local artifacts, not shared configuration.
+data/artifacts/manifests/team-phase2-*.json
+data/artifacts/manifests/team-phase2-*.jsonl
+data/artifacts/sample/
+data/benchmarks/sample/
+docs/reports/sample/
 
 # Model Weights & Large Checkpoints
 models/

@@ -1,6 +1,6 @@
 """Source registry and manifest management for legal documents.
 
-Manages data/manifests/source_manifest.csv to track provenance, document hashes,
+Manages data/artifacts/manifests/source_manifest.csv to track provenance, document hashes,
 article counts, and ingestion metadata for complete auditability.
 """
 
@@ -9,6 +9,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.common.exceptions import ManifestError
 from src.common.logger import logger
 from src.core.models import LegalDocument
@@ -33,8 +35,10 @@ MANIFEST_COLUMNS: list[str] = [
 class SourceRegistry:
     """Manages reading and writing the legal document source manifest CSV."""
 
-    def __init__(self, manifest_path: str | Path = "data/manifests/source_manifest.csv") -> None:
-        self.manifest_path = Path(manifest_path)
+    def __init__(self, manifest_path: str | Path | None = None) -> None:
+        self.manifest_path = resolve_project_path(
+            manifest_path if manifest_path is not None else load_data_paths().source_manifest
+        )
 
     def create_entry(
         self,
@@ -85,7 +89,7 @@ class SourceRegistry:
         """
         try:
             self.manifest_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.manifest_path, "w", encoding="utf-8", newline="") as f:
+            with atomic_open(self.manifest_path, newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=MANIFEST_COLUMNS)
                 writer.writeheader()
                 for entry in entries:

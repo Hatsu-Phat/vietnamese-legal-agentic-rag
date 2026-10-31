@@ -8,6 +8,16 @@ pipeline:
   version: "0.1.0"
   environment: "development"
 
+# Shared directory layout. Relative paths are resolved from the repository root.
+paths:
+  raw_dir: "data/raw"
+  samples_dir: "data/samples"
+  benchmarks_dir: "data/benchmarks"
+  processed_dir: "data/artifacts/processed"
+  indexes_dir: "data/artifacts/indexes"
+  manifests_dir: "data/artifacts/manifests"
+  reports_dir: "docs/reports"
+
 # ------------------------------------------------------------------------------
 # LLM Provider Configuration
 # ------------------------------------------------------------------------------
@@ -23,31 +33,25 @@ llm:
 # ------------------------------------------------------------------------------
 chunking:
   strategy: "hierarchical_provision"
-  max_words_per_chunk: 400        # Tương đương ~512 subword tokens của BGE-M3
-  overlap_words: 50               # Tương đương ~64 subword tokens
+  max_words_per_chunk: 400        # Word budget; không bảo đảm embedding_text <= 512 tokens
+  overlap_words: 50               # Word overlap; kiểm tra token bằng tokenizer BGE-M3
   min_words_per_chunk: 15
   include_breadcrumb_in_embedding_text: true
-  output_chunks_path: "data/processed/chunks.jsonl"
-  chunk_stats_path: "data/manifests/chunk_stats.json"
 
 # ------------------------------------------------------------------------------
 # Indexing Configuration (BM25 + Qdrant)
 # ------------------------------------------------------------------------------
 indexing:
-  manifest_path: "data/manifests/index_manifest.json"
   bm25:
-    index_path: "data/indexes/bm25/bm25_index.pkl"
-    corpus_meta_path: "data/indexes/bm25/bm25_chunk_ids.json"
     segment_vietnamese: true
-    stopwords_path: "data/raw/stopwords.txt"
     k1: 1.2
     b: 0.65
   qdrant:
-    mode: "local"                 # "local" (lưu trên đĩa) hoặc "server" (Docker Qdrant)
-    local_path: "data/indexes/qdrant"
+    mode: "local"                 # Có thể ghi đè bằng QDRANT_MODE=server trong .env
     url: "http://localhost:6333"
     collection_name: "vn_legal_bge_m3"
     embedding_model_id: "BAAI/bge-m3"
+    embedding_revision: "5617a9f61b028005a4858fdac845db406aefb181"
     vector_size: 1024
     distance: "Cosine"
     normalize_embeddings: true
@@ -60,20 +64,17 @@ indexing:
 # Hybrid Retrieval Configuration
 # ------------------------------------------------------------------------------
 retrieval:
+  timeout_seconds: 30
   # Dense Retrieval via BGE-M3
   dense:
     enabled: true
-    model_name: "BAAI/bge-m3"
     top_k: 10
-    batch_size: 16
 
   # Sparse Keyword Retrieval via BM25
   sparse:
     enabled: true
     engine: "rank_bm25"
     top_k: 10
-    # Enable word segmentation for Vietnamese sparse query matching
-    segment_vietnamese: true
 
   # Rank Fusion via Reciprocal Rank Fusion (RRF)
   fusion:
@@ -102,11 +103,4 @@ agent:
 # ------------------------------------------------------------------------------
 # Storage & Persistence
 # ------------------------------------------------------------------------------
-storage:
-  vector_store:
-    provider: "chroma"
-    persist_dir: "./data/indexes/chroma"
-    collection_name: "legal_provisions_v1"
-  metadata_store:
-    provider: "sqlite"
-    db_path: "./data/metadata.db"
+# Active vector storage is configured under indexing.qdrant above.

@@ -1,7 +1,7 @@
 """Chunk audit module for Vietnamese Legal Agentic RAG.
 
 Validates that 100% of legal provisions are covered, checks for empty chunks,
-and generates statistical reports (docs/reports/chunk_audit.md and data/manifests/chunk_stats.json).
+and generates statistical reports (docs/reports/chunk_audit.md and data/artifacts/manifests/chunk_stats.json).
 """
 
 import json
@@ -10,6 +10,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.core.models import LegalChunk
 
 
@@ -18,11 +20,16 @@ class ChunkAuditor:
 
     def __init__(
         self,
-        report_path: str = "docs/reports/chunk_audit.md",
-        manifest_path: str = "data/manifests/chunk_stats.json",
+        report_path: str | Path | None = None,
+        manifest_path: str | Path | None = None,
     ) -> None:
-        self.report_path = Path(report_path)
-        self.manifest_path = Path(manifest_path)
+        paths = load_data_paths()
+        self.report_path = resolve_project_path(
+            report_path if report_path is not None else paths.reports_dir / "chunk_audit.md"
+        )
+        self.manifest_path = resolve_project_path(
+            manifest_path if manifest_path is not None else paths.chunk_stats
+        )
 
     def compute_stats(
         self,
@@ -87,6 +94,8 @@ class ChunkAuditor:
             else:
                 seen_hashes.add(c.content_hash)
 
+        unexpected_provisions = covered_provisions - original_provision_ids
+        covered_provisions &= original_provision_ids
         missing_provisions = original_provision_ids - covered_provisions
         coverage_rate = len(covered_provisions) / total_original if total_original > 0 else 1.0
 
@@ -102,6 +111,7 @@ class ChunkAuditor:
         mean_chars = sum(char_lengths) / total_chunks if total_chunks > 0 else 0.0
 
         stats: dict[str, Any] = {
+            "unexpected_provisions_count": len(unexpected_provisions),
             "audit_timestamp": datetime.now(UTC).isoformat(),
             "total_original_provisions": total_original,
             "total_chunks_generated": total_chunks,
@@ -137,7 +147,7 @@ class ChunkAuditor:
         """Xuất báo cáo thống kê dưới dạng JSON manifest."""
         out_file = Path(output_path) if output_path else self.manifest_path
         out_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_file, "w", encoding="utf-8") as f:
+        with atomic_open(out_file) as f:
             json.dump(stats, f, ensure_ascii=False, indent=2)
         return out_file
 
@@ -152,11 +162,16 @@ class ChunkAuditor:
 
         w_dist = stats["word_count_stats"]["distribution"]
         total_chunks = stats["total_chunks_generated"]
+        coverage_basis = stats.get(
+            "coverage_basis",
+            "Đối chiếu tập provision đầu vào; không xác nhận tính hiệu lực pháp lý.",
+        )
 
         md_content = f"""# Báo cáo Kiểm toán Phân mảnh Văn bản Pháp lý (Phase 2 Chunking Audit)
 
 > **Thời điểm kiểm toán:** {stats["audit_timestamp"]}
 > **Trạng thái:** {"✅ ĐẠT CHUẨN" if stats["provision_coverage_rate"] == 1.0 and stats["empty_chunks_count"] == 0 else "❌ CÓ LỖI"}
+> **Phạm vi đối chiếu:** {coverage_basis}
 
 ---
 
@@ -164,7 +179,7 @@ class ChunkAuditor:
 
 | Chỉ số | Giá trị | Ghi chú |
 | :--- | :--- | :--- |
-| **Tổng số Điều luật gốc** | **{stats["total_original_provisions"]:,}** | Dữ liệu từ `provisions.jsonl` |
+| **Số provision trong tập đối chiếu** | **{stats["total_original_provisions"]:,}** | Theo phạm vi đối chiếu ở trên |
 | **Tổng số Chunks sinh ra** | **{stats["total_chunks_generated"]:,}** | Sau khi phân cấp Điều/Khoản |
 | **Số Điều phủ được** | **{stats["covered_provisions_count"]:,}** | Phải đạt 100% |
 | **Tỷ lệ phủ Điều luật (Coverage)** | **{stats["provision_coverage_rate"] * 100:.2f}%** | Yêu cầu nghiêm ngặt 100% |
@@ -197,11 +212,11 @@ class ChunkAuditor:
 
 ## 3. Tiêu chí Nghiệm thu & Cam kết Chất lượng
 
-1. **Bảo toàn Gold QA Mapping:** Mọi `article_id` và `provision_id` đều được bảo toàn 100%.
+1. **Gold QA Mapping:** Cần đối chiếu riêng với benchmark; coverage provision không chứng minh mọi gold reference tồn tại.
 2. **Tách biệt Citation & Embedding:** Trường `text` nguyên văn được bảo toàn thuần khiết; trường `embedding_text` mang đầy đủ breadcrumb phân cấp pháp lý.
 3. **Sẵn sàng Lập chỉ mục:** Chunks đã sẵn sàng nạp vào BM25 Lexical Index và Qdrant Dense Vector Store.
 """
-        with open(out_file, "w", encoding="utf-8") as f:
+        with atomic_open(out_file) as f:
             f.write(md_content)
 
         return md_content

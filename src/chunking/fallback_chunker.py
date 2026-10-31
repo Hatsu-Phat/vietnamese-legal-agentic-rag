@@ -45,6 +45,8 @@ def split_text_sliding_window(
     Returns:
         Danh sách các chuỗi văn bản sau khi chia nhỏ.
     """
+    if not 0 <= overlap_words < max_words or not 0 < min_words <= max_words:
+        raise ValueError("Require 0 <= overlap < max_words and 0 < min_words <= max_words")
     clean_text = text.strip()
     if not clean_text:
         return []
@@ -101,7 +103,7 @@ def split_text_sliding_window(
             overlap_count = 0
             for prev_unit in reversed(current_units):
                 prev_len = len(prev_unit.split())
-                if overlap_count + prev_len <= overlap_words:
+                if overlap_count + prev_len <= min(overlap_words, max_words - unit_len):
                     overlap_buffer.insert(0, prev_unit)
                     overlap_count += prev_len
                 else:
@@ -120,7 +122,11 @@ def split_text_sliding_window(
         final_str = "\n".join(current_units).strip()
         if final_str:
             final_word_count = len(final_str.split())
-            if final_word_count < min_words and chunks:
+            if (
+                final_word_count < min_words
+                and chunks
+                and len(chunks[-1].split()) + final_word_count <= max_words
+            ):
                 # Gộp vào chunk liền trước nếu quá ngắn
                 chunks[-1] = f"{chunks[-1]}\n{final_str}"
             else:

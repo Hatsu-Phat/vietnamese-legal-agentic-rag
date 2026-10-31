@@ -2,6 +2,8 @@
 
 Tài liệu này quy định cách thức thu thập, lưu trữ, kiểm chứng và bảo vệ dữ liệu pháp luật trong dự án `vietnamese-legal-agentic-rag`.
 
+**Phạm vi:** Nhánh refactor chuẩn bị nền tảng dữ liệu; `/search` sẽ được triển khai trong nhánh phụ thuộc codex/search-v1. Các quy tắc temporal bên dưới là yêu cầu cho ingestion và `/ask` tương lai; không suy ra Search v1 đã hỗ trợ `as_of_date`. Hướng dẫn nhận dữ liệu/index ở [data/README.md](../data/README.md).
+
 ---
 
 ## 1. Nguồn Dữ liệu Chính thức (Authorized Legal Sources)
@@ -17,24 +19,24 @@ Toàn bộ văn bản quy phạm pháp luật đưa vào hệ thống phải xu�
 
 ## 2. Nguyên tắc Quản lý Dữ liệu và Truy vết (Provenance & Auditing)
 
-Mỗi văn bản nạp vào hệ thống (`data/raw/` hoặc `data/processed/`) bắt buộc phải có thông tin kiểm soát nguồn:
+Mỗi văn bản nạp vào hệ thống (`data/raw/` hoặc `data/artifacts/processed/`) bắt buộc phải có thông tin kiểm soát nguồn:
 - **`source_url`**: Đường dẫn trực tiếp đến văn bản gốc trên cổng thông tin chính thức.
-- **`content_hash`**: Mã băm SHA-256 của tệp văn bản raw để chống sửa đổi tùy tiện.
+- **`content_hash`**: Mã băm SHA-256 nội dung chuẩn hóa; checksum byte của file raw được lưu riêng trong manifest/provenance để đối chiếu bản gốc.
 - **`ingestion_timestamp`**: Thời điểm thu thập văn bản.
-- **`status`**: Trạng thái hiệu lực được xác minh (`in_force`, `expired`, `partially_expired`, `amended`).
+- **`status`**: Trạng thái hiệu lực được xác minh theo enum code (`valid`, `expired`, `partially_amended`, `superseded`, `unknown`). Chưa xác minh thì giữ `unknown`.
 - **`effective_from` / `effective_to`**: Khoảng thời gian có hiệu lực pháp luật.
 
 ---
 
 ## 3. Quản lý Hiệu lực Thời gian (Temporal Validity)
 
-- Mọi câu truy vấn pháp lý phải gắn liền với một thời điểm xem xét (`as_of_date`), mặc định là ngày hiện tại nếu người dùng không chỉ định.
+- Trong luồng trả lời pháp lý `/ask` dự kiến, câu truy vấn phải gắn liền với một thời điểm xem xét (`as_of_date`), mặc định là ngày hiện tại nếu người dùng không chỉ định.
 - Khi một văn bản bị sửa đổi, bổ sung bởi văn bản mới hơn, hệ thống phải lưu trữ quan hệ (`amends`, `replaces`, `repeals`) và áp dụng bộ lọc xác định để không trả lời bằng điều khoản đã hết hiệu lực.
-- Khi thông tin hiệu lực chưa được xác minh (`unknown`), hệ thống phải cảnh báo người dùng trong trường `limitations` thay vì khẳng định tuyệt đối.
+- Khi thông tin hiệu lực chưa được xác minh (`unknown`), Search v1 cảnh báo qua `warnings`; luồng trả lời phải biểu diễn giới hạn theo hợp đồng `/ask` được chốt sau, thay vì khẳng định tuyệt đối.
 
 ---
 
 ## 4. Bảo mật và Tuân thủ (Security & Compliance)
 
-- **Không commit file dữ liệu lớn vào Git:** Thư mục `data/raw/` và `data/processed/` chứa các tệp PDF/HTML thực tế được loại trừ trong `.gitignore`. Chỉ commit các tệp manifest mô tả URL và metadata, hoặc mẫu nhỏ phục vụ kiểm thử (`data/sample_laws/`).
+- **Không commit file dữ liệu lớn vào Git:** Thư mục `data/raw/` và `data/artifacts/processed/` chứa các tệp PDF/HTML thực tế được loại trừ trong `.gitignore`. Chỉ commit các tệp manifest mô tả URL và metadata, hoặc mẫu nhỏ phục vụ kiểm thử (`data/samples/`).
 - **Không chứa dữ liệu cá nhân (PII):** Nếu có các tình huống án lệ hoặc câu hỏi chứa thông tin cá nhân (tên, CCCD, địa chỉ), phải thực hiện ẩn danh hóa trước khi đưa vào tập benchmark hoặc log hệ thống.

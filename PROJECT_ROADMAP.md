@@ -5,6 +5,10 @@
 > **Ngày lập:** 21-10-2026  
 > **Định hướng:** Project học thuật có MVP chạy end-to-end, đo lường được và có thể mở rộng sang triển khai thực tế.
 
+## Cách đọc và trạng thái triển khai
+
+Đây là kế hoạch mục tiêu, không phải danh sách tính năng đã chạy. Hiện trạng và lệnh chạy xem [README](README.md); hợp đồng Search xem hợp đồng Search dự kiến trong nhánh codex/search-v1; phân công và thay đổi dùng chung xem [team workflow](docs/team-workflow.md). SearchService Hybrid được triển khai trong nhánh phụ thuộc codex/search-v1; HTTP API, frontend, luồng LangGraph, PrivacyGate và crawler còn là bước tiếp theo. Không chỉnh kết quả trong báo cáo lịch sử để phản ánh tiến độ mới.
+
 ## Quy ước về độ tin cậy của thông tin
 
 - **[Nguồn]**: nội dung lấy từ paper, tài liệu môn học hoặc nguồn chính thức được dẫn liên kết.
@@ -43,7 +47,7 @@ MVP nên có:
 - Một bộ dữ liệu pháp luật tiếng Việt với nguồn URL, số hiệu, cơ quan ban hành, ngày ban hành, ngày hiệu lực, trạng thái hiệu lực và thông tin sửa đổi/thay thế khi xác minh được.
 - Bộ câu hỏi đánh giá có đáp án chuẩn và đoạn bằng chứng chuẩn.
 - Một baseline BM25, một baseline dense retrieval và một cấu hình hybrid.
-- Một LLM API hoặc mô hình local cho bước sinh câu trả lời; giao diện gọi model được trừu tượng hóa để đổi nhà cung cấp.
+- Hai LLM local/API với interface chung và chính sách định tuyến có kiểm chứng; quyền riêng tư giới hạn các nhà cung cấp được phép dùng. Phần này là kế hoạch, chưa nằm trong Search v1.
 - Câu trả lời có citation IDs trỏ tới đoạn nguồn thật, không để LLM tự sáng tác số hiệu/điều luật.
 - Cơ chế từ chối trả lời khi không có bằng chứng đủ mạnh.
 - Backend API, giao diện hỏi đáp đơn giản, logging/trace, test và README tái lập được.
@@ -657,7 +661,7 @@ Các phase dưới đây theo thứ tự dependency. Thời lượng là gợi �
 
 **Module/file cần tạo**
 
-- `data/README.md`, `data/manifests/source_manifest.csv`
+- `data/README.md`, `data/artifacts/manifests/source_manifest.csv`
 - `src/ingestion/source_registry.py`, `src/ingestion/load_files.py`
 - `src/metadata/schema.py`, `src/metadata/relations.py`
 - `reports/data_audit.md`
@@ -1217,7 +1221,7 @@ flowchart LR
 Với mỗi request, nên lưu tối thiểu:
 
 - `request_id`, timestamp, thời gian từng phase và mã kết quả.
-- query đã được ẩn danh nếu cần; không log secret/token nhạy cảm.
+- Search v1 không ghi query/hồ sơ vào log mặc định; mọi mở rộng trace nội dung phải có chính sách quyền riêng tư riêng. Không log secret/token nhạy cảm.
 - corpus/index version, retrieval candidates, ranks, filter sử dụng và số chunks đưa vào LLM.
 - embedding model/version, reranker version, prompt version, LLM/provider và token usage nếu lấy được.
 - danh sách citation IDs, validation errors, quyết định `answer/clarify/abstain`.
@@ -1254,12 +1258,12 @@ Khi hoàn thành, repository nên có tối thiểu:
 - [ ] `docs/literature_review.md`: paper matrix, khoảng trống nghiên cứu và quyết định thiết kế.
 - [ ] `docs/data_policy.md`: nguồn, quyền truy cập, phạm vi corpus, quy trình cập nhật và metadata còn chưa xác minh.
 - [ ] `docs/architecture.md`: diagram, module contracts, ADR.
-- [ ] `data/manifests/`: manifest và snapshot metadata được phép công khai; không công khai tài liệu bị hạn chế.
-- [ ] `data/evaluation/`: bộ câu hỏi đã làm sạch, gold evidence và annotation guidelines phù hợp quyền sử dụng.
+- [ ] `data/artifacts/manifests/`: manifest và snapshot metadata được phép công khai; không công khai tài liệu bị hạn chế.
+- [ ] `data/benchmarks/`: bộ câu hỏi đã làm sạch, gold evidence và annotation guidelines phù hợp quyền sử dụng.
 - [ ] `src/`: ingestion, parsing, chunking, metadata, indexing, retrieval, generation, grounding, API và evaluation.
 - [ ] `tests/`: unit, integration, citation, temporal, abstention, prompt injection và smoke tests.
 - [ ] `configs/experiments/`: cấu hình thực nghiệm có version.
-- [ ] `reports/`: audit dữ liệu, baseline, ablation, evaluation cuối, error analysis và giới hạn.
+- [ ] `docs/reports/`: audit dữ liệu, baseline, ablation, evaluation cuối, error analysis và giới hạn.
 - [ ] `Dockerfile`/`docker-compose.yml` hoặc hướng dẫn môi trường tái lập tương đương.
 - [ ] `docs/demo_script.md` và slide/report Capstone; giải thích được quyết định kiến trúc và đóng góp của từng thành viên.
 
