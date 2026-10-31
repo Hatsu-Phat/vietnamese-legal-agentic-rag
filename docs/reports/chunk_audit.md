@@ -1,6 +1,6 @@
 # Báo cáo Kiểm toán Phân mảnh Văn bản Pháp lý (Phase 2 Chunking Audit)
 
-> Báo cáo lịch sử của lần chạy ghi trong tài liệu. Số tests, trạng thái Cloud và tính năng ở thời điểm đó không thay thế hiện trạng trong [README](../../README.md).
+> Báo cáo lịch sử của lần chạy ghi trong tài liệu. Số tests, trạng thái Cloud và tính năng ở thời điểm đó không thay thế hiện trạng trong [README](../../README.md) hoặc kết quả [refactor mới hơn](search_refactor.md).
 
 
 > **Thời điểm kiểm toán:** 2026-10-31T13:35:12.778637+00:00

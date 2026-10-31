@@ -2,7 +2,7 @@
 
 Tài liệu này quy định cách thức thu thập, lưu trữ, kiểm chứng và bảo vệ dữ liệu pháp luật trong dự án `vietnamese-legal-agentic-rag`.
 
-**Phạm vi:** Nhánh refactor chuẩn bị nền tảng dữ liệu; `/search` sẽ được triển khai trong nhánh phụ thuộc codex/search-v1. Các quy tắc temporal bên dưới là yêu cầu cho ingestion và `/ask` tương lai; không suy ra Search v1 đã hỗ trợ `as_of_date`. Hướng dẫn nhận dữ liệu/index ở [data/README.md](../data/README.md).
+**Phạm vi hiện tại:** `/search` trả evidence và warnings theo [Search v1](design/search-v1.md). Các quy tắc temporal bên dưới là yêu cầu cho ingestion và `/ask` tương lai; không suy ra Search v1 đã hỗ trợ `as_of_date`. Hướng dẫn nhận dữ liệu/index ở [data/README.md](../data/README.md).
 
 ---
 

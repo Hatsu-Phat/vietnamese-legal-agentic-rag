@@ -7,7 +7,7 @@
 
 ## Cách đọc và trạng thái triển khai
 
-Đây là kế hoạch mục tiêu, không phải danh sách tính năng đã chạy. Hiện trạng và lệnh chạy xem [README](README.md); hợp đồng Search xem hợp đồng Search dự kiến trong nhánh codex/search-v1; phân công và thay đổi dùng chung xem [team workflow](docs/team-workflow.md). SearchService Hybrid được triển khai trong nhánh phụ thuộc codex/search-v1; HTTP API, frontend, luồng LangGraph, PrivacyGate và crawler còn là bước tiếp theo. Không chỉnh kết quả trong báo cáo lịch sử để phản ánh tiến độ mới.
+Đây là kế hoạch mục tiêu, không phải danh sách tính năng đã chạy. Hiện trạng và lệnh chạy xem [README](README.md); hợp đồng Search xem [search-v1](docs/design/search-v1.md); phân công và thay đổi dùng chung xem [team workflow](docs/team-workflow.md). SearchService Hybrid đã có; HTTP API, frontend, luồng LangGraph, PrivacyGate và crawler còn là bước tiếp theo. Không chỉnh kết quả trong báo cáo lịch sử để phản ánh tiến độ mới.
 
 ## Quy ước về độ tin cậy của thông tin
 
