@@ -88,21 +88,8 @@ chroma_db/
 qdrant_storage/
 faiss_index/
 
-# Data Files (Keep structure via .gitkeep, ignore actual bulky artifacts)
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-data/embeddings/*
-!data/embeddings/.gitkeep
-data/indexes/*
-!data/indexes/.gitkeep
-
-# Allow sample data and evaluation benchmarks to be tracked if needed
-# (Ensure sample laws and gold evaluation pairs are vetted and small)
-!data/sample_laws/
-!data/gold_eval/
-!data/manifests/
+# Local datasets, samples, benchmarks and generated artifacts
+/data/
 
 # Model Weights & Large Checkpoints
 models/
