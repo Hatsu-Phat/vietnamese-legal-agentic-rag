@@ -46,4 +46,4 @@ Các tài liệu khác đặt liên kết tới nơi chính. Không ghi lại JS
 
 ## 5. Những phần đang triển khai tiếp
 
-SearchService được triển khai trong nhánh codex/search-v1. FastAPI, frontend, LangGraph/local–API routing, PrivacyGate, citation audit và crawler là các phần tiếp theo. Không tự tạo module giả hoặc endpoint placeholder trong nhánh search để giữ chỗ cho teammate; thống nhất qua contracts và task description.
+SearchService đã có. FastAPI, frontend, LangGraph/local–API routing, PrivacyGate, citation audit và crawler là các phần tiếp theo. Không tự tạo module giả hoặc endpoint placeholder trong nhánh search để giữ chỗ cho teammate; thống nhất qua contracts và task description.

@@ -1,0 +1,49 @@
+{
+  "ready": true,
+  "release_fingerprint": "59b8a7d07fc8f17f1209d0e915c748ddbe76bebaafaf123af23043637e900610",
+  "provenance": {
+    "collection": "vn_legal_bge_m3_v2",
+    "embedding_model_id": "BAAI/bge-m3",
+    "embedding_revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "device": "cpu",
+    "canonical_chunks_sha256": "63dc14da7d4069fd3068658cffc511ad542ec6a687a5770916720eb00a1f4d48",
+    "bm25_index_sha256": "8119d9eb2564c9957e9932945151e442e6c36e653dcea2993501b0780922cac4",
+    "bm25_metadata_sha256": "61df81020e2c9114ca7526aa62b802026385f9876d45098e1f878c1a8905f4a1",
+    "stopwords_sha256": "724f5cb2b5611f6510ba3788122eafeb34f4425cc5693958b780b2788355c4fb",
+    "versions": {
+      "python": "3.12.15",
+      "rank-bm25": "0.2.2",
+      "pyvi": "0.1.1",
+      "numpy": "2.5.4"
+    }
+  },
+  "checks": [
+    {
+      "filters": {},
+      "top_k": 20,
+      "returned_count": 20,
+      "elapsed_ms": 3375.957083000685,
+      "top_breadcrumb": "91/2015/qh13 > Điều 385"
+    },
+    {
+      "filters": {
+        "document_id": "law_2015_qh13_91",
+        "document_type": "Luật",
+        "issued_year": 2015
+      },
+      "top_k": 5,
+      "returned_count": 5,
+      "elapsed_ms": 322.80249999894295,
+      "top_breadcrumb": "91/2015/qh13 > Điều 385"
+    },
+    {
+      "filters": {
+        "document_id": "nonexistent_document"
+      },
+      "top_k": 10,
+      "returned_count": 0,
+      "elapsed_ms": 434.4397919921903,
+      "top_breadcrumb": null
+    }
+  ]
+}

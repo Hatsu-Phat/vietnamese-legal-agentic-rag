@@ -1,6 +1,6 @@
 # Bàn giao Qdrant Cloud — bộ index Phase 2
 
-> Báo cáo lịch sử của lần chạy ghi trong tài liệu. Số tests, trạng thái Cloud và tính năng ở thời điểm đó không thay thế hiện trạng trong [README](../../README.md).
+> Báo cáo lịch sử của lần chạy ghi trong tài liệu. Số tests, trạng thái Cloud và tính năng ở thời điểm đó không thay thế hiện trạng trong [README](../../README.md) hoặc kết quả [refactor mới hơn](search_refactor.md).
 
 
 Kiểm tra thực tế lúc 2026-10-31T13:50:30.712635+00:00 (UTC).
