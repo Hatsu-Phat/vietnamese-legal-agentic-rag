@@ -7,7 +7,7 @@ name = "vietnamese-legal-agentic-rag"
 version = "0.1.0"
 description = "Hệ thống hỏi đáp tra cứu văn bản quy phạm pháp luật Việt Nam có kiểm chứng sử dụng Agentic RAG (LangGraph + BGE-M3 + BM25 + Citation Verification)"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = "==3.12.15"
 license = { text = "MIT" }
 authors = [
     { name = "AI Engineer Team", email = "team@example.com" }
@@ -26,7 +26,6 @@ classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
 
@@ -46,8 +45,13 @@ dependencies = [
     "beautifulsoup4>=4.12.0",
     
     # Retrieval & Search (Dense + Sparse)
-    "sentence-transformers>=2.5.0",
+    "numpy>=1.26.0",
+    "torch>=2.2.0",
+    "qdrant-client>=1.9.0",
+    "sentence-transformers>=3.0.0",
+    "huggingface-hub>=2.3.0",
     "rank-bm25>=0.2.2",
+    "pyvi>=0.1.1",
     "chromadb>=0.4.24",
     
     # Agent Orchestration
@@ -82,7 +86,7 @@ packages = ["src"]
 # Ruff Linter & Formatter Configuration
 # -----------------------------------------------------------------------------
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 100
 exclude = [
     ".git",
@@ -122,6 +126,7 @@ known-first-party = ["src"]
 minversion = "8.0"
 addopts = "-ra -q --strict-markers"
 testpaths = ["tests"]
+pythonpath = ["."]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 asyncio_mode = "auto"
@@ -136,7 +141,7 @@ markers = [
 # Mypy Type Checker Configuration
 # -----------------------------------------------------------------------------
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -148,3 +153,6 @@ no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 ignore_missing_imports = true
+
+[tool.uv]
+required-version = "==0.13.5"

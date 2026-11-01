@@ -11,6 +11,7 @@ from src.core.enums import (
 )
 from src.core.models import (
     DocumentRelation,
+    LegalChunk,
     LegalDocument,
     LegalProvision,
     QAEvaluationItem,
@@ -20,6 +21,7 @@ __all__ = [
     "AnswerableStatus",
     "DocumentRelation",
     "DocumentRelationType",
+    "LegalChunk",
     "LegalDocument",
     "LegalProvision",
     "LegalValidityStatus",

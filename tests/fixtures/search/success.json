@@ -1,0 +1,39 @@
+{
+  "request_id": "00000000-0000-4000-8000-000000000001",
+  "results": [
+    {
+      "point_uuid": "3a9032eb-39b8-5e45-b869-54336018ef1b",
+      "chunk_id": "law_demo_search_v1__art_1__c0",
+      "document_id": "law_demo_search_v1",
+      "provision_id": "law_demo_search_v1__art_1",
+      "article_id": "1",
+      "document_number": "DEMO/SEARCH-V1",
+      "title": "Điều 1 — dữ liệu giả lập",
+      "text": "Nội dung giả lập để kiểm thử hợp đồng API; không phải văn bản pháp luật.",
+      "breadcrumb": "DEMO/SEARCH-V1 > Điều 1",
+      "document_type": null,
+      "issued_year": null,
+      "status": "unknown",
+      "source_url": null,
+      "rank": 1,
+      "score": 0.03278688524590164,
+      "matched_by": [
+        "dense",
+        "bm25"
+      ]
+    }
+  ],
+  "returned_count": 1,
+  "score_method": "rrf",
+  "elapsed_ms": 125.0,
+  "warnings": [
+    {
+      "code": "VALIDITY_UNVERIFIED",
+      "message": "Có kết quả chưa xác minh hiệu lực pháp lý."
+    },
+    {
+      "code": "SOURCE_URL_UNAVAILABLE",
+      "message": "Có kết quả chưa có URL nguồn được kiểm chứng."
+    }
+  ]
+}

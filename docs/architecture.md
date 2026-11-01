@@ -1,8 +1,12 @@
 # Kiến trúc Hệ thống Vietnamese Legal Agentic RAG
 
-Tài liệu này mô tả chi tiết kiến trúc kỹ thuật của hệ sinh thái `vietnamese-legal-agentic-rag`.
+Tài liệu này mô tả kiến trúc mục tiêu. Hiện đã có ingestion, chunking, BM25/Qdrant và SearchService Hybrid RRF. Luồng LangGraph, kiểm chứng citation và HTTP API trong sơ đồ là các phần tiếp theo. Bộ vector có sẵn được chuyển bằng migration CLI riêng, không chạy lại encode toàn corpus.
+
+Hợp đồng cụ thể của `POST /search` nằm trong [Thiết kế và quy tắc Search API v1](design/search-v1.md), dùng để chia việc giữa người làm retrieval và người làm FastAPI. Schemas và service Search v1 đã có [hướng dẫn tích hợp](design/search-integration.md); luồng agentic trong sơ đồ bên dưới thuộc giai đoạn `/ask` sau đó.
 
 ---
+
+Quy tắc phối hợp và quyền sửa file dùng chung: [team workflow](team-workflow.md). Trạng thái triển khai được cập nhật ở README; sơ đồ dưới đây mô tả mục tiêu toàn hệ thống.
 
 ## 1. Sơ đồ Kiến trúc Tổng thể
 
@@ -16,7 +20,7 @@ flowchart TD
         RawDocs["Raw Legal Docs (PDF/HTML)"] --> Parser["Document Parser & Metadata Extractor"]
         Parser --> ProvisionDB["Legal Provisions & Temporal DB"]
         Parser --> LegalChunker["Legal-Aware Chunker (Điều/Khoản/Điểm + Breadcrumb)"]
-        LegalChunker --> VectorIndex["ChromaDB (BGE-M3 Dense Index)"]
+        LegalChunker --> VectorIndex["Qdrant / Qdrant Cloud (BGE-M3 Dense Index)"]
         LegalChunker --> SparseIndex["BM25 Keyword Index"]
     end
 

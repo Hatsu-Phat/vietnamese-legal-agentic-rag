@@ -1,0 +1,9 @@
+{
+  "query": "Thời hiệu khởi kiện tranh chấp hợp đồng",
+  "top_k": 5,
+  "filters": {
+    "document_id": null,
+    "document_type": null,
+    "issued_year": null
+  }
+}

@@ -90,6 +90,8 @@ faiss_index/
 
 # Local datasets, samples, benchmarks and generated artifacts
 /data/
+vietnamese_legal_rag_phase2_outputs/
+docs/reports/sample/
 
 # Model Weights & Large Checkpoints
 models/
