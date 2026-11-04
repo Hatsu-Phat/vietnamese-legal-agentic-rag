@@ -82,6 +82,9 @@ def create_search_service(
                 qcfg["embedding_model_id"], device, 512, qcfg["embedding_revision"]
             )
             warmed_model = encoder.model
+            # Weights are memory-mapped lazily; the first forward pass can take tens of
+            # seconds on CPU/HDD, so pay it at startup instead of inside a request budget.
+            warmed_model.encode("khởi động", normalize_embeddings=True, show_progress_bar=False)
         else:
             warmed_model = model
         dense = QdrantDenseSearch(
