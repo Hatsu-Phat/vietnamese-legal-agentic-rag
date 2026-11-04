@@ -26,7 +26,7 @@ uv run --locked --extra dev python --version
 
 Chọn interpreter `.venv/bin/python` (macOS/Linux) hoặc `.venv\Scripts\python.exe` (Windows) trong IDE. Python/uv pins lấy từ `.python-version` và `pyproject.toml`; dependencies lấy từ `uv.lock`. Không tự nâng thư viện hoặc chỉnh `requirements.txt` bằng tay. Quy trình đổi dependencies nằm trong CONTRIBUTING.
 
-Đã kiểm tra runtime trên macOS ARM64. Dry-run cài đặt cho Windows/Linux không thay thế kiểm thử trên hai hệ điều hành đó. Nhóm phụ thuộc `eval` chưa được xác nhận runtime đầy đủ.
+Đã kiểm tra runtime trên macOS ARM64 và Windows 11 x64 (`uv sync --locked`, toàn bộ `tests/unit`; torch bản CPU theo `uv.lock`). Linux chưa kiểm thử. Line endings được chuẩn hóa LF qua `.gitattributes`; mọi thao tác đọc/ghi text phải chỉ định `encoding="utf-8"` vì Windows mặc định không dùng UTF-8. Nhóm phụ thuộc `eval` chưa được xác nhận runtime đầy đủ.
 
 ## Chạy search
 
