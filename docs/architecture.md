@@ -1,6 +1,6 @@
 # Kiến trúc Hệ thống Vietnamese Legal Agentic RAG
 
-Tài liệu này mô tả kiến trúc mục tiêu. Hiện đã có ingestion, chunking, BM25/Qdrant và SearchService Hybrid RRF. Luồng LangGraph, kiểm chứng citation và HTTP API trong sơ đồ là các phần tiếp theo. Bộ vector có sẵn được chuyển bằng migration CLI riêng, không chạy lại encode toàn corpus.
+Tài liệu này mô tả kiến trúc mục tiêu. Hiện đã có ingestion, chunking, BM25/Qdrant và SearchService Hybrid RRF. Luồng LangGraph `/ask` và kiểm chứng citation đã có (xem [Agent `/ask` v1](design/agent-ask-v1.md)); HTTP API, reranker và lọc theo thời điểm hiệu lực trong sơ đồ là các phần tiếp theo. Bộ vector có sẵn được chuyển bằng migration CLI riêng, không chạy lại encode toàn corpus.
 
 Hợp đồng cụ thể của `POST /search` nằm trong [Thiết kế và quy tắc Search API v1](design/search-v1.md), dùng để chia việc giữa người làm retrieval và người làm FastAPI. Schemas và service Search v1 đã có [hướng dẫn tích hợp](design/search-integration.md); luồng agentic trong sơ đồ bên dưới thuộc giai đoạn `/ask` sau đó.
 

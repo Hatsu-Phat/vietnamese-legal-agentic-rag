@@ -1,12 +1,13 @@
 # Vietnamese Legal Agentic RAG
 
-Dự án tra cứu và hỏi đáp pháp luật tiếng Việt. Hiện đã có **SearchService Hybrid BGE-M3 + BM25 + RRF**, schema dùng chung, CLI và kiểm tra trên Qdrant Cloud. FastAPI, frontend và luồng hỏi đáp LangGraph là các bước tiếp theo.
+Dự án tra cứu và hỏi đáp pháp luật tiếng Việt. Hiện đã có **SearchService Hybrid BGE-M3 + BM25 + RRF**, **agent hỏi đáp LangGraph `/ask`** có kiểm chứng trích dẫn và từ chối trả lời, schema dùng chung, CLI và kiểm tra trên Qdrant Cloud. FastAPI và frontend là các bước tiếp theo.
 
 ## Bắt đầu theo vai trò
 
 | Công việc | Đọc trước | Phạm vi chính |
 |---|---|---|
 | Search / retrieval | [Hợp đồng Search v1](docs/design/search-v1.md) | `src/retrieval/`, tests search |
+| Agent hỏi đáp | [Agent `/ask` v1](docs/design/agent-ask-v1.md) | `src/agents/`, `src/citation/` |
 | FastAPI | [Hướng dẫn tích hợp](docs/design/search-integration.md) | `src/api/`, HTTP integration tests |
 | Frontend | Hợp đồng Search v1 và [phối hợp nhóm](docs/team-workflow.md) | `frontend/` khi bắt đầu triển khai |
 | Dữ liệu / crawler | [Hướng dẫn dữ liệu](data/README.md), [data policy](docs/data_policy.md) | `src/ingestion/`, `src/chunking/` |
@@ -42,6 +43,16 @@ Cấu hình model/revision và Qdrant ở `configs/dev.yaml` → `indexing.qdran
 
 CLI không tự build index hoặc sửa Cloud khi thiếu/sai release. Hướng dẫn ingestion, BM25 và migration nằm trong [data/README.md](data/README.md). FastAPI teammate gọi `SearchPort` qua `open_search_service`; hiện chưa có HTTP server để chạy chỉ bằng README này.
 
+## Chạy hỏi đáp (agent `/ask`)
+
+Cần mọi điều kiện của mục trên, thêm `GEMINI_API_KEY` trong `.env` (tạo tại Google AI Studio). Có thể đổi model bằng `GEMINI_MODEL_ID`; gói miễn phí giới hạn số request theo phút/ngày theo từng model, mỗi câu hỏi dùng 2–5 lần gọi LLM.
+
+```bash
+uv run --locked --extra dev python scripts/ask.py --question "Thời hiệu khởi kiện tranh chấp hợp đồng là bao lâu?" --device cpu
+```
+
+Kết quả là `AskResponse` JSON: `decision` (`answer`/`clarify`/`abstain`), các claim kèm citation ID, nguồn lấy từ metadata và `limitations`. Luồng node, chính sách từ chối và hạn chế nằm trong [Agent `/ask` v1](docs/design/agent-ask-v1.md). Trên Windows đặt `PYTHONIOENCODING=utf-8` nếu terminal hiển thị sai tiếng Việt.
+
 ## Kiểm tra và đánh giá
 
 ```bash
@@ -70,8 +81,8 @@ src/
   chunking/     # Chia văn bản
   evaluation/   # Đánh giá retrieval
   api/          # Khung cho teammate triển khai FastAPI
-  agents/       # Khung LangGraph tương lai
-  citation/     # Khung kiểm chứng tương lai
+  agents/       # LangGraph /ask: graph, state, prompts, Gemini adapter, factory
+  citation/     # Citation audit, sàng lọc hiệu lực, reviewer, chính sách từ chối
 configs/        # Cấu hình không chứa secret
 scripts/        # CLI, ingestion, migration, evaluation
 frontend/       # Dự kiến tạo khi bắt đầu làm UI; chưa có trong checkout hiện tại
@@ -87,4 +98,4 @@ Giữ Python ở cấu trúc hiện tại; frontend có dependencies/lockfile ri
 
 [Danh mục tài liệu](docs/README.md) quy định nơi chứa từng thông tin để tránh hướng dẫn mâu thuẫn. [Kiến trúc](docs/architecture.md) phân biệt runtime hiện tại với luồng mục tiêu. [Roadmap](PROJECT_ROADMAP.md) là kế hoạch, không phải bằng chứng đã hoàn thành. [AGENTS.md](AGENTS.md) là quy tắc phát triển bắt buộc.
 
-Search hiện trả bằng chứng, không sinh câu trả lời pháp lý. Metadata hiệu lực chưa xác minh và URL nguồn thiếu được trả qua warnings; score RRF không phải xác suất đúng. Corpus chưa có crawler cập nhật tự động. Local encoder vẫn gửi vector truy vấn tới Qdrant Cloud; hồ sơ nhạy cảm cần chính sách riêng trước khi sử dụng. Chi tiết giới hạn dữ liệu/token nằm trong các báo cáo và data policy.
+Search chỉ trả bằng chứng; agent `/ask` sinh câu trả lời nhưng chỉ kiểm tra hình thức citation và dùng LLM reviewer, chưa chứng minh entailment, nên không thay thế tư vấn pháp lý. Metadata hiệu lực chưa xác minh và URL nguồn thiếu được trả qua warnings; score RRF không phải xác suất đúng. Corpus chưa có crawler cập nhật tự động. Local encoder vẫn gửi vector truy vấn tới Qdrant Cloud; hồ sơ nhạy cảm cần chính sách riêng trước khi sử dụng. Chi tiết giới hạn dữ liệu/token nằm trong các báo cáo và data policy.

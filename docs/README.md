@@ -7,6 +7,7 @@
 | [Phối hợp nhóm](team-workflow.md) | Phân công file và quy trình thay hợp đồng |
 | [Search v1](design/search-v1.md) | Hợp đồng schema/interface và quy tắc retrieval |
 | [Tích hợp Search](design/search-integration.md) | Lifespan, errors, artifacts và công việc FastAPI |
+| [Agent `/ask` v1](design/agent-ask-v1.md) | Luồng LangGraph, quyết định answer/clarify/abstain, lỗi và hạn chế |
 | [Kiến trúc](architecture.md) | Hiện trạng và luồng mục tiêu |
 | [Dữ liệu](../data/README.md) | Layout, chuẩn bị index và migration |
 | [Data policy](data_policy.md) | Nguồn, hiệu lực, provenance và quyền riêng tư |
