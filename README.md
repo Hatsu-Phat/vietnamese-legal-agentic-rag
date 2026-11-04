@@ -30,7 +30,7 @@ Chọn interpreter `.venv/bin/python` (macOS/Linux) hoặc `.venv\Scripts\python
 
 ## Chạy search
 
-1. Nhận artifacts chuẩn theo danh sách trong [hướng dẫn tích hợp](docs/design/search-integration.md#4-artifacts-tối-thiểu-và-kiểm-tra-release). Các file data/model lớn không nằm trong Git.
+1. Chuẩn bị artifacts theo danh sách trong [hướng dẫn tích hợp](docs/design/search-integration.md#4-artifacts-tối-thiểu-và-kiểm-tra-release): nhận từ người phụ trách dữ liệu, hoặc tự tạo lại từ Qdrant Cloud sau bước 2 (xem mục "Tạo artifacts từ Qdrant Cloud" trong hướng dẫn tích hợp). Các file data/model lớn không nằm trong Git.
 2. Nếu chưa có `.env`, sao chép từ `.env.example`; giữ nguyên file riêng đã có. Điền `QDRANT_MODE=server`, `QDRANT_URL` và `QDRANT_API_KEY`. Mỗi thành viên dùng key riêng, chỉ cần quyền đọc khi phục vụ search.
 3. Chạy CLI:
 

@@ -71,6 +71,19 @@ BM25 manifest mới được tạo cùng lúc build/save. Nếu dùng artifacts 
 uv run --locked --extra dev python scripts/run_phase2_indexing.py --step bm25
 ```
 
+### Tạo artifacts từ Qdrant Cloud
+
+Cloud giữ vector và payload đầy đủ của từng chunk, nên teammate có thể tự tạo artifacts local mà không cần nhận file từ người khác. Script chỉ đọc Cloud, cần `.env` có `QDRANT_URL` và `QDRANT_API_KEY`:
+
+```bash
+uv run --locked --extra dev python scripts/pull_cloud_release.py --step pull
+uv run --locked --extra dev python scripts/pull_cloud_release.py --step model-check
+```
+
+- `pull` đọc toàn bộ payload của collection mà alias đang trỏ tới, kiểm tra UUID và schema `LegalChunk`, ghi `chunks.jsonl` theo thứ tự `point_uuid` (cùng bytes trên mọi máy), build lại BM25 kèm manifest, rồi ghi `index_manifest.json` với `source_fingerprint` lấy từ metadata Cloud.
+- `model-check` tải BGE-M3 đúng `embedding_revision` trong `configs/dev.yaml`, encode lại 8 chunk và so với vector trên Cloud (cosine ≥ 0.999). Chỉ khi đạt mới ghi `query_embedding_revision`; thiếu trường này thì startup trả SEARCH_UNAVAILABLE.
+- Thứ tự chunk khác bản của người upload nên `canonical_chunks_sha256` có thể khác; BM25 được build từ chính file đó nên vẫn khớp. Cloud không bị ghi.
+
 ## 5. Chạy trực tiếp và đánh giá
 
 ```bash
