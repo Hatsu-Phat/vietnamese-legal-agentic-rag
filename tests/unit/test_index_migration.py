@@ -63,7 +63,8 @@ def migration(tmp_path: Path) -> TeamIndexMigration:
                 "max_seq_length": 512,
                 "collection_name": "source",
             }
-        )
+        ),
+        encoding="utf-8",
     )
     storage = source / "data/indexes/qdrant"
     storage.mkdir(parents=True)
@@ -76,7 +77,8 @@ def migration(tmp_path: Path) -> TeamIndexMigration:
                     }
                 }
             }
-        )
+        ),
+        encoding="utf-8",
     )
     folder = storage / "collection/source"
     folder.mkdir(parents=True)
@@ -99,7 +101,8 @@ def migration(tmp_path: Path) -> TeamIndexMigration:
                 second,
             ]
         )
-        + "\n"
+        + "\n",
+        encoding="utf-8",
     )
     paths = DataPaths(
         processed_dir=tmp_path / "prepared",
@@ -116,10 +119,10 @@ def test_prepare_deduplicates_aliases_and_preserves_source(migration: TeamIndexM
     assert (report.input_chunks, report.unique_chunks, report.merged_rows) == (3, 2, 1)
     assert report.reused_vectors == 2 and report.encoded_vectors == 0
     assert migration.checksums() == before
-    assert len(migration.alias_map.read_text().splitlines()) == 3
+    assert len(migration.alias_map.read_text(encoding="utf-8").splitlines()) == 3
     chunks = [
         LegalChunk.model_validate_json(line)
-        for line in migration.paths.chunks.read_text().splitlines()
+        for line in migration.paths.chunks.read_text(encoding="utf-8").splitlines()
     ]
     assert {c.document_number for c in chunks} == {"01/2020/nđ-cp"}
     assert migration.load_report() == report
@@ -129,11 +132,11 @@ def test_conflicting_collision_does_not_replace_outputs(migration: TeamIndexMigr
     migration.prepare()
     before = sha256_file(migration.paths.chunks)
     source = migration.source / "data/processed/chunks.jsonl"
-    lines = source.read_text().splitlines()
+    lines = source.read_text(encoding="utf-8").splitlines()
     changed = json.loads(lines[0])
     changed["text"] = "Khác nội dung"
     lines[0] = json.dumps(changed)
-    source.write_text("\n".join(lines) + "\n")
+    source.write_text("\n".join(lines) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="Conflicting"):
         migration.prepare()
     assert sha256_file(migration.paths.chunks) == before
@@ -158,7 +161,9 @@ def test_interrupted_upload_resumes_and_verifies(
     with pytest.raises(RuntimeError, match="interruption"):
         migration.upload(client, "target", batch_size=1)
     assert client.count("target").count == 1
-    assert json.loads(migration.checkpoint_path.read_text())["confirmed_points"] == 1
+    assert (
+        json.loads(migration.checkpoint_path.read_text(encoding="utf-8"))["confirmed_points"] == 1
+    )
     monkeypatch.setattr(QdrantStore, "upload", original)
     migration.upload(client, "target", resume=True, batch_size=1)
     # Mutated metadata with the same UUID must be repaired on resume.
@@ -178,7 +183,7 @@ def test_unknown_target_or_source_changes_rejected(migration: TeamIndexMigration
     QdrantStore(client, "other", 4).ensure_collection()
     with pytest.raises(ValueError, match="existing collection"):
         migration.upload(client, "other", resume=True)
-    migration.paths.chunks.write_text("changed")
+    migration.paths.chunks.write_text("changed", encoding="utf-8")
     with pytest.raises(ValueError, match="Canonical chunks changed"):
         migration.load_report()
 
@@ -197,11 +202,11 @@ def test_untrusted_pickle_and_invalid_vectors_rejected() -> None:
 
 def test_atomic_failure_keeps_previous_file(tmp_path: Path) -> None:
     path = tmp_path / "output.jsonl"
-    path.write_text("previous")
+    path.write_text("previous", encoding="utf-8")
     with pytest.raises(RuntimeError), atomic_open(path) as stream:
         stream.write("partial")
         raise RuntimeError("failure")
-    assert path.read_text() == "previous"
+    assert path.read_text(encoding="utf-8") == "previous"
     assert len(list(tmp_path.iterdir())) == 1
 
 
@@ -227,13 +232,13 @@ def test_ingestion_aliases_and_repeated_articles_keep_raw_ids() -> None:
 
 def test_missing_benchmarks_and_empty_exports_preserve_existing(tmp_path: Path) -> None:
     old = tmp_path / "qa_dev.jsonl"
-    old.write_text("old")
+    old.write_text("old", encoding="utf-8")
     importer = QAImporter(raw_dir=tmp_path)
     with pytest.raises(EvaluationImportError, match="Missing required"):
         importer.import_datasets()
     with pytest.raises(EvaluationImportError, match="empty split"):
         importer.export_gold_eval([], [], tmp_path)
-    assert old.read_text() == "old"
+    assert old.read_text(encoding="utf-8") == "old"
 
 
 def test_indexer_validates_existing_collection_and_duplicates(tmp_path: Path) -> None:
@@ -309,7 +314,9 @@ def test_migration_cli_upload_closes_client(
     monkeypatch.setattr(sys, "argv", ["migrate", "--step", "upload", "--collection", "target"])
     assert migrate_team_index.main() == 0
     close.assert_called_once()
-    assert json.loads(migration.checkpoint_path.read_text())["confirmed_points"] == 2
+    assert (
+        json.loads(migration.checkpoint_path.read_text(encoding="utf-8"))["confirmed_points"] == 2
+    )
 
 
 def test_source_and_checkpoint_fingerprints_prevent_wrong_resume(
@@ -321,7 +328,7 @@ def test_source_and_checkpoint_fingerprints_prevent_wrong_resume(
     with pytest.raises(ValueError, match="another migration"):
         migration.upload(client, "different-target", resume=True)
     source = migration.source / "data/manifests/index_manifest.json"
-    source.write_text(source.read_text() + "\n")
+    source.write_text(source.read_text(encoding="utf-8") + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="Source bundle changed"):
         migration.load_report()
 
@@ -347,7 +354,9 @@ def test_indexer_resume_reencodes_changed_input(tmp_path: Path) -> None:
     chunk = chunk.model_copy(update={"embedding_text": chunk.embedding_text + " changed"})
     assert indexer.index_chunks([chunk], resume=True) == 1
     assert encoder.encode.call_count == 2
-    assert json.loads((tmp_path / "manifest.json").read_text())["total_vectors"] == 1
+    assert (
+        json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))["total_vectors"] == 1
+    )
 
 
 def test_model_compatibility_and_query_audit(

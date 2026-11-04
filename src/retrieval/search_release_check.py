@@ -32,7 +32,7 @@ def verify_local_release(
         or release.corpus_fingerprint != catalog.corpus_fingerprint
     ):
         raise ValueError("BM25 refers to another canonical corpus")
-    dense_manifest = json.loads(paths.index_manifest.read_text())
+    dense_manifest = json.loads(paths.index_manifest.read_text(encoding="utf-8"))
     if dense_manifest.get("query_embedding_revision") != qcfg["embedding_revision"]:
         raise ValueError("Query encoder revision differs from verified dense release")
     for name, expected in {

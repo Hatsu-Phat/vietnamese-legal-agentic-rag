@@ -51,7 +51,7 @@ def write_catalog(path: Path, count: int = 24) -> ChunkCatalog:
                 issued_year=2021 if i == count - 1 else 2020,
             )
         )
-    path.write_text("\n".join(c.model_dump_json() for c in chunks) + "\n")
+    path.write_text("\n".join(c.model_dump_json() for c in chunks) + "\n", encoding="utf-8")
     return ChunkCatalog(path)
 
 
@@ -143,7 +143,7 @@ def service_for(catalog: ChunkCatalog, timeout: float = 30) -> SearchService:
 
 def real_bm25(tmp_path: Path, catalog: ChunkCatalog) -> BM25Indexer:
     stop = tmp_path / "stopwords.txt"
-    stop.write_text("và\n")
+    stop.write_text("và\n", encoding="utf-8")
     indexer = BM25Indexer(
         index_path=tmp_path / "bm25.pkl",
         corpus_meta_path=tmp_path / "bm25.json",
@@ -168,7 +168,7 @@ def factory_fixture(
     config["indexing"]["bm25"]["segment_vietnamese"] = False
     config["indexing"]["qdrant"].update({"vector_size": 4, "collection_name": "demo"})
     path = tmp_path / "config.yaml"
-    path.write_text(yaml.safe_dump(config))
+    path.write_text(yaml.safe_dump(config), encoding="utf-8")
     paths = load_data_paths(config)
     # The factory uses standard artifact names under configured directories.
     paths.bm25_index.parent.mkdir(parents=True, exist_ok=True)
@@ -189,7 +189,8 @@ def factory_fixture(
                 "query_alias": "demo",
                 "source_fingerprint": fingerprint,
             }
-        )
+        ),
+        encoding="utf-8",
     )
     client = QdrantClient(":memory:")
     client.create_collection("demo", vectors_config=VectorParams(size=4, distance=Distance.COSINE))

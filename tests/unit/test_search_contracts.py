@@ -47,10 +47,12 @@ def test_normalization_and_contract_fixtures() -> None:
     request = SearchRequest(query=q, filters=SearchFilters(document_type=q))
     assert request.query == "luật" and request.filters.document_type == "luật"
     root = Path(__file__).resolve().parents[1] / "fixtures/search"
-    SearchRequest.model_validate_json((root / "request.json").read_text())
-    success = SearchResponse.model_validate_json((root / "success.json").read_text())
-    SearchResponse.model_validate_json((root / "empty.json").read_text())
-    SearchErrorResponse.model_validate_json((root / "unavailable.json").read_text())
+    SearchRequest.model_validate_json((root / "request.json").read_text(encoding="utf-8"))
+    success = SearchResponse.model_validate_json(
+        (root / "success.json").read_text(encoding="utf-8")
+    )
+    SearchResponse.model_validate_json((root / "empty.json").read_text(encoding="utf-8"))
+    SearchErrorResponse.model_validate_json((root / "unavailable.json").read_text(encoding="utf-8"))
     assert "embedding_text" not in success.model_dump_json()
     with pytest.raises(ValidationError):
         SearchResponse.model_validate({**success.model_dump(), "returned_count": 2})
@@ -60,7 +62,9 @@ def test_invalid_response_scores_and_warning_duplicates() -> None:
     from src.core.search import SearchHit
 
     data = json.loads(
-        (Path(__file__).resolve().parents[1] / "fixtures/search/success.json").read_text()
+        (Path(__file__).resolve().parents[1] / "fixtures/search/success.json").read_text(
+            encoding="utf-8"
+        )
     )
     hit = data["results"][0]
     with pytest.raises(ValidationError):

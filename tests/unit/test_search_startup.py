@@ -61,9 +61,9 @@ def test_factory_rejects_release_changes_before_pickle(
     config, client = factory_fixture(tmp_path, catalog, monkeypatch)
     paths = load_data_paths(load_yaml_config(config))
     manifest = paths.bm25_index.with_suffix(".manifest.json")
-    data = json.loads(manifest.read_text())
+    data = json.loads(manifest.read_text(encoding="utf-8"))
     data["corpus_fingerprint"] = "b" * 64
-    manifest.write_text(json.dumps(data))
+    manifest.write_text(json.dumps(data), encoding="utf-8")
     load = Mock(side_effect=AssertionError("Must not unpickle an invalid corpus"))
     monkeypatch.setattr(BM25Indexer, "load", load)
     with pytest.raises(SearchUnavailable) as error:
@@ -79,9 +79,9 @@ def test_factory_rejects_cloud_fingerprint(
 
     config, client = factory_fixture(tmp_path, catalog, monkeypatch)
     paths = load_data_paths(load_yaml_config(config))
-    data = json.loads(paths.index_manifest.read_text())
+    data = json.loads(paths.index_manifest.read_text(encoding="utf-8"))
     data["source_fingerprint"] = "c" * 64
-    paths.index_manifest.write_text(json.dumps(data))
+    paths.index_manifest.write_text(json.dumps(data), encoding="utf-8")
     with pytest.raises(SearchUnavailable):
         create_search_service(config, client=client, model=MockModel())
 
@@ -107,11 +107,11 @@ async def test_alias_is_pinned_to_verified_release(
     )
     cfg = load_yaml_config(config)
     cfg["indexing"]["qdrant"]["collection_name"] = "public-alias"
-    config.write_text(yaml.safe_dump(cfg))
+    config.write_text(yaml.safe_dump(cfg), encoding="utf-8")
     manifest = tmp_path / "index_manifest.json"
-    data = json.loads(manifest.read_text())
+    data = json.loads(manifest.read_text(encoding="utf-8"))
     data["query_alias"] = "public-alias"
-    manifest.write_text(json.dumps(data))
+    manifest.write_text(json.dumps(data), encoding="utf-8")
     service = create_search_service(config, client=client, model=MockModel())
     try:
         client.create_collection(

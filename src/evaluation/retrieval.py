@@ -44,7 +44,7 @@ async def evaluate_retrieval(
         raise ValueError("Invalid evaluation limits")
     items = [
         QAEvaluationItem.model_validate_json(line)
-        for line in dataset.read_text().splitlines()
+        for line in dataset.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
     if limit is not None:

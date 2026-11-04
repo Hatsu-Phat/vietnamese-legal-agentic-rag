@@ -31,7 +31,8 @@ async def test_evaluation_counts_errors_and_does_not_touch_test(
         json.dumps(
             {"question_id": "q1", "question_text": "x", "gold_provision_ids": ["law_demo__art_1"]}
         )
-        + "\n"
+        + "\n",
+        encoding="utf-8",
     )
     service = service_for(catalog)
     try:

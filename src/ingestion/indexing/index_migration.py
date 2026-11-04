@@ -98,7 +98,9 @@ class TeamIndexMigration:
     def __init__(self, source: Path, paths: DataPaths | None = None) -> None:
         self.source = source.resolve()
         self.paths = paths or load_data_paths()
-        manifest = json.loads((self.source / "data/manifests/index_manifest.json").read_text())
+        manifest = json.loads(
+            (self.source / "data/manifests/index_manifest.json").read_text(encoding="utf-8")
+        )
         self.spec = EmbeddingSpec(
             model_id=manifest["embedding_model_id"],
             vector_size=manifest["vector_size"],
@@ -111,7 +113,9 @@ class TeamIndexMigration:
         self.source_collection = str(manifest["collection_name"])
         if Path(self.source_collection).name != self.source_collection:
             raise ValueError("Invalid source collection name")
-        metadata = json.loads((self.source / "data/indexes/qdrant/meta.json").read_text())
+        metadata = json.loads(
+            (self.source / "data/indexes/qdrant/meta.json").read_text(encoding="utf-8")
+        )
         params = metadata["collections"][self.source_collection]["vectors"]
         if (params["size"], params["distance"]) != (self.spec.vector_size, self.spec.distance):
             raise ValueError("Source manifest and storage parameters differ")
@@ -245,7 +249,7 @@ class TeamIndexMigration:
 
     def load_report(self) -> ImportReport:
         """Reject changes in source files or prepared outputs since preparation."""
-        report = ImportReport.model_validate_json(self.report_path.read_text())
+        report = ImportReport.model_validate_json(self.report_path.read_text(encoding="utf-8"))
         sums = self.checksums()
         actual = payload_fingerprint({"checksums": sums, "embedding": self.spec.model_dump()})
         if actual != report.source_fingerprint:
@@ -259,7 +263,9 @@ class TeamIndexMigration:
     def checkpoint(self, report: ImportReport, collection: str) -> MigrationCheckpoint:
         """Bind resume to the exact source, collection and embedding configuration."""
         if self.checkpoint_path.exists():
-            checkpoint = MigrationCheckpoint.model_validate_json(self.checkpoint_path.read_text())
+            checkpoint = MigrationCheckpoint.model_validate_json(
+                self.checkpoint_path.read_text(encoding="utf-8")
+            )
             if (checkpoint.source_fingerprint, checkpoint.collection, checkpoint.embedding) != (
                 report.source_fingerprint,
                 collection,

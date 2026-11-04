@@ -180,7 +180,7 @@ class BM25Indexer:
 
     def validate_release(self) -> BM25Release:
         """Validate trusted local artifacts before unpickling; search requires this manifest."""
-        release = BM25Release.model_validate_json(self.manifest_path.read_text())
+        release = BM25Release.model_validate_json(self.manifest_path.read_text(encoding="utf-8"))
         if (release.index_sha256, release.metadata_sha256, release.stopwords_sha256) != (
             file_sha256(self.index_path),
             file_sha256(self.corpus_meta_path),
