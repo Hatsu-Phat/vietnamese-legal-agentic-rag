@@ -5,6 +5,7 @@ Inputs: the processed corpus (``documents.jsonl``, ``provisions.jsonl``), the co
 corpus (``scripts/convert_official_pdfs.py`` output) and its sources manifest.
 Outputs in ``--output-dir`` (must differ from ``--base-dir``): ``documents.jsonl``,
 ``provisions.jsonl``, ``source_manifest.csv``, ``build_report.json``.
+All documents are tagged ``source_kind=law``, ``access_level=public``.
 Nothing is written to Qdrant or to the base corpus.
 
 Example:
@@ -23,6 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.common.config import resolve_project_path
+from src.core.enums import AccessLevel, SourceKind
 from src.core.models import LegalDocument, LegalProvision
 from src.ingestion.official_metadata import (
     OFFICIAL_SOURCE_DATASET,
@@ -66,6 +68,9 @@ def main() -> int:
     )
     updates = load_metadata_updates(json.loads(args.manifest.read_text(encoding="utf-8")))
     docs, provs, missing = apply_metadata(docs, provs, updates)
+    # Every document here is published law: public by definition (internal documents come later).
+    law_access = {"source_kind": SourceKind.LAW, "access_level": AccessLevel.PUBLIC}
+    docs = [d.model_copy(update=law_access) for d in docs]
     report.updated_documents = sorted(
         u.document_id for u in updates if u.document_id not in missing
     )
