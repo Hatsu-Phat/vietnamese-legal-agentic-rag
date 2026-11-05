@@ -67,7 +67,7 @@ Gemini adapter (`src/agents/gemini.py`, REST qua `httpx`, không thêm dependenc
 PYTHONIOENCODING=utf-8 uv run --locked --extra dev python scripts/ask.py --question "Thời hiệu khởi kiện tranh chấp hợp đồng là bao lâu?" --device cpu
 ```
 
-Cần `GEMINI_API_KEY` trong `.env`. FastAPI dùng `open_ask_service` (`src/agents/factory.py`) trong lifespan và gọi `AskService.ask`.
+Cần `GEMINI_API_KEY` trong `.env`. HTTP: `POST /ask` (xem [HTTP API v1](api-v1.md)); `Citation.chunk_id` dùng để mở nguồn qua `GET /sources/{chunk_id}`. Đánh giá đầu-cuối: `scripts/evaluate_ask.py`.
 
 ## 6. Hạn chế đã biết
 
