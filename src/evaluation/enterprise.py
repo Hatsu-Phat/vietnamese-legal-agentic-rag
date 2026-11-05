@@ -6,7 +6,9 @@ from pathlib import Path
 from uuid import uuid4
 
 from src.common.search_errors import SearchError
+from src.core.access import FULL_ACCESS, ROLES, AccessScope
 from src.core.enterprise_evaluation import (
+    ROLE_ACCESS,
     EnterpriseEvalCase,
     EnterpriseRetrievalReport,
     expected_decisions,
@@ -78,8 +80,12 @@ async def evaluate_enterprise(
     dataset: Path,
     levels: Mapping[str, AccessLevel],
     top_k: int = 10,
+    access: AccessScope = FULL_ACCESS,
 ) -> EnterpriseRetrievalReport:
-    """Hybrid metrics per category and per gold access level; Dense/BM25 kept in results."""
+    """Hybrid metrics per category and per gold access level; Dense/BM25 kept in results.
+
+    Retrieval quality is measured with full access by default; role leakage is a separate test.
+    """
     if not 1 <= top_k <= 20:
         raise ValueError("top_k must be between 1 and 20")
     cases = load_cases(dataset)
@@ -92,7 +98,9 @@ async def evaluate_enterprise(
             continue
         gold = set(case.gold_provision_ids)
         try:
-            run = await service.diagnose(SearchRequest(query=case.question, top_k=top_k), uuid4())
+            run = await service.diagnose(
+                SearchRequest(query=case.question, top_k=top_k), uuid4(), access
+            )
         except SearchError as exc:
             errors += 1
             results.append({"case_id": case.case_id, "error_code": exc.code})
@@ -143,7 +151,63 @@ async def evaluate_enterprise(
             **service.provenance,
             **service.runtime.model_dump(),
             "mode": "hybrid metrics; dense/bm25 rankings kept per case",
-            "access_filtering": "none (P2 not implemented); metrics are role-agnostic",
+            "access_scope": sorted(level.value for level in access),
         },
         results=results,
     )
+
+
+async def evaluate_leakage(
+    service: SearchService,
+    dataset: Path,
+    levels: Mapping[str, AccessLevel],
+    top_k: int = 10,
+) -> dict[str, object]:
+    """Run every case as every role; any returned chunk above the role's scope is a leak."""
+    cases = load_cases(dataset)
+    gold_access(cases, levels)
+    roles: dict[str, object] = {}
+    leaks_total = 0
+    for role in ROLES:
+        scope = ROLE_ACCESS[role]
+        hits = leaks = errors = 0
+        leaked_cases: list[str] = []
+        visible_gold = found_visible = 0
+        for case in cases:
+            try:
+                response = await service.search(
+                    SearchRequest(query=case.question, top_k=top_k), uuid4(), scope
+                )
+            except SearchError:
+                errors += 1
+                continue
+            returned = [service.catalog.chunks[str(h.point_uuid)] for h in response.results]
+            hits += len(returned)
+            bad = [c for c in returned if (c.access_level or AccessLevel.PUBLIC) not in scope]
+            if bad:
+                leaks += len(bad)
+                leaked_cases.append(case.case_id)
+            allowed_gold = {p for p in case.gold_provision_ids if levels[p] in scope}
+            if allowed_gold:
+                visible_gold += 1
+                found_visible += bool(allowed_gold & {c.provision_id for c in returned})
+        leaks_total += leaks
+        roles[role] = {
+            "scope": sorted(level.value for level in scope),
+            "queries": len(cases) - errors,
+            "errors": errors,
+            "hits": hits,
+            "out_of_scope_hits": leaks,
+            "leaked_cases": leaked_cases,
+            "cases_with_visible_gold": visible_gold,
+            "visible_gold_hit_at_k": found_visible / visible_gold if visible_gold else None,
+        }
+    return {
+        "dataset": dataset.name,
+        "collection": str(service.provenance.get("collection", "")),
+        "release_fingerprint": service.release_fingerprint,
+        "query_top_k": top_k,
+        "out_of_scope_hits_total": leaks_total,
+        "passed": leaks_total == 0,
+        "roles": roles,
+    }

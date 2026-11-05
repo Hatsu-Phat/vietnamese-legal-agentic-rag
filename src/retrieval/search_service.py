@@ -16,7 +16,8 @@ from src.common.search_errors import (
     SearchTimeout,
     SearchUnavailable,
 )
-from src.core.enums import LegalValidityStatus
+from src.core.access import PUBLIC_ONLY, AccessScope
+from src.core.enums import AccessLevel, LegalValidityStatus
 from src.core.search import SearchHit, SearchRequest, SearchResponse, SearchRun, SearchWarning
 from src.core.search_ports import DenseSearch, QueryEncoder, SparseSearch
 from src.core.search_release import SearchRuntime
@@ -53,17 +54,24 @@ class SearchService:
         """Resources are available and not shutting down."""
         return self._ready
 
-    async def search(self, request: SearchRequest, request_id: UUID) -> SearchResponse:
-        """The only interface needed by the FastAPI route."""
-        return (await self.diagnose(request, request_id)).response
+    async def search(
+        self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SearchResponse:
+        """The only interface needed by the FastAPI route; `access` comes from authentication."""
+        return (await self.diagnose(request, request_id, access)).response
 
-    async def diagnose(self, request: SearchRequest, request_id: UUID) -> SearchRun:
+    async def diagnose(
+        self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SearchRun:
         """Same pipeline with branch rankings for offline evaluation; no alternate API mode."""
         started = time.monotonic()
         try:
             validated = SearchRequest.model_validate(request.model_dump())
             identifier = TypeAdapter(UUID4).validate_python(request_id)
-        except (ValidationError, AttributeError):
+            scope: AccessScope = frozenset(AccessLevel(level) for level in access)
+            if AccessLevel.PUBLIC not in scope:
+                raise ValueError("Access scope must include public")
+        except (ValidationError, AttributeError, TypeError, ValueError):
             raise InvalidSearchRequest() from None
         if not self.ready:
             raise SearchUnavailable()
@@ -80,6 +88,7 @@ class SearchService:
                     self._run,
                     validated,
                     identifier,
+                    scope,
                     started,
                     started + self.runtime.timeout_seconds,
                 )
@@ -118,7 +127,12 @@ class SearchService:
                 self._slot.release()
 
     def _run(
-        self, request: SearchRequest, request_id: UUID, started: float, deadline: float
+        self,
+        request: SearchRequest,
+        request_id: UUID,
+        access: AccessScope,
+        started: float,
+        deadline: float,
     ) -> SearchRun:
         """Run blocking model/database work outside the event loop."""
         try:
@@ -141,19 +155,19 @@ class SearchService:
             if time.monotonic() >= deadline:
                 raise SearchTimeout()
             dense = rank_candidates(
-                self.dense.retrieve(vector, request.filters, candidate_k, deadline)
+                self.dense.retrieve(vector, request.filters, candidate_k, deadline, access)
             )[:candidate_k]
             dense_ms = (time.monotonic() - dense_started) * 1000
             if time.monotonic() >= deadline:
                 raise SearchTimeout()
             sparse_started = time.monotonic()
             sparse = rank_candidates(
-                self.sparse.retrieve(request.query, request.filters, candidate_k)
+                self.sparse.retrieve(request.query, request.filters, candidate_k, access)
             )[:candidate_k]
             sparse_ms = (time.monotonic() - sparse_started) * 1000
             for candidate in [*dense, *sparse]:
                 chunk = self.catalog.chunks.get(str(candidate.point_uuid))
-                if chunk is None or not matches(chunk, request.filters):
+                if chunk is None or not matches(chunk, request.filters, access):
                     raise SearchUnavailable()
             hits: list[SearchHit] = []
             for rank, fused in enumerate(

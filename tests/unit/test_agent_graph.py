@@ -13,6 +13,7 @@ from src.citation.temporal import screen_evidence
 from src.citation.validator import audit_citations
 from src.common.agent_errors import AgentError, LLMUnavailable
 from src.common.search_errors import SearchTimeout
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.agent import (
     AskRequest,
     ClaimReview,
@@ -50,13 +51,17 @@ class FakeSearch:
     def __init__(self, rounds: list[list[SearchHit]]) -> None:
         self.rounds = rounds
         self.queries: list[str] = []
+        self.scopes: list[AccessScope] = []
 
     @property
     def ready(self) -> bool:
         return True
 
-    async def search(self, request: SearchRequest, request_id: UUID) -> SearchResponse:
+    async def search(
+        self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SearchResponse:
         self.queries.append(request.query)
+        self.scopes.append(access)
         hits = self.rounds[min(len(self.queries), len(self.rounds)) - 1]
         ranked = [h.model_copy(update={"rank": r}) for r, h in enumerate(hits, 1)]
         return SearchResponse(
@@ -175,7 +180,9 @@ async def test_clarify_carries_no_source_caveats() -> None:
 @pytest.mark.asyncio
 async def test_search_errors_become_agent_errors() -> None:
     class Failing(FakeSearch):
-        async def search(self, request: SearchRequest, request_id: UUID) -> SearchResponse:
+        async def search(
+            self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+        ) -> SearchResponse:
             raise SearchTimeout()
 
     with pytest.raises(AgentError) as info:

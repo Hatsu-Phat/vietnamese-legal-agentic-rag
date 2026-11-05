@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Path, Request
 from fastapi.responses import JSONResponse
 
-from src.api.dependencies import REQUEST_ID_HEADER, request_id_of, services_of
+from src.api.dependencies import REQUEST_ID_HEADER, access_of, request_id_of, services_of
 from src.common.agent_errors import LLMUnavailable
 from src.common.search_errors import SearchUnavailable
 from src.core.agent import AskErrorResponse, AskRequest, AskResponse
@@ -46,9 +46,10 @@ async def ready(request: Request) -> JSONResponse:
 async def search(body: SearchRequest, request: Request) -> SearchResponse:
     """Hybrid evidence search; results are sources, not a verified legal answer."""
     services = services_of(request)
+    scope = access_of(request)
     if not services.search.ready:
         raise SearchUnavailable()
-    return await services.search.search(body, request_id_of(request))
+    return await services.search.search(body, request_id_of(request), scope)
 
 
 @router.post(
@@ -62,11 +63,12 @@ async def search(body: SearchRequest, request: Request) -> SearchResponse:
 async def ask(body: AskRequest, request: Request) -> AskResponse:
     """Grounded answer, clarification or abstention from the LangGraph workflow."""
     services = services_of(request)
+    scope = access_of(request)
     if services.ask is None:
         raise LLMUnavailable()
     if not services.search.ready:
         raise SearchUnavailable()
-    return await services.ask.ask(body, request_id_of(request))
+    return await services.ask.ask(body, request_id_of(request), scope)
 
 
 @router.get(
@@ -79,7 +81,8 @@ async def source(
 ) -> SourceResponse | JSONResponse:
     """Open a citation: full canonical text and metadata of one chunk."""
     rid = request_id_of(request)
-    found = services_of(request).sources.get_source(chunk_id, rid)
+    # Out-of-scope chunks answer 404 like missing ones, so their existence is not revealed.
+    found = services_of(request).sources.get_source(chunk_id, rid, access_of(request))
     if found is None:
         body = ApiErrorResponse(
             request_id=rid, code="SOURCE_NOT_FOUND", message="Không tìm thấy nguồn được yêu cầu."

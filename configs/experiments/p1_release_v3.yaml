@@ -92,6 +92,17 @@ retrieval:
     top_n: 5
 
 # ------------------------------------------------------------------------------
+# Access Control (P2): role -> access levels. API keys live in .env
+# (AUTH_API_KEY_EMPLOYEE/MANAGER/LEGAL), never here. No X-API-Key header = anonymous.
+# ------------------------------------------------------------------------------
+access_control:
+  anonymous: ["public"]
+  roles:
+    employee: ["public"]
+    manager: ["public", "internal"]
+    legal: ["public", "internal", "confidential"]
+
+# ------------------------------------------------------------------------------
 # LangGraph Agentic Workflow Configuration
 # ------------------------------------------------------------------------------
 agent:

@@ -7,6 +7,7 @@ Use the P1 experiment config so the alias does not have to move:
 
 import argparse
 import asyncio
+import json
 import sys
 from pathlib import Path
 
@@ -15,8 +16,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.common.atomic import atomic_open
 from src.common.config import DEFAULT_CONFIG_PATH, load_data_paths, load_yaml_config
 from src.common.search_errors import SearchError
+from src.core.access import FULL_ACCESS
 from src.core.enums import AccessLevel
-from src.evaluation.enterprise import evaluate_enterprise
+from src.evaluation.enterprise import evaluate_enterprise, evaluate_leakage
 from src.retrieval.search_factory import open_search_service
 
 DEFAULT_DATASET = Path("tests/eval/enterprise_v1.jsonl")
@@ -31,6 +33,11 @@ async def run() -> int:
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--device", choices=["auto", "cpu", "mps", "cuda"], default="auto")
     parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument(
+        "--leakage",
+        action="store_true",
+        help="Run every case as every role and count chunks above the role's scope.",
+    )
     args = parser.parse_args()
     paths = load_data_paths(load_yaml_config(args.config_path))
     try:
@@ -39,11 +46,25 @@ async def run() -> int:
                 chunk.provision_id: chunk.access_level or AccessLevel.PUBLIC
                 for chunk in service.catalog.chunks.values()
             }
-            report = await evaluate_enterprise(service, args.dataset, levels, top_k=args.top_k)
+            if args.leakage:
+                leakage = await evaluate_leakage(service, args.dataset, levels, top_k=args.top_k)
+            else:
+                report = await evaluate_enterprise(
+                    service, args.dataset, levels, top_k=args.top_k, access=FULL_ACCESS
+                )
     except SearchError as exc:
         print(f"Evaluation stopped: {exc.code}", file=sys.stderr)
         return 2
-    output = paths.reports_dir / f"enterprise_retrieval_{args.dataset.stem.split('_')[-1]}.json"
+    version = args.dataset.stem.split("_")[-1]
+    if args.leakage:
+        output = paths.reports_dir / f"access_leakage_{version}.json"
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with atomic_open(output) as stream:
+            stream.write(json.dumps(leakage, ensure_ascii=False, indent=2) + "\n")
+        print(json.dumps(leakage, ensure_ascii=False, indent=2))
+        print(f"Saved {output}")
+        return 0 if leakage["passed"] else 2
+    output = paths.reports_dir / f"enterprise_retrieval_{version}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     with atomic_open(output) as stream:
         stream.write(report.model_dump_json(indent=2) + "\n")
