@@ -3,8 +3,9 @@
 Dự án: **Vietnamese Legal Agentic RAG**
 
 ## 1. Môi trường và Phiên bản
-- Python: `3.11+`
-- Trình quản lý gói: `pip` / `hatchling` / `uv`
+- Python: `3.12.15` (pin tại `.python-version` và `pyproject.toml`).
+- Môi trường chung: `uv==0.13.5`, cài bằng `uv sync --locked --extra dev`.
+- `uv.lock` là lockfile; `requirements.txt` được xuất tự động, không chỉnh tay.
 - Cấu hình & Secret: Đọc qua `pydantic-settings` từ `.env`. Không bao giờ ghi cứng secret.
 
 ## 2. Tiêu chuẩn viết Code

@@ -11,6 +11,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.common.logger import logger
 from src.core.enums import LegalValidityStatus
 from src.core.models import LegalDocument, LegalProvision, QAEvaluationItem
@@ -60,15 +62,24 @@ class CorpusAuditor:
 
     def __init__(
         self,
-        processed_dir: str | Path = "data/processed",
-        manifest_dir: str | Path = "data/manifests",
-        gold_eval_dir: str | Path = "data/gold_eval",
-        report_dir: str | Path = "docs/reports",
+        processed_dir: str | Path | None = None,
+        manifest_dir: str | Path | None = None,
+        gold_eval_dir: str | Path | None = None,
+        report_dir: str | Path | None = None,
     ) -> None:
-        self.processed_dir = Path(processed_dir)
-        self.manifest_dir = Path(manifest_dir)
-        self.gold_eval_dir = Path(gold_eval_dir)
-        self.report_dir = Path(report_dir)
+        paths = load_data_paths()
+        self.processed_dir = resolve_project_path(
+            processed_dir if processed_dir is not None else paths.processed_dir
+        )
+        self.manifest_dir = resolve_project_path(
+            manifest_dir if manifest_dir is not None else paths.manifests_dir
+        )
+        self.gold_eval_dir = resolve_project_path(
+            gold_eval_dir if gold_eval_dir is not None else paths.benchmarks_dir
+        )
+        self.report_dir = resolve_project_path(
+            report_dir if report_dir is not None else paths.reports_dir
+        )
 
     def load_documents(self) -> list[LegalDocument]:
         """Đọc danh sách LegalDocument từ documents.jsonl."""
@@ -201,10 +212,10 @@ class CorpusAuditor:
         return stats
 
     def export_audit_json(self, stats: CorpusAuditStats) -> Path:
-        """Xuất số liệu thống kê ra data/manifests/corpus_stats.json."""
+        """Xuất số liệu thống kê ra data/artifacts/manifests/corpus_stats.json."""
         self.manifest_dir.mkdir(parents=True, exist_ok=True)
         stats_file = self.manifest_dir / "corpus_stats.json"
-        with open(stats_file, "w", encoding="utf-8") as f:
+        with atomic_open(stats_file) as f:
             json.dump(asdict(stats), f, ensure_ascii=False, indent=2)
         logger.info(f"Đã lưu thống kê corpus tại {stats_file}")
         return stats_file
@@ -309,7 +320,7 @@ Hệ thống tuân thủ nghiêm ngặt nguyên tắc **Deterministic Logic**: t
 4. **Sẵn sàng cho Phase 2:** Kho dữ liệu sẵn sàng cho việc xây dựng chỉ mục BGE-M3 Dense và BM25 Sparse.
 """
 
-        with open(report_file, "w", encoding="utf-8") as f:
+        with atomic_open(report_file) as f:
             f.write(md)
 
         logger.info(f"Đã xuất báo cáo kiểm toán Markdown tại {report_file}")

@@ -13,6 +13,13 @@ from pathlib import Path
 # Ensure project root is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.common.config import (
+    DEFAULT_CONFIG_PATH,
+    load_data_paths,
+    load_yaml_config,
+    resolve_project_path,
+)
+from src.common.exceptions import EvaluationImportError
 from src.common.logger import logger
 from src.ingestion.audit import CorpusAuditor
 from src.ingestion.qa_importer import QAImporter
@@ -26,34 +33,40 @@ def parse_args() -> argparse.Namespace:
         description="Thực thi Phase 1 — Corpus Ingestion, Legal Metadata Schema & Data Audit"
     )
     parser.add_argument(
+        "--config-path", type=str, default=str(DEFAULT_CONFIG_PATH), help="Pipeline YAML config"
+    )
+    parser.add_argument(
         "--raw-dir",
         type=str,
-        default="data/raw/thiemcun169_gui",
-        help="Đường dẫn đến thư mục chứa dữ liệu thô (mặc định: data/raw/thiemcun169_gui)",
+        default=None,
+        help="Ghi đè paths.raw_dir trong YAML",
     )
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="data/processed",
+        default=None,
         help="Đường dẫn thư mục xuất documents.jsonl và provisions.jsonl",
     )
     parser.add_argument(
         "--manifest-dir",
         type=str,
-        default="data/manifests",
+        default=None,
         help="Đường dẫn thư mục lưu source_manifest.csv và corpus_stats.json",
     )
     parser.add_argument(
         "--gold-dir",
         type=str,
-        default="data/gold_eval",
+        default=None,
         help="Đường dẫn thư mục lưu qa_dev.jsonl và qa_test.jsonl",
     )
     parser.add_argument(
         "--sample-dir",
         type=str,
-        default="data/sample_laws",
+        default=None,
         help="Đường dẫn thư mục lưu sample_corpus_subset.json",
+    )
+    parser.add_argument(
+        "--report-dir", type=str, default=None, help="Ghi đè paths.reports_dir trong YAML"
     )
     parser.add_argument(
         "--sample-size",
@@ -69,29 +82,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def resolve_raw_directory(requested_dir: str) -> Path:
-    """Tự động phát hiện thư mục dữ liệu thô nếu đường dẫn mặc định chưa tồn tại."""
-    req_path = Path(requested_dir)
-    if req_path.is_dir() and (
-        (req_path / "legal_corpus.json").is_file()
-        or (req_path / "corpus" / "legal_corpus.json").is_file()
-    ):
-        return req_path
-
-    # Fallback to standard data/raw if available
-    alt_path = Path("data/raw")
-    if alt_path.is_dir() and (
-        (alt_path / "legal_corpus.json").is_file()
-        or (alt_path / "corpus" / "legal_corpus.json").is_file()
-    ):
-        logger.info(
-            f"Thư mục '{requested_dir}' chưa chứa dữ liệu, tự động chuyển sang '{alt_path}'"
-        )
-        return alt_path
-
-    return req_path
-
-
 def main() -> int:
     """Điểm nhập chính cho CLI thực thi Phase 1."""
     args = parse_args()
@@ -99,11 +89,34 @@ def main() -> int:
     logger.info("BẮT ĐẦU THỰC THI PHASE 1: CORPUS INGESTION & DATA AUDIT")
     logger.info("=" * 70)
 
-    raw_dir = resolve_raw_directory(args.raw_dir)
-    output_dir = Path(args.output_dir)
-    manifest_dir = Path(args.manifest_dir)
-    gold_dir = Path(args.gold_dir)
-    sample_dir = Path(args.sample_dir)
+    paths = load_data_paths(load_yaml_config(args.config_path))
+    if args.sample_only:
+        paths = paths.sample_outputs()
+    raw_dir = resolve_project_path(args.raw_dir) if args.raw_dir is not None else paths.raw_dir
+    output_dir = (
+        resolve_project_path(args.output_dir)
+        if args.output_dir is not None
+        else paths.processed_dir
+    )
+    manifest_dir = (
+        resolve_project_path(args.manifest_dir)
+        if args.manifest_dir is not None
+        else paths.manifests_dir
+    )
+    gold_dir = (
+        resolve_project_path(args.gold_dir) if args.gold_dir is not None else paths.benchmarks_dir
+    )
+    sample_dir = (
+        resolve_project_path(args.sample_dir) if args.sample_dir is not None else paths.samples_dir
+    )
+    report_dir = (
+        resolve_project_path(args.report_dir) if args.report_dir is not None else paths.reports_dir
+    )
+
+    qa_importer = QAImporter(raw_dir=raw_dir)
+    qa_dev_items, qa_test_items = qa_importer.import_datasets()
+    if not qa_dev_items or not qa_test_items:
+        raise EvaluationImportError("Empty benchmark split; outputs have not been changed")
 
     # 1. Khởi tạo Adapter và tìm tệp corpus
     adapter = ThiemCunCorpusAdapter()
@@ -112,6 +125,13 @@ def main() -> int:
     raw_corpus = adapter.load_raw_corpus(corpus_file)
     logger.info(f"Tổng số văn bản trong tệp thô: {len(raw_corpus):,}")
 
+    # 3. Chuyển đổi dữ liệu sang LegalDocument và LegalProvision
+    limit = args.sample_size if args.sample_only else None
+    if args.sample_only:
+        logger.info(f"Chế độ --sample-only: giới hạn xử lý {limit} văn bản đầu tiên")
+
+    ingestion_result = adapter.process_corpus(raw_corpus, limit=limit)
+
     # 2. Xuất tập mẫu phục vụ smoke test & CI
     sample_corpus_file = sample_dir / "sample_corpus_subset.json"
     adapter.export_sample_corpus_subset(
@@ -119,13 +139,6 @@ def main() -> int:
         sample_path=sample_corpus_file,
         sample_size=args.sample_size,
     )
-
-    # 3. Chuyển đổi dữ liệu sang LegalDocument và LegalProvision
-    limit = args.sample_size if args.sample_only else None
-    if args.sample_only:
-        logger.info(f"Chế độ --sample-only: giới hạn xử lý {limit} văn bản đầu tiên")
-
-    ingestion_result = adapter.process_corpus(raw_corpus, limit=limit)
 
     # 4. Xuất documents.jsonl và provisions.jsonl
     docs_path, provs_path = adapter.export_processed_jsonl(
@@ -139,9 +152,6 @@ def main() -> int:
     registry.save_manifest(ingestion_result.manifest_entries)
 
     # 6. Nhập và chuẩn hóa bộ Q&A
-    qa_importer = QAImporter(raw_dir=raw_dir)
-    qa_dev_items, qa_test_items = qa_importer.import_datasets()
-
     # Kiểm tra coverage của Q&A với corpus đã nạp
     known_provision_ids = {p.provision_id for p in ingestion_result.provisions}
     qa_dev_report = qa_importer.audit_coverage(qa_dev_items, known_provision_ids)
@@ -155,7 +165,7 @@ def main() -> int:
         processed_dir=output_dir,
         manifest_dir=manifest_dir,
         gold_eval_dir=gold_dir,
-        report_dir="docs/reports",
+        report_dir=report_dir,
     )
     stats = auditor.compute_audit_stats(
         docs=ingestion_result.documents,

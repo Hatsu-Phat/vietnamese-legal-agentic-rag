@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.common.exceptions import EvaluationImportError
 from src.common.logger import logger
 from src.common.text_utils import (
@@ -42,8 +44,10 @@ class QACoverageReport:
 class QAImporter:
     """Xử lý nhập và đối chiếu bộ dữ liệu câu hỏi Q&A pháp luật Việt Nam."""
 
-    def __init__(self, raw_dir: str | Path = "data/raw") -> None:
-        self.raw_dir = Path(raw_dir)
+    def __init__(self, raw_dir: str | Path | None = None) -> None:
+        self.raw_dir = resolve_project_path(
+            raw_dir if raw_dir is not None else load_data_paths().raw_dir
+        )
 
     def _find_file(self, *relative_paths: str) -> Path | None:
         """Tìm tệp dữ liệu theo danh sách các đường dẫn ưu tiên."""
@@ -158,6 +162,8 @@ class QAImporter:
 
         qa_dev_items: list[QAEvaluationItem] = []
         qa_test_items: list[QAEvaluationItem] = []
+        if not all((valid_json, test_json, train_csv, best_test_csv)):
+            raise EvaluationImportError("Missing required dev/test benchmark input files")
 
         # 2. Xử lý tập Dev (từ true_valid_results.json và train_qna.csv)
         if valid_json and train_csv:
@@ -277,9 +283,9 @@ class QAImporter:
         self,
         qa_dev_items: list[QAEvaluationItem],
         qa_test_items: list[QAEvaluationItem],
-        output_dir: str | Path = "data/gold_eval",
+        output_dir: str | Path | None = None,
     ) -> tuple[Path, Path | None]:
-        """Xuất danh sách QA items ra data/gold_eval/qa_dev.jsonl và qa_test.jsonl.
+        """Xuất danh sách QA items ra data/benchmarks/qa_dev.jsonl và qa_test.jsonl.
 
         Args:
             qa_dev_items: Danh sách câu hỏi dev.
@@ -289,18 +295,22 @@ class QAImporter:
         Returns:
             Tuple chứa (qa_dev_path, qa_test_path).
         """
-        out_path = Path(output_dir)
+        out_path = resolve_project_path(
+            output_dir if output_dir is not None else load_data_paths().benchmarks_dir
+        )
         out_path.mkdir(parents=True, exist_ok=True)
 
+        if not qa_dev_items or not qa_test_items:
+            raise EvaluationImportError("Refusing to overwrite benchmarks with an empty split")
         dev_path = out_path / "qa_dev.jsonl"
-        with open(dev_path, "w", encoding="utf-8") as f:
+        with atomic_open(dev_path) as f:
             for item in qa_dev_items:
                 f.write(item.model_dump_json() + "\n")
 
         test_path: Path | None = None
         if qa_test_items:
             test_path = out_path / "qa_test.jsonl"
-            with open(test_path, "w", encoding="utf-8") as f:
+            with atomic_open(test_path) as f:
                 for item in qa_test_items:
                     f.write(item.model_dump_json() + "\n")
 

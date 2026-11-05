@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from src.common.atomic import atomic_open
+from src.common.config import load_data_paths, resolve_project_path
 from src.common.exceptions import CorpusNotFoundError, CorpusParseError
 from src.common.logger import logger
 from src.common.text_utils import (
@@ -154,7 +156,33 @@ class ThiemCunCorpusAdapter:
         if limit is not None and limit > 0:
             items_to_process = items_to_process[:limit]
 
-        for doc_item in items_to_process:
+        grouped: dict[str, list[dict[str, Any]]] = {}
+        for item in items_to_process:
+            key = normalize_document_id(str(item.get("law_id", "")))
+            grouped.setdefault(key, []).append(item)
+        canonical_items: list[dict[str, Any]] = []
+        for key, group in grouped.items():
+            signatures = {
+                tuple(
+                    sorted(
+                        (
+                            str(a.get("article_id", "")).strip(),
+                            normalize_legal_text(str(a.get("title", ""))),
+                            normalize_legal_text(str(a.get("text", ""))),
+                        )
+                        for a in item.get("articles", [])
+                    )
+                )
+                for item in group
+            }
+            if len(signatures) != 1:
+                raise CorpusParseError(f"Conflicting content for normalized document ID: {key}")
+            representative = max(group, key=lambda item: str(item.get("law_id", "")))
+            chosen = representative.copy()
+            chosen["source_aliases"] = sorted({str(x.get("law_id", "")) for x in group})
+            canonical_items.append(chosen)
+
+        for doc_item in canonical_items:
             raw_law_id = str(doc_item.get("law_id", "")).strip()
             if not raw_law_id:
                 result.anomalies.append(
@@ -174,6 +202,12 @@ class ThiemCunCorpusAdapter:
 
             doc_provisions: list[LegalProvision] = []
             seen_article_ids: set[str] = set()
+            occurrence_counts: dict[str, int] = {}
+            used_provision_ids: set[str] = set()
+            reserved_ids = {
+                build_provision_id(doc_id, str(a.get("article_id", "")).strip())
+                for a in raw_articles
+            }
 
             for art_item in raw_articles:
                 raw_art_id = str(art_item.get("article_id", "")).strip()
@@ -201,8 +235,6 @@ class ThiemCunCorpusAdapter:
                             description=f"Trùng lặp article_id '{raw_art_id}' trong văn bản {raw_law_id}",
                         )
                     )
-                    # Deduplicate: append suffix to ensure unique provision_id
-                    raw_art_id = f"{raw_art_id}_dup"
                 seen_article_ids.add(raw_art_id)
 
                 clean_text = normalize_legal_text(raw_text)
@@ -232,6 +264,15 @@ class ThiemCunCorpusAdapter:
                 art_number = extract_article_number(raw_title) or f"Điều {raw_art_id}"
                 provision_path = f"{raw_law_id} > {art_number}"
                 prov_id = build_provision_id(doc_id, raw_art_id)
+                occurrence_counts[raw_art_id] = occurrence_counts.get(raw_art_id, 0) + 1
+                if occurrence_counts[raw_art_id] > 1:
+                    suffix = occurrence_counts[raw_art_id]
+                    candidate = f"{prov_id}__occ{suffix}"
+                    while candidate in used_provision_ids or candidate in reserved_ids:
+                        suffix += 1
+                        candidate = f"{prov_id}__occ{suffix}"
+                    prov_id = candidate
+                used_provision_ids.add(prov_id)
                 prov_hash = compute_sha256(clean_text)
 
                 provision = LegalProvision(
@@ -267,6 +308,7 @@ class ThiemCunCorpusAdapter:
                 effective_to=None,
                 status=LegalValidityStatus.UNKNOWN,
                 source_url=None,
+                source_aliases=doc_item["source_aliases"],
                 source_dataset=self.source_dataset_name,
                 source_last_verified_at=None,
                 content_hash=doc_hash,
@@ -307,28 +349,30 @@ class ThiemCunCorpusAdapter:
         self,
         documents: list[LegalDocument],
         provisions: list[LegalProvision],
-        output_dir: str | Path = "data/processed",
+        output_dir: str | Path | None = None,
     ) -> tuple[Path, Path]:
         """Xuất danh sách documents và provisions ra định dạng JSON Lines (.jsonl).
 
         Args:
             documents: Danh sách LegalDocument đã chuẩn hóa.
             provisions: Danh sách LegalProvision đã chuẩn hóa.
-            output_dir: Thư mục lưu kết quả (mặc định data/processed).
+            output_dir: Thư mục lưu kết quả (mặc định data/artifacts/processed).
 
         Returns:
             Tuple chứa (đường_dẫn_documents_jsonl, đường_dẫn_provisions_jsonl).
         """
-        out_path = Path(output_dir)
+        out_path = resolve_project_path(
+            output_dir if output_dir is not None else load_data_paths().processed_dir
+        )
         out_path.mkdir(parents=True, exist_ok=True)
 
         docs_file = out_path / "documents.jsonl"
-        with open(docs_file, "w", encoding="utf-8") as f:
+        with atomic_open(docs_file) as f:
             for doc in documents:
                 f.write(doc.model_dump_json() + "\n")
 
         provs_file = out_path / "provisions.jsonl"
-        with open(provs_file, "w", encoding="utf-8") as f:
+        with atomic_open(provs_file) as f:
             for prov in provisions:
                 f.write(prov.model_dump_json() + "\n")
 
@@ -341,7 +385,7 @@ class ThiemCunCorpusAdapter:
     def export_sample_corpus_subset(
         self,
         raw_items: list[dict[str, Any]],
-        sample_path: str | Path = "data/sample_laws/sample_corpus_subset.json",
+        sample_path: str | Path | None = None,
         sample_size: int = 50,
     ) -> Path:
         """Trích xuất tập mẫu N văn bản thô đầu tiên phục vụ smoke test và CI.
@@ -354,11 +398,13 @@ class ThiemCunCorpusAdapter:
         Returns:
             Đường dẫn Path tới tệp mẫu đã lưu.
         """
-        target = Path(sample_path)
+        target = resolve_project_path(
+            sample_path if sample_path is not None else load_data_paths().sample_corpus
+        )
         target.parent.mkdir(parents=True, exist_ok=True)
         sample_data = raw_items[:sample_size]
 
-        with open(target, "w", encoding="utf-8") as f:
+        with atomic_open(target) as f:
             json.dump(sample_data, f, ensure_ascii=False, indent=2)
 
         logger.info(f"Đã lưu tập văn bản mẫu ({len(sample_data)} văn bản) tại {target}")
