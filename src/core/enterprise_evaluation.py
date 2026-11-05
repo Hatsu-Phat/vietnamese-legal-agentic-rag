@@ -2,24 +2,17 @@
 
 from collections.abc import Iterable
 from enum import StrEnum
-from typing import Annotated, Literal
+from typing import Annotated
 
 from pydantic import Field, model_validator
 
+from src.core.access import DEFAULT_ROLE_ACCESS, ROLES, Role
 from src.core.agent import Decision
 from src.core.enums import AccessLevel, QuestionType
 from src.core.retrieval_evaluation import RetrievalMetrics
 from src.core.search import Contract
 
-Role = Literal["employee", "manager", "legal"]
-ROLES: tuple[Role, ...] = ("employee", "manager", "legal")
-
-# Access matrix agreed in PROJECT_PLAN (2026-11-05); P2 enforces it at retrieval time.
-ROLE_ACCESS: dict[Role, frozenset[AccessLevel]] = {
-    "employee": frozenset({AccessLevel.PUBLIC}),
-    "manager": frozenset({AccessLevel.PUBLIC, AccessLevel.INTERNAL}),
-    "legal": frozenset(AccessLevel),
-}
+ROLE_ACCESS = DEFAULT_ROLE_ACCESS
 
 
 class EnterpriseCategory(StrEnum):

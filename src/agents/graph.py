@@ -19,6 +19,7 @@ from src.citation.validator import audit_citations, describe_issues
 from src.common.agent_errors import AgentError
 from src.common.logger import logger
 from src.common.search_errors import SearchError
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.agent import (
     AbstainReason,
     AnswerGenerator,
@@ -80,6 +81,7 @@ def build_ask_graph(
                 query=state.query, top_k=state.request.top_k, filters=state.request.filters
             ),
             request_id,
+            state.access,
         )
         return {
             "rounds": state.rounds + 1,
@@ -260,12 +262,14 @@ class AskService:
             raise ValueError("max_rounds must be at least 1")
         self._graph = build_ask_graph(search, generator, max_rounds, verify_claims)
 
-    async def ask(self, request: AskRequest, request_id: UUID) -> AskResponse:
+    async def ask(
+        self, request: AskRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> AskResponse:
         """Return a grounded answer, clarification or abstention; raise only AgentError."""
         started = time.perf_counter()
         try:
             raw = await self._graph.ainvoke(
-                AgentState(request=request),
+                AgentState(request=request, access=access),
                 config={"configurable": {"request_id": request_id}},
             )
         except SearchError as exc:

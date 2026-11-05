@@ -5,15 +5,20 @@ from pathlib import Path
 from uuid import UUID
 
 from src.common.fingerprints import file_sha256, payload_fingerprint
+from src.core.access import PUBLIC_ONLY, AccessScope, allows
 from src.core.api import SourceResponse
 from src.core.models import LegalChunk
 from src.core.search import SearchFilters
 
 
-def matches(chunk: LegalChunk, filters: SearchFilters) -> bool:
-    """All active conditions are exact; absent metadata does not match a value."""
+def matches(chunk: LegalChunk, filters: SearchFilters, access: AccessScope = PUBLIC_ONLY) -> bool:
+    """All active conditions are exact; absent metadata does not match a value.
+
+    `access` is the caller's server-side scope; the safe default sees public chunks only.
+    """
     return (
-        (filters.document_id is None or chunk.document_id == filters.document_id)
+        allows(access, chunk)
+        and (filters.document_id is None or chunk.document_id == filters.document_id)
         and (filters.document_type is None or chunk.document_type == filters.document_type)
         and (filters.issued_year is None or chunk.issued_year == filters.issued_year)
     )
@@ -57,10 +62,15 @@ class CatalogSources:
     def __init__(self, catalog: ChunkCatalog) -> None:
         self.catalog = catalog
 
-    def get_source(self, chunk_id: str, request_id: UUID) -> SourceResponse | None:
-        """Verified source URLs do not exist in this release yet, so source_url stays null."""
+    def get_source(
+        self, chunk_id: str, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SourceResponse | None:
+        """None for missing and out-of-scope chunks alike, so the caller cannot tell them apart.
+
+        Verified source URLs do not exist in this release yet, so source_url stays null.
+        """
         chunk = self.catalog.get(chunk_id)
-        if chunk is None:
+        if chunk is None or not allows(access, chunk):
             return None
         return SourceResponse(
             request_id=request_id,

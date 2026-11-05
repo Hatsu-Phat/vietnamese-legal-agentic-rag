@@ -13,6 +13,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
 from src.common.config import load_yaml_config
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.models import LegalChunk
 from src.core.search import (
     RetrievalCandidate,
@@ -80,7 +81,12 @@ class Dense:
         self.fixed: list[RetrievalCandidate] | None = None
 
     def retrieve(
-        self, vector: list[float], filters: SearchFilters, limit: int, deadline: float
+        self,
+        vector: list[float],
+        filters: SearchFilters,
+        limit: int,
+        deadline: float,
+        access: AccessScope = PUBLIC_ONLY,
     ) -> list[RetrievalCandidate]:
         self.limit = limit
         self.calls += 1
@@ -95,7 +101,7 @@ class Dense:
             return [
                 RetrievalCandidate(point_uuid=UUID(uid), score=1 - i * 0.001)
                 for i, (uid, c) in enumerate(self.catalog.chunks.items())
-                if matches(c, filters)
+                if matches(c, filters, access)
             ][:limit]
         finally:
             self.active -= 1
@@ -111,7 +117,9 @@ class Sparse:
         self.empty = False
         self.failure: Exception | None = None
 
-    def retrieve(self, query: str, filters: SearchFilters, limit: int) -> list[RetrievalCandidate]:
+    def retrieve(
+        self, query: str, filters: SearchFilters, limit: int, access: AccessScope = PUBLIC_ONLY
+    ) -> list[RetrievalCandidate]:
         if self.failure:
             raise self.failure
         if self.empty:
@@ -121,7 +129,7 @@ class Sparse:
         return [
             RetrievalCandidate(point_uuid=UUID(uid), score=10 - i * 0.01)
             for i, (uid, c) in enumerate(self.dense.catalog.chunks.items())
-            if matches(c, filters)
+            if matches(c, filters, access)
         ][:limit]
 
 

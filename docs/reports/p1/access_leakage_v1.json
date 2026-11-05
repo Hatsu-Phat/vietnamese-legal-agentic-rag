@@ -1,0 +1,49 @@
+{
+  "dataset": "enterprise_v1.jsonl",
+  "collection": "vn_legal_bge_m3_v3",
+  "release_fingerprint": "e09d3b5044bf9cc39ee8ccc7a9a82cc7c48db120291921ab0a8a1116f2d24187",
+  "query_top_k": 10,
+  "out_of_scope_hits_total": 0,
+  "passed": true,
+  "roles": {
+    "employee": {
+      "scope": [
+        "public"
+      ],
+      "queries": 78,
+      "errors": 0,
+      "hits": 780,
+      "out_of_scope_hits": 0,
+      "leaked_cases": [],
+      "cases_with_visible_gold": 43,
+      "visible_gold_hit_at_k": 0.8837209302325582
+    },
+    "manager": {
+      "scope": [
+        "internal",
+        "public"
+      ],
+      "queries": 78,
+      "errors": 0,
+      "hits": 780,
+      "out_of_scope_hits": 0,
+      "leaked_cases": [],
+      "cases_with_visible_gold": 58,
+      "visible_gold_hit_at_k": 0.9310344827586207
+    },
+    "legal": {
+      "scope": [
+        "confidential",
+        "internal",
+        "public"
+      ],
+      "queries": 78,
+      "errors": 0,
+      "hits": 780,
+      "out_of_scope_hits": 0,
+      "leaked_cases": [],
+      "cases_with_visible_gold": 73,
+      "visible_gold_hit_at_k": 0.9452054794520548
+    }
+  }
+}

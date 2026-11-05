@@ -3,6 +3,7 @@
 from typing import Protocol
 from uuid import UUID
 
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.search import RetrievalCandidate, SearchFilters, SearchRequest, SearchResponse
 
 
@@ -14,8 +15,10 @@ class SearchPort(Protocol):
         """Whether startup completed and shutdown has not begun."""
         ...
 
-    async def search(self, request: SearchRequest, request_id: UUID) -> SearchResponse:
-        """Return grounded chunks or raise a safe domain SearchError."""
+    async def search(
+        self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SearchResponse:
+        """Return grounded chunks within `access` or raise a safe domain SearchError."""
         ...
 
 
@@ -35,9 +38,14 @@ class DenseSearch(Protocol):
     """A bounded read-only dense query with a monotonic deadline."""
 
     def retrieve(
-        self, vector: list[float], filters: SearchFilters, limit: int, deadline: float
+        self,
+        vector: list[float],
+        filters: SearchFilters,
+        limit: int,
+        deadline: float,
+        access: AccessScope = PUBLIC_ONLY,
     ) -> list[RetrievalCandidate]:
-        """Apply filters before top-k and validate source payloads."""
+        """Apply filters and the access scope before top-k and validate source payloads."""
         ...
 
     def close(self) -> None:
@@ -48,6 +56,8 @@ class DenseSearch(Protocol):
 class SparseSearch(Protocol):
     """A lexical query over the same canonical chunk release."""
 
-    def retrieve(self, query: str, filters: SearchFilters, limit: int) -> list[RetrievalCandidate]:
-        """Apply metadata eligibility before selecting top-k."""
+    def retrieve(
+        self, query: str, filters: SearchFilters, limit: int, access: AccessScope = PUBLIC_ONLY
+    ) -> list[RetrievalCandidate]:
+        """Apply metadata eligibility and the access scope before selecting top-k."""
         ...

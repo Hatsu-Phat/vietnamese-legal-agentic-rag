@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from src.api.dependencies import REQUEST_ID_HEADER, ServicesOpener, request_id_of
+from src.api.dependencies import REQUEST_ID_HEADER, ServicesOpener, Unauthorized, request_id_of
 from src.api.routes import router
 from src.common.agent_errors import AgentError
 from src.common.search_errors import SearchError
@@ -54,6 +54,10 @@ def create_app(open_services: ServicesOpener) -> FastAPI:
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request: Request, exc: RequestValidationError) -> JSONResponse:
         return error_response(request, 422, "INVALID_REQUEST", "Yêu cầu không hợp lệ.")
+
+    @app.exception_handler(Unauthorized)
+    async def unauthorized(request: Request, exc: Unauthorized) -> JSONResponse:
+        return error_response(request, 401, "UNAUTHORIZED", "Thông tin xác thực không hợp lệ.")
 
     @app.exception_handler(SearchError)
     async def search_failed(request: Request, exc: SearchError) -> JSONResponse:

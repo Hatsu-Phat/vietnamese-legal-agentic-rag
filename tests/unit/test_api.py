@@ -12,6 +12,7 @@ from src.agents.graph import AskService
 from src.api.app import create_app
 from src.api.dependencies import ApiServices
 from src.common.search_errors import SearchError, SearchTimeout
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.search import SearchRequest, SearchResponse
 from src.retrieval.search_catalog import CatalogSources
 from tests.search_support import write_catalog
@@ -28,10 +29,12 @@ class StubSearch(FakeSearch):
     def ready(self) -> bool:
         return self.is_ready
 
-    async def search(self, request: SearchRequest, request_id: UUID) -> SearchResponse:
+    async def search(
+        self, request: SearchRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> SearchResponse:
         if self.failure is not None:
             raise self.failure
-        return await super().search(request, request_id)
+        return await super().search(request, request_id, access)
 
 
 @pytest.fixture

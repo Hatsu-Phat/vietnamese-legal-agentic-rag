@@ -85,6 +85,17 @@ class AppSettings(BaseSettings):
     qdrant_url: str | None = Field(default=None, alias="QDRANT_URL")
     qdrant_api_key: SecretStr | None = Field(default=None, alias="QDRANT_API_KEY", repr=False)
 
+    # Role credentials (P2): one API key per role; empty keys are disabled, never matched.
+    auth_api_key_employee: SecretStr | None = Field(
+        default=None, alias="AUTH_API_KEY_EMPLOYEE", repr=False
+    )
+    auth_api_key_manager: SecretStr | None = Field(
+        default=None, alias="AUTH_API_KEY_MANAGER", repr=False
+    )
+    auth_api_key_legal: SecretStr | None = Field(
+        default=None, alias="AUTH_API_KEY_LEGAL", repr=False
+    )
+
     # Agent Bounds
     max_retrieval_rounds: int = Field(default=2, alias="MAX_RETRIEVAL_ROUNDS")
     tool_timeout_seconds: int = Field(default=15, alias="TOOL_TIMEOUT_SECONDS")

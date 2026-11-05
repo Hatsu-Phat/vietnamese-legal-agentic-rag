@@ -5,6 +5,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.agent import (
     AbstainReason,
     AskRequest,
@@ -21,6 +22,8 @@ class AgentState(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     request: AskRequest
+    # Set from authentication, never from the request body.
+    access: AccessScope = PUBLIC_ONLY
     query: str = ""
     rounds: int = 0
     evidence: list[Evidence] = Field(default_factory=list)

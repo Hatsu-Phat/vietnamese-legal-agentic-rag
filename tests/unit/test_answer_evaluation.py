@@ -6,6 +6,7 @@ from uuid import UUID
 import pytest
 
 from src.common.agent_errors import AgentError, LLMTimeout
+from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.agent import AskRequest, AskResponse, Citation, Claim
 from src.core.answer_evaluation import AskCaseResult, AskEvalCase
 from src.core.enums import LegalValidityStatus, QuestionType
@@ -69,7 +70,9 @@ class ScriptedAsk:
     def __init__(self, outcomes: dict[str, AskResponse | AgentError]) -> None:
         self.outcomes = outcomes
 
-    async def ask(self, request: AskRequest, request_id: UUID) -> AskResponse:
+    async def ask(
+        self, request: AskRequest, request_id: UUID, access: AccessScope = PUBLIC_ONLY
+    ) -> AskResponse:
         outcome = self.outcomes[request.question]
         if isinstance(outcome, AgentError):
             raise outcome

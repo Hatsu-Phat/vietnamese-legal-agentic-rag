@@ -9,14 +9,37 @@ from uuid import UUID
 import httpx
 from qdrant_client import QdrantClient
 from qdrant_client.http.exceptions import ResponseHandlingException, UnexpectedResponse
-from qdrant_client.models import Condition, FieldCondition, Filter, MatchValue
+from qdrant_client.models import (
+    Condition,
+    FieldCondition,
+    Filter,
+    IsEmptyCondition,
+    MatchAny,
+    MatchValue,
+    PayloadField,
+)
 
 from src.common.fingerprints import payload_fingerprint
 from src.common.search_errors import SearchTimeout, SearchUnavailable
+from src.core.access import FULL_ACCESS, PUBLIC_ONLY, AccessScope
+from src.core.enums import AccessLevel
 from src.core.search import RetrievalCandidate, SearchFilters
 from src.retrieval.bm25_indexer import BM25Indexer
 from src.retrieval.fusion import rank_candidates
 from src.retrieval.search_catalog import ChunkCatalog, matches
+
+
+def access_condition(access: AccessScope) -> Filter | None:
+    """Qdrant condition for a scope; points without the field are pre-P1 public law."""
+    if access >= FULL_ACCESS:
+        return None
+    allowed = FieldCondition(
+        key="access_level", match=MatchAny(any=sorted(level.value for level in access))
+    )
+    if AccessLevel.PUBLIC not in access:
+        return Filter(must=[allowed])
+    legacy = IsEmptyCondition(is_empty=PayloadField(key="access_level"))
+    return Filter(should=[allowed, legacy])
 
 
 class PinnedQueryEncoder:
@@ -59,7 +82,12 @@ class QdrantDenseSearch:
         self.timeout_seconds = timeout_seconds
 
     def retrieve(
-        self, vector: list[float], filters: SearchFilters, limit: int, deadline: float
+        self,
+        vector: list[float],
+        filters: SearchFilters,
+        limit: int,
+        deadline: float,
+        access: AccessScope = PUBLIC_ONLY,
     ) -> list[RetrievalCandidate]:
         remaining = int(deadline - time.monotonic())
         if remaining < 1:
@@ -68,6 +96,9 @@ class QdrantDenseSearch:
             FieldCondition(key=key, match=MatchValue(value=value))
             for key, value in filters.model_dump(exclude_none=True).items()
         ]
+        scope = access_condition(access)
+        if scope is not None:
+            conditions.append(scope)
         try:
             response = self.client.query_points(
                 self.collection,
@@ -93,7 +124,8 @@ class QdrantDenseSearch:
             uid = str(row.id)
             if self.catalog.payload_hashes.get(uid) != payload_fingerprint(row.payload or {}):
                 raise SearchUnavailable()
-            if not matches(self.catalog.chunks[uid], filters):
+            # Defence in depth: a point outside the scope means the filter did not apply.
+            if not matches(self.catalog.chunks[uid], filters, access):
                 raise SearchUnavailable()
             result.append(RetrievalCandidate(point_uuid=UUID(uid), score=row.score))
         return rank_candidates(result)[:limit]
@@ -114,7 +146,9 @@ class BM25SparseSearch:
         if indexer.bm25 is None or indexer.bm25.corpus_size != len(self.ids):
             raise ValueError("BM25 corpus size differs from metadata")
 
-    def retrieve(self, query: str, filters: SearchFilters, limit: int) -> list[RetrievalCandidate]:
+    def retrieve(
+        self, query: str, filters: SearchFilters, limit: int, access: AccessScope = PUBLIC_ONLY
+    ) -> list[RetrievalCandidate]:
         tokens = self.indexer.tokenize(query)
         if not tokens:
             return []
@@ -126,7 +160,7 @@ class BM25SparseSearch:
             score = float(raw)
             if not math.isfinite(score):
                 raise SearchUnavailable()
-            if score > 0 and matches(self.catalog.chunks[uid], filters):
+            if score > 0 and matches(self.catalog.chunks[uid], filters, access):
                 eligible.append((-score, uid))
         return [
             RetrievalCandidate(point_uuid=UUID(uid), score=-negative)
