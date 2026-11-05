@@ -11,6 +11,7 @@ from src.common.search_errors import SearchUnavailable
 from src.core.agent import AskErrorResponse, AskRequest, AskResponse
 from src.core.api import ApiErrorResponse, HealthResponse, ReadinessResponse, SourceResponse
 from src.core.search import SearchErrorResponse, SearchRequest, SearchResponse
+from src.guardrails.pii import mask_pii
 
 router = APIRouter()
 
@@ -49,6 +50,9 @@ async def search(body: SearchRequest, request: Request) -> SearchResponse:
     scope = access_of(request)
     if not services.search.ready:
         raise SearchUnavailable()
+    masked = mask_pii(body.query)
+    if masked.contains_pii:
+        body = body.model_copy(update={"query": masked.text})
     return await services.search.search(body, request_id_of(request), scope)
 
 

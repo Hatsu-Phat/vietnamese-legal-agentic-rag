@@ -1,7 +1,7 @@
 # P2 / T-0201 — Phân quyền theo vai trò
 
 > Lập: 2026-11-06. Phạm vi: xác thực API key → vai trò → phạm vi truy cập; lọc deterministic ở tầng retrieval.
-> PII guardrail (T-0202) chưa làm.
+> T-0202 PII guardrail: mục 6.
 
 ## 1. Vai trò và ma trận quyền
 | Vai trò | Header `X-API-Key` | Được thấy |
@@ -63,3 +63,41 @@ Lệnh `scripts/evaluate_enterprise.py --config-path configs/experiments/p1_rele
 
 ## 5. Điều kiện đổi alias sang v3
 Lọc quyền ở retrieval đã có. Tuy vậy theo quyết định đã chốt, **evidence mật không được gửi Gemini**, mà router local/cloud là việc của P3. Nếu đổi alias ngay, vai trò `legal` hỏi về tài liệu mật sẽ gửi đoạn mật lên Gemini. Đề xuất: đổi alias sau P3, hoặc chặn tạm `confidential` khỏi `/ask` cho tới khi có model local.
+
+## 6. T-0202 — Che thông tin cá nhân (PII) ở đầu vào
+- `src/guardrails/pii.py` dùng regex deterministic, không dùng model. Các loại được che:
+
+  | Loại | Placeholder | Quy tắc |
+  |---|---|---|
+  | Số giấy tờ | `[SỐ_GIẤY_TỜ]` | CCCD 12 số bắt đầu bằng 0 ở bất cứ đâu; CMND 9 số, hộ chiếu (chữ cái + 7 số) chỉ khi đứng sau từ khóa |
+  | Điện thoại | `[SỐ_ĐIỆN_THOẠI]` | Di động và bàn, tiền tố 0, 84 hoặc +84, cho phép dấu cách/chấm/gạch |
+  | Email | `[EMAIL]` | |
+  | Số tài khoản | `[SỐ_TÀI_KHOẢN]` | 6–19 số, chỉ khi đứng sau "số tài khoản", "STK", "tài khoản ngân hàng", "account" |
+  | Số thẻ | `[SỐ_THẺ]` | 13–19 số, phải qua kiểm tra Luhn |
+
+  Không coi là PII: số hiệu văn bản (`45/2019/QH14`, `01/2026/QĐ-TNT`), số tiền có dấu phân cách nghìn, tổng đài 1900, mã số thuế doanh nghiệp.
+- **Điểm áp dụng:**
+  - `/search`: route che `query` trước khi truy xuất.
+  - `/ask`: `AskService.ask` che câu hỏi trước mọi node, nên câu hỏi gửi Gemini (draft/review/rewrite) đã được che. Response có limitation `PII_MASKED` khi có che.
+  - `AgentState.contains_pii = True` là cờ cho router P3 (giữ ở model local).
+- **Log:** chỉ ghi các *loại* PII (`pii_types=`), không ghi giá trị. Từ trước đó log đã không ghi nội dung câu hỏi. Test bắt log của `/search` và `/ask` với câu hỏi chứa PII, không thấy giá trị nào.
+
+### Đo (`scripts/evaluate_pii.py` → `docs/reports/p2/pii_v1.json`)
+- **Tập có nhãn:** `tests/eval/pii_v1.jsonl`, tự soạn, chưa review người.
+  - 30 câu dương tính, chứa 34 giá trị PII;
+  - 20 câu âm tính "khó" (số hiệu văn bản, số tiền, tổng đài, mã số thuế…).
+- **Kết quả:** precision 1,00 và recall 1,00 (34/34), 0 phát hiện sai.
+  - **Đây là số trên tập phát triển, không phải tập giữ riêng.** Lần chạy đầu: precision 0,94, recall 0,91, 5 lỗi:
+    - hộ chiếu 1 chữ + 7 số;
+    - số tài khoản bị nhận nhầm là số thẻ;
+    - tiền tố `(+84)`;
+    - mã số thuế 10 số bị nhận là số điện thoại (2 lỗi tính theo dương và âm).
+
+    Cả 5 lỗi đã được sửa trên chính tập này.
+  - Cần một tập giữ riêng, do người soạn, để có số khách quan.
+- **Câu hỏi thật làm mẫu âm:** 334 câu (256 `qa_dev` + 78 `enterprise_v1`), 0 câu bị gắn cờ.
+- Ngưỡng nghiệm thu P2 cho PII vẫn `[CHƯA CHỐT]`.
+- **Giới hạn:**
+  - Không phát hiện tên người và địa chỉ, vì cần NER, chưa làm.
+  - Số điện thoại viết chữ ("không chín một…") không được nhận ra.
+  - CCCD nằm trong chuỗi dài hơn 12 số không bị che.

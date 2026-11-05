@@ -1,0 +1,48 @@
+{
+  "dataset": "pii_v1.jsonl",
+  "labelled_cases": 50,
+  "labelled_values": 34,
+  "precision": 1.0,
+  "recall": 1.0,
+  "per_type": {
+    "national_id": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "phone": {
+      "tp": 11,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "email": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "bank_account": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "payment_card": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  },
+  "real_questions_checked": 334,
+  "real_questions_flagged": 0,
+  "real_question_detections_by_type": {},
+  "errors": []
+}

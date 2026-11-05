@@ -24,6 +24,9 @@ class AgentState(BaseModel):
     request: AskRequest
     # Set from authentication, never from the request body.
     access: AccessScope = PUBLIC_ONLY
+    # Set when the question contained personal identifiers (masked before any node runs);
+    # the P3 router must keep such requests on the local model.
+    contains_pii: bool = False
     query: str = ""
     rounds: int = 0
     evidence: list[Evidence] = Field(default_factory=list)
