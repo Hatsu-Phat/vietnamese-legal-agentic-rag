@@ -73,7 +73,19 @@ Còn mở:
 
 Phần thiếu do trang scan (GDĐT Đ53 k5; TM Đ323–324) là điều khoản thi hành/chuyển tiếp; có thể bổ sung từ bản gốc Công báo nếu cần `[CHƯA LÀM]`.
 
-## 5. Việc tiếp theo
-1. Gắn metadata khi build release: `document_number`, `issued_date`, `effective_from`, `source_url`, `source_last_verified_at`, `source_kind=law`, `access_level=public` (adapter hiện để trống các trường ngày/URL).
-2. Cập nhật hiệu lực Luật An ninh mạng 2018; quyết định Luật Doanh nghiệp bản gốc vs VBHN.
+## 5. Gộp corpus và gắn metadata (đã làm 2026-11-05)
+- Code: `src/ingestion/official_metadata.py`, CLI `scripts/build_enterprise_corpus.py`, test `tests/unit/test_official_metadata.py`.
+- Lệnh: `python scripts/build_enterprise_corpus.py --official-corpus data/external/t0101/legal_corpus_t0101.json --manifest data/external/t0101/sources_manifest.json --output-dir data/processed_p1`
+  (đọc `data/processed`, không ghi đè; không ghi Qdrant).
+- Metadata chỉ lấy từ manifest, không suy đoán: `title`, `issued_date`, `effective_from`, `source_url` (trang Công báo, thiếu thì link PDF chính thức), `source_last_verified_at`; `source_dataset=official_vn_gazette`.
+- Quyết định đã áp dụng (có thể đổi trong manifest rồi build lại):
+  - **Luật Doanh nghiệp 59/2020: dùng VBHN 67** thay bản gốc (cùng `document_id`); mọi `provision_id` cũ vẫn còn (0 mất) nên gold eval không đổi.
+  - `status`: VBHN chính thức → `valid` (5 văn bản); bản gốc chưa kiểm tra sửa đổi sau đó → giữ `unknown` (8 văn bản).
+  - Luật An ninh mạng 24/2018 → `superseded`, `effective_to=2026-06-30` (`status_overrides` trong manifest); điều khoản kế thừa status của văn bản.
+- Kết quả: 3.283 văn bản (3.271 + 12 mới, 1 thay thế), 62.312 điều; status: 5 valid, 1 superseded, 3.277 unknown.
+  Corpus gốc vốn có 389 `provision_id` trùng (có từ trước); bước gộp chỉ chặn trùng do văn bản mới gây ra.
+
+## 6. Việc tiếp theo
+1. `source_kind=law`, `access_level=public` thêm cùng schema của T-0102.
+2. Chunk + embed BGE-M3 (revision đã khoá) `data/processed_p1` → collection Qdrant Cloud mới; cần API key có quyền ghi và thống nhất người phụ trách đổi alias.
 3. T-0102 (kho quy chế nội bộ) trước khi build release chung.
