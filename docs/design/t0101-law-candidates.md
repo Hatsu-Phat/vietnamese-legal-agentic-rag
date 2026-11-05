@@ -86,6 +86,14 @@ Phần thiếu do trang scan (GDĐT Đ53 k5; TM Đ323–324) là điều khoản
   Corpus gốc vốn có 389 `provision_id` trùng (có từ trước); bước gộp chỉ chặn trùng do văn bản mới gây ra.
 
 ## 6. Việc tiếp theo
-1. `source_kind=law`, `access_level=public` thêm cùng schema của T-0102.
+1. ~~`source_kind=law`, `access_level=public`~~ — đã thêm (schema T-0102, xem bên dưới); build gắn cho toàn bộ 3.283 văn bản.
 2. Chunk + embed BGE-M3 (revision đã khoá) `data/processed_p1` → collection Qdrant Cloud mới; cần API key có quyền ghi và thống nhất người phụ trách đổi alias.
 3. T-0102 (kho quy chế nội bộ) trước khi build release chung.
+
+## 7. Schema quyền truy cập (bước đầu T-0102, 2026-11-06)
+- `src/core/enums.py`: `SourceKind {law, internal}`, `AccessLevel {public, internal, confidential}`.
+- `LegalDocument`, `LegalChunk` có `source_kind`, `access_level` (tùy chọn). Ràng buộc: hai trường cùng có hoặc cùng trống; `law` bắt buộc `public`.
+- Tương thích release cũ: trường trống không được ghi vào payload/JSON của chunk ⇒ fingerprint không đổi.
+  Kiểm trên `data/artifacts/processed/chunks.jsonl` (85.115 chunk): `corpus_fingerprint` = manifest BM25 (`c6b277c7…`).
+- Chunker chép hai trường từ văn bản cha; Qdrant tạo payload index `source_kind`, `access_level` khi ghi collection.
+- Chưa làm: lọc theo quyền khi truy xuất (P2), bộ tài liệu nội bộ (T-0102 phần nội dung).

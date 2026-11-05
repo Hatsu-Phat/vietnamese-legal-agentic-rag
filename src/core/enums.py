@@ -55,3 +55,18 @@ class AnswerableStatus(StrEnum):
     ANSWERABLE = "answerable"
     UNANSWERABLE = "unanswerable"
     NEEDS_CLARIFICATION = "needs_clarification"
+
+
+class SourceKind(StrEnum):
+    """Nguồn gốc tài liệu: văn bản pháp luật công khai hay tài liệu nội bộ doanh nghiệp."""
+
+    LAW = "law"
+    INTERNAL = "internal"
+
+
+class AccessLevel(StrEnum):
+    """Mức truy cập; văn bản pháp luật luôn là PUBLIC."""
+
+    PUBLIC = "public"
+    INTERNAL = "internal"
+    CONFIDENTIAL = "confidential"

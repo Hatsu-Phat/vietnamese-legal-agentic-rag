@@ -47,11 +47,22 @@ class LegalChunker:
 
         Args:
             provision: Điều luật cần phân mảnh.
-            doc: Văn bản cha tương ứng để bổ sung metadata phân loại.
+            doc: Văn bản cha tương ứng để bổ sung metadata phân loại và quyền truy cập.
 
         Returns:
             Danh sách các LegalChunk được đánh chỉ mục đầy đủ.
         """
+        chunks = self._chunk_provision(provision, doc)
+        if doc is None or doc.source_kind is None:
+            return chunks
+        access = {"source_kind": doc.source_kind, "access_level": doc.access_level}
+        return [chunk.model_copy(update=access) for chunk in chunks]
+
+    def _chunk_provision(
+        self,
+        provision: LegalProvision,
+        doc: LegalDocument | None,
+    ) -> list[LegalChunk]:
         doc_type = doc.document_type if doc else None
         issuing_auth = doc.issuing_authority if doc else None
         issued_yr = doc.issued_year if doc else None

@@ -4,19 +4,42 @@ Enforces schema-first architecture, strict typing, and deterministic validity bo
 Invariants:
 - Status defaults to LegalValidityStatus.UNKNOWN when validity dates are not officially verified.
 - Content hashes are computed deterministically on normalized Unicode NFC text.
+- source_kind/access_level are optional for releases built before they existed; when set,
+  internal documents need an access level and laws are always public. Unset values are left
+  out of serialized chunks so payload fingerprints of older releases do not change.
 """
 
 import uuid
 from datetime import date, datetime
+from typing import Any, Self
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializerFunctionWrapHandler,
+    model_serializer,
+    model_validator,
+)
 
 from src.core.enums import (
+    AccessLevel,
     AnswerableStatus,
     DocumentRelationType,
     LegalValidityStatus,
     QuestionType,
+    SourceKind,
 )
+
+ACCESS_FIELDS = ("source_kind", "access_level")
+
+
+def check_access_fields(source_kind: SourceKind | None, access_level: AccessLevel | None) -> None:
+    """Both set or both unset; laws are public; internal documents carry their own level."""
+    if (source_kind is None) != (access_level is None):
+        raise ValueError("source_kind and access_level must be set together")
+    if source_kind == SourceKind.LAW and access_level != AccessLevel.PUBLIC:
+        raise ValueError("Law documents must have access_level=public")
 
 
 class LegalDocument(BaseModel):
@@ -93,6 +116,19 @@ class LegalDocument(BaseModel):
         default="1.0.0",
         description="Phiên bản pipeline nạp dữ liệu",
     )
+    source_kind: SourceKind | None = Field(
+        default=None,
+        description="law hoặc internal; None với dữ liệu tạo trước P1",
+    )
+    access_level: AccessLevel | None = Field(
+        default=None,
+        description="public/internal/confidential; luật luôn public",
+    )
+
+    @model_validator(mode="after")
+    def _access_fields(self) -> Self:
+        check_access_fields(self.source_kind, self.access_level)
+        return self
 
 
 class LegalProvision(BaseModel):
@@ -260,6 +296,27 @@ class LegalChunk(BaseModel):
         default=LegalValidityStatus.UNKNOWN,
         description="Trạng thái hiệu lực của văn bản/điều khoản",
     )
+    source_kind: SourceKind | None = Field(
+        default=None,
+        description="law hoặc internal; None với dữ liệu tạo trước P1",
+    )
+    access_level: AccessLevel | None = Field(
+        default=None,
+        description="public/internal/confidential; luật luôn public",
+    )
+
+    @model_validator(mode="after")
+    def _access_fields(self) -> Self:
+        check_access_fields(self.source_kind, self.access_level)
+        return self
+
+    @model_serializer(mode="wrap")
+    def _omit_unset_access(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data: dict[str, Any] = handler(self)
+        for name in ACCESS_FIELDS:
+            if data.get(name) is None:
+                data.pop(name, None)
+        return data
 
     @classmethod
     def generate_point_uuid(cls, chunk_id: str) -> str:

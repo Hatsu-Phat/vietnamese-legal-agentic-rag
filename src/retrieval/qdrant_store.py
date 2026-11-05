@@ -70,6 +70,8 @@ class QdrantStore:
             "issuing_authority": PayloadSchemaType.KEYWORD,
             "issued_year": PayloadSchemaType.INTEGER,
             "status": PayloadSchemaType.KEYWORD,
+            "source_kind": PayloadSchemaType.KEYWORD,
+            "access_level": PayloadSchemaType.KEYWORD,
         }
         indexed = self.client.get_collection(self.collection).payload_schema
         for name, schema in fields.items():
