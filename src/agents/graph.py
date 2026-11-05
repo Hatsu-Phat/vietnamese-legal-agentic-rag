@@ -28,13 +28,21 @@ from src.core.agent import (
     Citation,
     Claim,
     Evidence,
+    Limitation,
 )
 from src.core.enums import LegalValidityStatus
 from src.core.search import SearchHit, SearchRequest
 from src.core.search_ports import SearchPort
+from src.guardrails.pii import mask_pii
 
 # Evidence shown to the LLM across all rounds; bounds prompt size and cost.
 MAX_EVIDENCE = 16
+
+PII_LIMITATION = Limitation(
+    code="PII_MASKED",
+    message="Câu hỏi có thông tin cá nhân (số giấy tờ, điện thoại, email, tài khoản); "
+    "hệ thống đã che trước khi tra cứu và không lưu lại.",
+)
 
 
 def to_evidence(hit: SearchHit, citation_id: str) -> Evidence:
@@ -267,9 +275,13 @@ class AskService:
     ) -> AskResponse:
         """Return a grounded answer, clarification or abstention; raise only AgentError."""
         started = time.perf_counter()
+        # Personal identifiers never reach retrieval, the LLM or the response.
+        masked = mask_pii(request.question)
+        if masked.contains_pii:
+            request = request.model_copy(update={"question": masked.text})
         try:
             raw = await self._graph.ainvoke(
-                AgentState(request=request, access=access),
+                AgentState(request=request, access=access, contains_pii=masked.contains_pii),
                 config={"configurable": {"request_id": request_id}},
             )
         except SearchError as exc:
@@ -281,13 +293,18 @@ class AskService:
         state = AgentState.model_validate(raw)
         elapsed = (time.perf_counter() - started) * 1000
         response = build_response(state, request_id, elapsed)
+        if masked.contains_pii:
+            response = response.model_copy(
+                update={"limitations": [*response.limitations, PII_LIMITATION]}
+            )
         # Trace only control flow and timing; never the question, evidence or answer text.
         logger.info(
-            "Ask completed id={} decision={} rounds={} trace={} elapsed_ms={:.1f}",
+            "Ask completed id={} decision={} rounds={} trace={} pii_types={} elapsed_ms={:.1f}",
             request_id,
             response.decision,
             response.retrieval_rounds,
             ",".join(response.trace),
+            ",".join(masked.types),
             elapsed,
         )
         return response

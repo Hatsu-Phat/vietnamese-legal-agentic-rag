@@ -31,6 +31,7 @@ LimitationCode = Literal[
     "AS_OF_DATE_UNVERIFIED",
     "SOURCE_URL_UNAVAILABLE",
     "UNSUPPORTED_CLAIMS_REMOVED",
+    "PII_MASKED",
 ]
 
 

@@ -1,0 +1,50 @@
+{"case_id": "pos_01", "text": "Tôi là Nguyễn Văn An, CCCD 001203004567, muốn hỏi về thời gian thử việc.", "pii": [["national_id", "001203004567"]]}
+{"case_id": "pos_02", "text": "Số căn cước công dân của tôi là 079195001234, công ty có được giữ bản gốc không?", "pii": [["national_id", "079195001234"]]}
+{"case_id": "pos_03", "text": "CMND số 123456789 cấp năm 2010 còn dùng để ký hợp đồng lao động được không?", "pii": [["national_id", "123456789"]]}
+{"case_id": "pos_04", "text": "Hộ chiếu B1234567 của tôi hết hạn, công tác nước ngoài phải làm gì?", "pii": [["national_id", "B1234567"]]}
+{"case_id": "pos_05", "text": "Mã định danh cá nhân 036090012345 bị sai trên sổ bảo hiểm thì sửa thế nào?", "pii": [["national_id", "036090012345"]]}
+{"case_id": "pos_06", "text": "Gửi giúp tôi kết quả về 038099007788 nhé, đó là số CCCD.", "pii": [["national_id", "038099007788"]]}
+{"case_id": "pos_07", "text": "Liên hệ tôi qua 0912345678 nếu cần thêm thông tin.", "pii": [["phone", "0912345678"]]}
+{"case_id": "pos_08", "text": "SĐT 0912 345 678, tôi muốn hỏi về nghỉ phép năm.", "pii": [["phone", "0912 345 678"]]}
+{"case_id": "pos_09", "text": "Số của tôi là 090.123.4567, quản lý không duyệt làm thêm giờ.", "pii": [["phone", "090.123.4567"]]}
+{"case_id": "pos_10", "text": "Gọi +84 912 345 678 khi có phản hồi.", "pii": [["phone", "+84 912 345 678"]]}
+{"case_id": "pos_11", "text": "Điện thoại bàn 028 3822 1234 của phòng nhân sự có đúng không?", "pii": [["phone", "028 3822 1234"]]}
+{"case_id": "pos_12", "text": "Nhắn 0387-654-321 giúp tôi về chế độ thai sản.", "pii": [["phone", "0387-654-321"]]}
+{"case_id": "pos_13", "text": "Số máy 84987654321 là của trưởng phòng.", "pii": [["phone", "84987654321"]]}
+{"case_id": "pos_14", "text": "Email của tôi là an.nguyen@thienngan.vn, khi nào nhận lương tháng 13?", "pii": [["email", "an.nguyen@thienngan.vn"]]}
+{"case_id": "pos_15", "text": "Gửi hợp đồng về nguyen_van.b+hr@gmail.com giúp tôi.", "pii": [["email", "nguyen_van.b+hr@gmail.com"]]}
+{"case_id": "pos_16", "text": "Tôi dùng địa chỉ HoaLe92@Yahoo.com.vn để nhận phiếu lương.", "pii": [["email", "HoaLe92@Yahoo.com.vn"]]}
+{"case_id": "pos_17", "text": "STK của tôi là 19035566778899 tại Techcombank, lương bị chuyển nhầm.", "pii": [["bank_account", "19035566778899"]]}
+{"case_id": "pos_18", "text": "Số tài khoản 0071 0001 23456 Vietcombank có nhận được trợ cấp thôi việc không?", "pii": [["bank_account", "0071 0001 23456"]]}
+{"case_id": "pos_19", "text": "Tài khoản ngân hàng: 123456789012 đứng tên tôi.", "pii": [["bank_account", "123456789012"]]}
+{"case_id": "pos_20", "text": "Account number 9704 0000 1234 for refund please.", "pii": [["bank_account", "9704 0000 1234"]]}
+{"case_id": "pos_21", "text": "Thẻ 4111 1111 1111 1111 bị trừ phí dịch vụ hai lần.", "pii": [["payment_card", "4111 1111 1111 1111"]]}
+{"case_id": "pos_22", "text": "Tôi thanh toán bằng thẻ 5500-0000-0000-0004, công ty có hoàn tiền không?", "pii": [["payment_card", "5500-0000-0000-0004"]]}
+{"case_id": "pos_23", "text": "Số thẻ 4012888888881881 dùng để đặt vé công tác.", "pii": [["payment_card", "4012888888881881"]]}
+{"case_id": "pos_24", "text": "Tôi tên Lan, CCCD 001303009999, SĐT 0978123456, email lan.tran@tnt.vn, hỏi về thai sản.", "pii": [["national_id", "001303009999"], ["phone", "0978123456"], ["email", "lan.tran@tnt.vn"]]}
+{"case_id": "pos_25", "text": "Chuyển trợ cấp vào STK 0451000123456, liên hệ 0903 111 222.", "pii": [["bank_account", "0451000123456"], ["phone", "0903 111 222"]]}
+{"case_id": "pos_26", "text": "căn cước: 001099000111 – tôi bị kỷ luật sai, khiếu nại thế nào?", "pii": [["national_id", "001099000111"]]}
+{"case_id": "pos_27", "text": "Số điện thoại người làm chứng: 0335.678.910.", "pii": [["phone", "0335.678.910"]]}
+{"case_id": "pos_28", "text": "Liên hệ (+84)903456789 để xác minh tố giác.", "pii": [["phone", "903456789"]]}
+{"case_id": "pos_29", "text": "Số chứng minh thư 024567891 của tôi đã hết hạn.", "pii": [["national_id", "024567891"]]}
+{"case_id": "pos_30", "text": "Gửi email tới hr-support@tnt.com.vn và cc ceo@tnt.com.vn.", "pii": [["email", "hr-support@tnt.com.vn"], ["email", "ceo@tnt.com.vn"]]}
+{"case_id": "neg_01", "text": "Điều 113 Bộ luật Lao động số 45/2019/QH14 quy định nghỉ hằng năm bao nhiêu ngày?", "pii": []}
+{"case_id": "neg_02", "text": "Mức phạt 500.000.000 đồng theo Nghị định 356/2025/NĐ-CP áp dụng thế nào?", "pii": []}
+{"case_id": "neg_03", "text": "Quyết định 01/2026/QĐ-TNT có hiệu lực từ ngày 01/01/2026 không?", "pii": []}
+{"case_id": "neg_04", "text": "Tổng đài hỗ trợ 1900 1234 hoạt động mấy giờ?", "pii": []}
+{"case_id": "neg_05", "text": "Doanh thu 420 tỷ đồng và 1.500.000 cổ phần ESOP chiếm 3% vốn điều lệ.", "pii": []}
+{"case_id": "neg_06", "text": "Lương bậc E3 từ 30.000.000 đến 48.000.000 đồng có đúng không?", "pii": []}
+{"case_id": "neg_07", "text": "Mã số thuế doanh nghiệp 0312345678 phải đăng ký thay đổi khi nào?", "pii": []}
+{"case_id": "neg_08", "text": "Khoản 2 Điều 35 và điểm a khoản 1 Điều 36 Luật Doanh nghiệp 59/2020/QH14.", "pii": []}
+{"case_id": "neg_09", "text": "Mức sẵn sàng 99,9% và bồi hoàn 10% phí tháng theo SLA.", "pii": []}
+{"case_id": "neg_10", "text": "Năm 2027 công ty dự kiến tuyển 35 vị trí, định biên 230 người.", "pii": []}
+{"case_id": "neg_11", "text": "Văn bản hợp nhất 18/VBHN-VPQH ngày 12/3/2026 thay thế những gì?", "pii": []}
+{"case_id": "neg_12", "text": "Thông tư 10/2020/TT-BLĐTBXH hướng dẫn hợp đồng lao động.", "pii": []}
+{"case_id": "neg_13", "text": "Phạt từ 20.000.000 đồng đến 30.000.000 đồng đối với tổ chức.", "pii": []}
+{"case_id": "neg_14", "text": "Mẫu số 01/PLI phụ lục kèm theo nghị định gồm những gì?", "pii": []}
+{"case_id": "neg_15", "text": "Tài khoản quản trị phải bật xác thực đa yếu tố theo quy định nào?", "pii": []}
+{"case_id": "neg_16", "text": "Hồ sơ đăng ký gửi về hòm thư điện tử của cơ quan có thẩm quyền.", "pii": []}
+{"case_id": "neg_17", "text": "Số hiệu văn bản 2345/QĐ-UBND năm 2019 về giá đất.", "pii": []}
+{"case_id": "neg_18", "text": "Vốn điều lệ 50.000.000.000 đồng, mệnh giá 10.000 đồng/cổ phần.", "pii": []}
+{"case_id": "neg_19", "text": "Mã ngành 6201 lập trình máy vi tính có điều kiện không?", "pii": []}
+{"case_id": "neg_20", "text": "Thời hạn RTO 04 giờ, RPO 01 giờ cho nền tảng SaaS.", "pii": []}
