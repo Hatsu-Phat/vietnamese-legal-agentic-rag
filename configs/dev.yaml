@@ -83,6 +83,8 @@ retrieval:
     top_candidates: 10
 
   # Cross-Encoder Reranking (Disabled in baseline MVP, evaluated in Phase 5)
+  # Dev ablation 2026-11-05: MRR 0.72 -> 0.81 but +17-33 s/query on CPU; keep off until GPU.
+  # See docs/reports/rerank_ablation_v1.md.
   reranking:
     enabled: false
     model_name: "BAAI/bge-reranker-v2-m3"

@@ -243,7 +243,7 @@ Ví dụ một chunk xếp thứ nhất ở cả hai nhánh: score = `2 / 61`.
 - [x] Test empty results, một nhánh rỗng, lỗi domain ánh xạ 503 và timeout ánh xạ 504.
 - [x] Startup thiếu/sai release bị chặn; không tải model lại trong request; giữ worker có giới hạn sau timeout.
 - [x] Manifest BM25 ghi checksum corpus/index/metadata/stopwords và tham số/phiên bản; startup kiểm tra local/Cloud release.
-- [ ] FastAPI integration tests: gọi được mock service, HTTP body/header request ID khớp nhau; ánh xạ lỗi và log đúng hợp đồng. Teammate thực hiện khi ghép API.
+- [x] FastAPI integration tests: gọi được mock service, HTTP body/header request ID khớp nhau; ánh xạ lỗi và log đúng hợp đồng. Xem [HTTP API v1](api-v1.md).
 - [x] Đánh giá đủ 256 câu dev với Dense/BM25/Hybrid, Recall@k/MRR và độ trễ; nhóm chunk theo provision trước khi chấm.
 - [x] Giữ test cho đánh giá cuối; không điều chỉnh tham số theo test.
 - [x] Ruff, format check, mypy strict và unit tests đạt. Xem số lượng/kết quả tại báo cáo Search v1.

@@ -3,7 +3,7 @@
 from datetime import date
 from typing import Annotated, Literal, Protocol
 
-from pydantic import UUID4, Field, StrictInt, StrictStr, field_validator
+from pydantic import UUID4, ConfigDict, Field, StrictInt, StrictStr, field_validator
 
 from src.core.enums import LegalValidityStatus
 from src.core.search import Contract, SearchFilters, normalize_string
@@ -36,6 +36,13 @@ LimitationCode = Literal[
 
 class AskRequest(Contract):
     """One legal question; the optional date is the moment the user asks about."""
+
+    # Swagger example omits ``filters``: placeholder filter values match nothing.
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [{"question": "Thời hiệu khởi kiện tranh chấp hợp đồng là bao lâu?"}]
+        }
+    )
 
     question: Annotated[StrictStr, Field(min_length=1, max_length=2000)]
     as_of_date: date | None = None
@@ -119,6 +126,8 @@ class Citation(Contract):
     """User-facing source; every field comes from retrieval metadata, not the LLM."""
 
     citation_id: str
+    chunk_id: str
+    document_id: str
     document_number: str
     title: str
     breadcrumb: str

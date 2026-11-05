@@ -107,6 +107,7 @@ async def test_grounded_answer_maps_citations_from_metadata() -> None:
     assert response.decision == "answer" and response.retrieval_rounds == 1
     assert [c.citation_id for c in response.citations] == ["S2"]
     assert response.citations[0].breadcrumb == "BLDS > Điều 2"
+    assert response.citations[0].chunk_id == "law_demo__art_2__c0"
     assert {lim.code for lim in response.limitations} == {
         "VALIDITY_UNVERIFIED",
         "SOURCE_URL_UNAVAILABLE",

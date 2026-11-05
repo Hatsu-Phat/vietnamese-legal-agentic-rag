@@ -1,6 +1,6 @@
 # Vietnamese Legal Agentic RAG
 
-Dự án tra cứu và hỏi đáp pháp luật tiếng Việt. Hiện đã có **SearchService Hybrid BGE-M3 + BM25 + RRF**, **agent hỏi đáp LangGraph `/ask`** có kiểm chứng trích dẫn và từ chối trả lời, schema dùng chung, CLI và kiểm tra trên Qdrant Cloud. FastAPI và frontend là các bước tiếp theo.
+Dự án tra cứu và hỏi đáp pháp luật tiếng Việt. Hiện đã có **SearchService Hybrid BGE-M3 + BM25 + RRF**, **agent hỏi đáp LangGraph `/ask`** có kiểm chứng trích dẫn và từ chối trả lời, schema dùng chung, CLI, **HTTP API FastAPI** (`/search`, `/ask`, `/sources/{chunk_id}`) và bộ đánh giá đầu-cuối cho `/ask`. Frontend là bước tiếp theo.
 
 ## Bắt đầu theo vai trò
 
@@ -8,7 +8,7 @@ Dự án tra cứu và hỏi đáp pháp luật tiếng Việt. Hiện đã có 
 |---|---|---|
 | Search / retrieval | [Hợp đồng Search v1](docs/design/search-v1.md) | `src/retrieval/`, tests search |
 | Agent hỏi đáp | [Agent `/ask` v1](docs/design/agent-ask-v1.md) | `src/agents/`, `src/citation/` |
-| FastAPI | [Hướng dẫn tích hợp](docs/design/search-integration.md) | `src/api/`, HTTP integration tests |
+| FastAPI | [HTTP API v1](docs/design/api-v1.md) | `src/api/`, `tests/unit/test_api.py` |
 | Frontend | Hợp đồng Search v1 và [phối hợp nhóm](docs/team-workflow.md) | `frontend/` khi bắt đầu triển khai |
 | Dữ liệu / crawler | [Hướng dẫn dữ liệu](data/README.md), [data policy](docs/data_policy.md) | `src/ingestion/`, `src/chunking/` |
 
@@ -41,7 +41,7 @@ uv run --locked --extra dev python scripts/search.py --query "Thời hiệu kh�
 
 Cấu hình model/revision và Qdrant ở `configs/dev.yaml` → `indexing.qdrant`; BM25/tokenizer ở `indexing.bm25`; ngân sách search/RRF ở `retrieval`. Credentials nằm trong `.env`, không đưa xuống frontend. Model tải một lần vào `models/cache/`; service nạp model/index một lần khi startup.
 
-CLI không tự build index hoặc sửa Cloud khi thiếu/sai release. Hướng dẫn ingestion, BM25 và migration nằm trong [data/README.md](data/README.md). FastAPI teammate gọi `SearchPort` qua `open_search_service`; hiện chưa có HTTP server để chạy chỉ bằng README này.
+CLI không tự build index hoặc sửa Cloud khi thiếu/sai release. Hướng dẫn ingestion, BM25 và migration nằm trong [data/README.md](data/README.md). Chạy HTTP API: `uv run --locked --extra dev uvicorn src.api.main:app --port 8000` (một worker; xem [HTTP API v1](docs/design/api-v1.md)).
 
 ## Chạy hỏi đáp (agent `/ask`)
 
@@ -68,6 +68,16 @@ Chạy benchmark khi thay đổi retrieval hoặc cần đối chiếu, dùng de
 uv run --locked --extra dev python scripts/evaluate_search.py --device cpu
 ```
 
+Đánh giá đầu-cuối `/ask` (cần `GEMINI_API_KEY`) và các thí nghiệm Phase 5–6 (cần extra `eval`; reranker tải `BAAI/bge-reranker-v2-m3` ~2,2 GB vào `models/cache`). Chạy với cùng bộ extras để `uv` không gỡ gói `eval`:
+
+```bash
+uv run --locked --extra dev python scripts/evaluate_ask.py --device cpu
+uv run --locked --extra dev --extra eval python scripts/run_ablation.py --device cpu
+uv run --locked --extra dev --extra eval python scripts/evaluate_faithfulness.py --device cpu
+```
+
+Kết quả: [đánh giá `/ask`](docs/reports/ask_eval_v1.md), [ablation reranker](docs/reports/rerank_ablation_v1.md).
+
 Số liệu và phạm vi bằng chứng nằm trong [báo cáo Search v1](docs/reports/search_v1.md); kiểm tra sau tái cấu trúc nằm trong [báo cáo refactor](docs/reports/search_refactor.md). Không chép số lượng tests hoặc benchmark vào nhiều README rồi sửa riêng từng nơi.
 
 ## Cấu trúc và ranh giới
@@ -80,7 +90,7 @@ src/
   ingestion/    # Đọc corpus; indexing/ chứa migration/audit offline
   chunking/     # Chia văn bản
   evaluation/   # Đánh giá retrieval
-  api/          # Khung cho teammate triển khai FastAPI
+  api/          # FastAPI: app factory, routes, request ID, ánh xạ lỗi
   agents/       # LangGraph /ask: graph, state, prompts, Gemini adapter, factory
   citation/     # Citation audit, sàng lọc hiệu lực, reviewer, chính sách từ chối
 configs/        # Cấu hình không chứa secret

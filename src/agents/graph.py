@@ -213,6 +213,8 @@ def build_response(state: AgentState, request_id: UUID, elapsed_ms: float) -> As
     citations = [
         Citation(
             citation_id=cid,
+            chunk_id=by_id[cid].chunk_id,
+            document_id=by_id[cid].document_id,
             document_number=by_id[cid].document_number,
             title=by_id[cid].title,
             breadcrumb=by_id[cid].breadcrumb,

@@ -49,6 +49,13 @@ class SearchFilters(Contract):
 class SearchRequest(Contract):
     """One Hybrid Search request, independent of HTTP and model providers."""
 
+    # Swagger example omits ``filters``: placeholder filter values match nothing.
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [{"query": "Thời hiệu khởi kiện tranh chấp hợp đồng là bao lâu?"}]
+        }
+    )
+
     query: Annotated[StrictStr, Field(min_length=1, max_length=2000)]
     top_k: Annotated[StrictInt, Field(ge=1, le=20)] = 10
     filters: SearchFilters = Field(default_factory=SearchFilters)
