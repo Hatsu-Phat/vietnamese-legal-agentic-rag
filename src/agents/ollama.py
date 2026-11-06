@@ -5,6 +5,7 @@ the Gemini provider, and the same strict validation. Provider errors never leave
 """
 
 import json
+from collections import Counter
 from typing import Any
 
 import httpx
@@ -12,9 +13,10 @@ from pydantic import ValidationError
 
 from src.agents.gemini import coerce_draft
 from src.agents.prompts import (
-    DRAFT_SYSTEM,
     REVIEW_SYSTEM,
     REWRITE_SYSTEM,
+    PromptVariant,
+    draft_system,
     draft_user_message,
     review_user_message,
     rewrite_user_message,
@@ -42,6 +44,12 @@ DRAFT_SCHEMA: dict[str, Any] = {
         "clarifying_question": {"type": ["string", "null"]},
     },
     "required": ["decision", "answer", "claims"],
+}
+# CoT: "reasoning" is listed first so the model writes it before deciding; coerce_draft drops it.
+COT_DRAFT_SCHEMA: dict[str, Any] = {
+    **DRAFT_SCHEMA,
+    "properties": {"reasoning": {"type": "string"}, **DRAFT_SCHEMA["properties"]},
+    "required": ["reasoning", *DRAFT_SCHEMA["required"]],
 }
 REWRITE_SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -78,6 +86,7 @@ class OllamaAnswerGenerator:
         timeout_seconds: float = 120.0,
         num_ctx: int = 8192,
         client: httpx.AsyncClient | None = None,
+        prompt_variant: PromptVariant = "zero_shot",
     ) -> None:
         self._model = model
         # Ollama's default context (4096) silently truncates the start of long prompts, which
@@ -86,6 +95,10 @@ class OllamaAnswerGenerator:
         self._temperature = temperature
         self._timeout = timeout_seconds
         self._client = client or httpx.AsyncClient(base_url=base_url)
+        self._draft_system = draft_system(prompt_variant)
+        self._draft_schema = COT_DRAFT_SCHEMA if prompt_variant == "cot" else DRAFT_SCHEMA
+        # calls / prompt_tokens / output_tokens / schema_errors, for P4 cost reports.
+        self.usage: Counter[str] = Counter()
 
     async def aclose(self) -> None:
         await self._client.aclose()
@@ -111,15 +124,20 @@ class OllamaAnswerGenerator:
         if response.status_code != 200:
             logger.warning("Ollama returned HTTP {}", response.status_code)
             raise LLMUnavailable()
+        self.usage["calls"] += 1
         try:
-            return json.loads(response.json()["message"]["content"])
-        except (KeyError, TypeError, ValueError):
+            data = response.json()
+            self.usage["prompt_tokens"] += int(data.get("prompt_eval_count") or 0)
+            self.usage["output_tokens"] += int(data.get("eval_count") or 0)
+            return json.loads(data["message"]["content"])
+        except (KeyError, TypeError, ValueError, AttributeError):
             logger.warning("Ollama response was not the expected JSON shape")
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None
 
     async def draft(self, question: str, evidence: list[Evidence]) -> DraftAnswer:
         raw = await self._generate_json(
-            DRAFT_SYSTEM, draft_user_message(question, evidence), DRAFT_SCHEMA
+            self._draft_system, draft_user_message(question, evidence), self._draft_schema
         )
         try:
             return DraftAnswer.model_validate(coerce_draft(raw))
@@ -127,6 +145,7 @@ class OllamaAnswerGenerator:
             # Log field locations only; values may contain evidence or question text.
             locations = [".".join(str(p) for p in e["loc"]) for e in exc.errors()]
             logger.warning("Ollama draft failed schema validation at {}", locations)
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None
 
     async def rewrite_query(self, question: str, feedback: str) -> str:
@@ -144,4 +163,5 @@ class OllamaAnswerGenerator:
             return ClaimReview.model_validate(raw)
         except ValidationError:
             logger.warning("Ollama review failed schema validation")
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None

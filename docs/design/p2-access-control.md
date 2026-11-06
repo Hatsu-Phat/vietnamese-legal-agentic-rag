@@ -64,6 +64,15 @@ Lệnh `scripts/evaluate_enterprise.py --config-path configs/experiments/p1_rele
 ## 5. Điều kiện đổi alias sang v3
 Lọc quyền ở retrieval đã có. Tuy vậy theo quyết định đã chốt, **evidence mật không được gửi Gemini**, mà router local/cloud là việc của P3. Nếu đổi alias ngay, vai trò `legal` hỏi về tài liệu mật sẽ gửi đoạn mật lên Gemini. Đề xuất: đổi alias sau P3, hoặc chặn tạm `confidential` khỏi `/ask` cho tới khi có model local.
 
+**Đã đổi (2026-11-06, sau P3/PR #14):**
+- Điều kiện đã thỏa: kiểm tra trên v3 (`docs/design/p3-llm-router.md` mục 5b) cho 0/29 lời gọi cloud mang evidence mật.
+- Trước khi đổi, `--step verify` lại v3: 86.820 điểm, 86.820/86.820 payload khớp, mẫu vector khớp; public 86.609 / internal 169 / confidential 42.
+- Đổi bằng `scripts/build_enterprise_release.py --step activate --collection vn_legal_bge_m3_v3 --expected-current vn_legal_bge_m3_v2`. Alias `vn_legal_bge_m3` → `vn_legal_bge_m3_v3`.
+- `scripts/pull_cloud_release.py --step all` dựng lại artifacts local: 86.820 chunk, BM25, encoder revision khớp. Fingerprint `e09d3b5044bf…`.
+- Smoke `/search` theo vai trò trên cấu hình mặc định: 0 kết quả vượt quyền.
+- **Mỗi máy khác (Duy) phải chạy `pull_cloud_release.py --step all` rồi restart service.**
+- Rollback: `--step activate --collection vn_legal_bge_m3_v2 --expected-current vn_legal_bge_m3_v3`, rồi pull lại. Collection v2 vẫn giữ nguyên.
+
 ## 6. T-0202 — Che thông tin cá nhân (PII) ở đầu vào
 - `src/guardrails/pii.py` dùng regex deterministic, không dùng model. Các loại được che:
 

@@ -25,6 +25,9 @@
 | `LOCAL_LLM_MODEL` | `qwen2.5:3b` | Đã pull bằng Ollama 0.40.14 |
 | `LOCAL_LLM_TIMEOUT_SECONDS` | `120` | Timeout mỗi lời gọi local |
 | `LOCAL_LLM_NUM_CTX` | `8192` | Context Ollama; mặc định 4096 của Ollama cắt mất system prompt (mục 5) |
+| `LOCAL_PROMPT_VARIANT` | `cot` | Prompt soạn câu trả lời cho model local (P4, `docs/reports/prompting_v1.md`) |
+| `PROMPT_VARIANT` | `zero_shot` | Prompt soạn câu trả lời cho Gemini (P4) |
+| `LOCAL_LLM_MAX_EVIDENCE` | trống (tất cả) | Số evidence tối đa gửi cho model local (P4) |
 | `LLM_ROUTING_MODE` | `cloud` | `auto` (cũ: `router`) / `local` / `cloud`; mặc định `cloud` đến khi P4 cải thiện local |
 
 - Dòng trống (ví dụ `LOCAL_LLM_TIMEOUT_SECONDS=`) giờ được bỏ qua và lấy giá trị mặc định (`env_ignore_empty=True`).

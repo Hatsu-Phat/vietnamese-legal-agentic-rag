@@ -16,6 +16,7 @@ from src.agents.factory import create_router
 from src.agents.gemini import GeminiAnswerGenerator
 from src.agents.graph import AskService, merge_evidence
 from src.agents.ollama import OllamaAnswerGenerator
+from src.agents.prompts import draft_system
 from src.agents.router import ModelRouter, RoutingMode, SimpleRule, parse_mode
 from src.api.dependencies import ApiServices
 from src.common.agent_errors import AgentError, LLMTimeout, LLMUnavailable
@@ -322,3 +323,35 @@ async def test_create_router_from_settings() -> None:
         create_router(settings(LOCAL_LLM_PROVIDER="none"))
     with pytest.raises(ValueError):
         create_router(settings(LOCAL_LLM_PROVIDER="vllm"))
+
+
+@pytest.mark.asyncio
+async def test_local_sees_only_top_evidence_and_audit_uses_the_same_set() -> None:
+    local = CountingGenerator(drafts=[answer("S3")])
+    cloud = CountingGenerator()
+    router = ModelRouter(local, cloud, "local", local_max_evidence=2)
+    search = FakeSearch([[hit(1), hit(2), hit(3)]])
+    response = await AskService(search, router, 1).ask(AskRequest(question="q"), uuid4())
+    assert local.seen == [["S1", "S2"]]
+    # S3 was never shown to the local model, so citing it fails the audit.
+    assert response.decision == "abstain" and response.abstain_reason == "CITATION_INVALID"
+    # The cloud keeps the full evidence.
+    full = CountingGenerator(drafts=[answer("S3")])
+    cloud_router = ModelRouter(CountingGenerator(), full, "cloud", local_max_evidence=2)
+    search = FakeSearch([[hit(1), hit(2), hit(3)]])
+    ok = await AskService(search, cloud_router, 1).ask(AskRequest(question="q"), uuid4())
+    assert full.seen == [["S1", "S2", "S3"]] and ok.decision == "answer"
+    with pytest.raises(ValueError):
+        ModelRouter(local, cloud, local_max_evidence=0)
+
+
+@pytest.mark.asyncio
+async def test_router_uses_separate_prompt_per_provider() -> None:
+    router = create_router(settings(GEMINI_API_KEY="k"))
+    assert router.local._draft_system == draft_system("cot")  # type: ignore[union-attr]
+    assert router.cloud._draft_system == draft_system("zero_shot")  # type: ignore[union-attr]
+    await router.aclose()
+    override = create_router(settings(GEMINI_API_KEY="k"), prompt="few_shot")
+    assert override.local._draft_system == draft_system("few_shot")  # type: ignore[union-attr]
+    assert override.cloud._draft_system == draft_system("few_shot")  # type: ignore[union-attr]
+    await override.aclose()

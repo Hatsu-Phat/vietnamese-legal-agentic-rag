@@ -1,6 +1,7 @@
 """Prompts for the answer generator; evidence and questions are untrusted data."""
 
 import json
+from typing import Literal
 
 from src.core.agent import DraftClaim, Evidence
 
@@ -81,3 +82,80 @@ def review_user_message(claims: list[DraftClaim], evidence: list[Evidence]) -> s
         for i, c in enumerate(claims)
     ]
     return f"CLAIMS:\n{json.dumps(payload, ensure_ascii=False, indent=1)}"
+
+
+# --- P4 prompt variants for the draft step -------------------------------------------------
+# Only DRAFT_SYSTEM varies; rewrite and review prompts stay fixed so variants are comparable.
+PromptVariant = Literal["zero_shot", "few_shot", "cot"]
+PROMPT_VARIANTS: tuple[PromptVariant, ...] = ("zero_shot", "few_shot", "cot")
+
+# Few-shot evidence is verbatim corpus text (Bộ luật Dân sự 91/2015/QH13, Điều 19 and 20);
+# neither provision is gold in qa_dev, qa_test, ask_dev_authored or enterprise_v1.
+_EXAMPLE_EVIDENCE = json.dumps(
+    [
+        {
+            "id": "S1",
+            "document": "91/2015/qh13",
+            "breadcrumb": "91/2015/qh13 > Điều 20",
+            "text": "1. Người thành niên là người từ đủ mười tám tuổi trở lên. 2. Người thành niên "
+            "có năng lực hành vi dân sự đầy đủ, trừ trường hợp quy định tại các điều 22, 23 và "
+            "24 của Bộ luật này.",
+        },
+        {
+            "id": "S2",
+            "document": "91/2015/qh13",
+            "breadcrumb": "91/2015/qh13 > Điều 19",
+            "text": "Năng lực hành vi dân sự của cá nhân là khả năng của cá nhân bằng hành vi của "
+            "mình xác lập, thực hiện quyền, nghĩa vụ dân sự.",
+        },
+    ],
+    ensure_ascii=False,
+)
+
+FEW_SHOT_EXAMPLES = f"""
+Ví dụ (chỉ minh hoạ định dạng và cách quyết định; không dùng làm căn cứ cho câu hỏi thật).
+EVIDENCE của cả ba ví dụ: {_EXAMPLE_EVIDENCE}
+
+Ví dụ 1 — EVIDENCE nêu trực tiếp câu trả lời → "answer":
+QUESTION: "Người bao nhiêu tuổi thì được coi là người thành niên?"
+{{"decision": "answer", "answer": "Người từ đủ mười tám tuổi trở lên là người thành niên.",
+ "claims": [{{"text": "Người thành niên là người từ đủ mười tám tuổi trở lên.",
+ "citation_ids": ["S1"]}}], "clarifying_question": null}}
+
+Ví dụ 2 — EVIDENCE không liên quan đến câu hỏi → "abstain" (không hỏi lại):
+QUESTION: "Hồ sơ đăng ký nhãn hiệu gồm những giấy tờ gì?"
+{{"decision": "abstain", "answer": "Các đoạn được cung cấp không quy định về hồ sơ đăng ký
+ nhãn hiệu.", "claims": [], "clarifying_question": null}}
+
+Ví dụ 3 — câu hỏi thiếu thông tin bắt buộc để chọn đúng quy định → "clarify":
+QUESTION: "Người đó có năng lực hành vi dân sự đầy đủ không?"
+{{"decision": "clarify", "answer": "Cần biết tuổi và tình trạng của người được hỏi.",
+ "claims": [], "clarifying_question": "Người đó bao nhiêu tuổi và có thuộc trường hợp bị
+ hạn chế hoặc mất năng lực hành vi dân sự không?"}}
+
+Lưu ý: nếu EVIDENCE nêu rõ nội dung được hỏi thì chọn "answer", kể cả khi câu hỏi ngắn.
+Chỉ chọn "clarify" khi thiếu thông tin mà các đoạn EVIDENCE cho thấy là cần để trả lời."""
+
+COT_INSTRUCTIONS = """
+Trước khi quyết định, điền trường "reasoning" (tối đa 5 câu, tiếng Việt): câu hỏi hỏi điều gì,
+đoạn EVIDENCE nào (theo id) nêu trực tiếp nội dung đó, và vì sao chọn answer/clarify/abstain.
+"reasoning" chỉ dùng nội bộ, không phải câu trả lời. Trả về đúng một JSON object:
+{"reasoning": "...", "decision": "answer|clarify|abstain", "answer": "...",
+ "claims": [{"text": "nhận định", "citation_ids": ["S1"]}], "clarifying_question": null}"""
+
+
+def draft_system(variant: PromptVariant = "zero_shot") -> str:
+    """System prompt for the draft step; the base rules are identical across variants."""
+    if variant == "few_shot":
+        return DRAFT_SYSTEM + "\n" + FEW_SHOT_EXAMPLES
+    if variant == "cot":
+        return DRAFT_SYSTEM + "\n" + COT_INSTRUCTIONS
+    return DRAFT_SYSTEM
+
+
+def parse_variant(value: str) -> PromptVariant:
+    """Validate PROMPT_VARIANT / --prompt."""
+    variant = value.strip().lower() or "zero_shot"
+    if variant not in PROMPT_VARIANTS:
+        raise ValueError(f"PROMPT_VARIANT must be one of {PROMPT_VARIANTS}, got {value!r}")
+    return variant

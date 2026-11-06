@@ -93,6 +93,7 @@ class ModelRouter:
         cloud: AnswerGenerator | None = None,
         mode: RoutingMode = "auto",
         rule: SimpleRule | None = None,
+        local_max_evidence: int | None = None,
     ) -> None:
         if local is None and cloud is None:
             raise ValueError("At least one LLM provider is required")
@@ -102,6 +103,18 @@ class ModelRouter:
         self.cloud = cloud
         self.mode = mode
         self.rule = rule or SimpleRule()
+        if local_max_evidence is not None and local_max_evidence < 1:
+            raise ValueError("local_max_evidence must be at least 1")
+        self.local_max_evidence = local_max_evidence
+
+    def evidence_for(self, route: Route, evidence: list[Evidence]) -> list[Evidence]:
+        """Top evidence for the local model (shorter prompts); the cloud sees everything."""
+        if route == "local" and self.local_max_evidence:
+            return evidence[: self.local_max_evidence]
+        return evidence
+
+    def route_of(self, llm: AnswerGenerator) -> Route:
+        return "local" if llm is self.local else "cloud"
 
     @property
     def providers(self) -> dict[str, str]:
@@ -111,6 +124,15 @@ class ModelRouter:
             for name, llm in (("local", self.local), ("cloud", self.cloud))
             if llm is not None
         }
+
+    def usage(self) -> dict[str, dict[str, int]]:
+        """Per-route call/token counters of providers that keep them (see P4 reports)."""
+        result: dict[str, dict[str, int]] = {}
+        for name, llm in (("local", self.local), ("cloud", self.cloud)):
+            counter = getattr(llm, "usage", None)
+            if counter is not None:
+                result[name] = dict(counter)
+        return result
 
     async def aclose(self) -> None:
         for llm in (self.local, self.cloud):
