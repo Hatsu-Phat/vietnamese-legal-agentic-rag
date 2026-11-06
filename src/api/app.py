@@ -1,12 +1,13 @@
 """FastAPI application factory: request IDs, lifespan-owned services and safe error mapping."""
 
+import time
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from uuid import uuid4
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from loguru import logger
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -15,6 +16,9 @@ from src.api.routes import router
 from src.common.agent_errors import AgentError
 from src.common.search_errors import SearchError
 from src.core.api import ApiErrorCode, ApiErrorResponse
+from src.observability.metrics import METRICS
+
+PROMETHEUS_CONTENT_TYPE = "text/plain; version=0.0.4; charset=utf-8"
 
 
 def error_response(request: Request, status: int, code: ApiErrorCode, message: str) -> JSONResponse:
@@ -26,7 +30,14 @@ def error_response(request: Request, status: int, code: ApiErrorCode, message: s
     )
 
 
-def create_app(open_services: ServicesOpener) -> FastAPI:
+def route_label(request: Request) -> str:
+    """Route template (bounded cardinality); unmatched paths share one label."""
+    route = request.scope.get("route")
+    path = getattr(route, "path", None)
+    return path if isinstance(path, str) else "unmatched"
+
+
+def create_app(open_services: ServicesOpener, metrics_enabled: bool = True) -> FastAPI:
     """Build the app around an injectable opener so tests can run without models or keys."""
 
     @asynccontextmanager
@@ -47,9 +58,26 @@ def create_app(open_services: ServicesOpener) -> FastAPI:
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         request.state.request_id = uuid4()
-        response = await call_next(request)
+        started = time.perf_counter()
+        status = 500
+        try:
+            with logger.contextualize(request_id=str(request.state.request_id)):
+                response = await call_next(request)
+            status = response.status_code
+        finally:
+            route = route_label(request)
+            if route != "/metrics":
+                METRICS.requests.inc(route, str(status))
+                METRICS.request_latency.observe(time.perf_counter() - started, route)
         response.headers[REQUEST_ID_HEADER] = str(request.state.request_id)
         return response
+
+    if metrics_enabled:
+
+        @app.get("/metrics", include_in_schema=False)
+        async def metrics() -> PlainTextResponse:
+            """Prometheus text format; holds counts and timings only, no request content."""
+            return PlainTextResponse(METRICS.render(), media_type=PROMETHEUS_CONTENT_TYPE)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request: Request, exc: RequestValidationError) -> JSONResponse:

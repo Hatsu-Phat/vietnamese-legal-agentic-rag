@@ -114,6 +114,14 @@ class AppSettings(BaseSettings):
         default=None, alias="AUTH_API_KEY_LEGAL", repr=False
     )
 
+    # P5: /ask answer cache (in-process; 0 disables), observability and the MCP server.
+    ask_cache_ttl_seconds: float = Field(default=3600.0, ge=0, alias="ASK_CACHE_TTL_SECONDS")
+    ask_cache_max_entries: int = Field(default=512, ge=1, alias="ASK_CACHE_MAX_ENTRIES")
+    metrics_enabled: bool = Field(default=True, alias="METRICS_ENABLED")
+    log_format: Literal["text", "json"] = Field(default="text", alias="LOG_FORMAT")
+    # One of the AUTH_API_KEY_* values; the MCP server runs with that role's scope.
+    mcp_api_key: SecretStr | None = Field(default=None, alias="MCP_API_KEY", repr=False)
+
     # Agent Bounds
     max_retrieval_rounds: int = Field(default=2, alias="MAX_RETRIEVAL_ROUNDS")
     tool_timeout_seconds: int = Field(default=15, alias="TOOL_TIMEOUT_SECONDS")

@@ -35,6 +35,7 @@ from src.core.enums import LegalValidityStatus
 from src.core.search import SearchHit, SearchRequest
 from src.core.search_ports import SearchPort
 from src.guardrails.pii import mask_pii
+from src.observability.metrics import METRICS, timed_node
 
 # Evidence shown to the LLM across all rounds; bounds prompt size and cost.
 MAX_EVIDENCE = 16
@@ -213,16 +214,16 @@ def build_ask_graph(
         return {"trace": ["finalize"]}
 
     graph = StateGraph(AgentState)
-    graph.add_node("plan", plan)
-    graph.add_node("retrieve", retrieve)
-    graph.add_node("temporal_check", temporal_check)
-    graph.add_node("select_llm", select_llm)
-    graph.add_node("draft", draft)
-    graph.add_node("audit", audit)
-    graph.add_node("verify", verify)
-    graph.add_node("rewrite", rewrite)
-    graph.add_node("abstain", abstain)
-    graph.add_node("finalize", finalize)
+    graph.add_node("plan", timed_node("plan", plan))
+    graph.add_node("retrieve", timed_node("retrieve", retrieve))
+    graph.add_node("temporal_check", timed_node("temporal_check", temporal_check))
+    graph.add_node("select_llm", timed_node("select_llm", select_llm))
+    graph.add_node("draft", timed_node("draft", draft))
+    graph.add_node("audit", timed_node("audit", audit))
+    graph.add_node("verify", timed_node("verify", verify))
+    graph.add_node("rewrite", timed_node("rewrite", rewrite))
+    graph.add_node("abstain", timed_node("abstain", abstain))
+    graph.add_node("finalize", timed_node("finalize", finalize))
     graph.add_edge(START, "plan")
     graph.add_edge("plan", "retrieve")
     graph.add_edge("retrieve", "temporal_check")
@@ -345,6 +346,7 @@ class AskService:
             response = response.model_copy(
                 update={"limitations": [*response.limitations, PII_LIMITATION]}
             )
+        METRICS.ask_decisions.inc(response.decision, "false")
         # Trace only control flow and timing; never the question, evidence or answer text.
         logger.info(
             "Ask completed id={} decision={} rounds={} trace={} pii_types={} elapsed_ms={:.1f}",

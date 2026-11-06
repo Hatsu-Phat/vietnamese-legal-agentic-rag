@@ -60,7 +60,8 @@ dependencies = [
     
     # Utilities & Observability
     "loguru>=0.7.2",
-    "tqdm>=4.66.0"
+    "tqdm>=4.66.0",
+    "mcp>=2.3.0",
 ]
 
 [project.optional-dependencies]
