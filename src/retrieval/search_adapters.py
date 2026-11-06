@@ -80,6 +80,14 @@ class QdrantDenseSearch:
         self.collection = collection
         self.catalog = catalog
         self.timeout_seconds = timeout_seconds
+        # The catalog is verified against the collection, so it tells whether any point is
+        # restricted. Releases with only public chunks (v2) have no `access_level` payload
+        # index, and Qdrant Cloud rejects filters on unindexed keys, so no filter is sent;
+        # results are still re-checked with `matches(..., access)` below.
+        self.has_restricted = any(
+            chunk.access_level not in (None, AccessLevel.PUBLIC)
+            for chunk in catalog.chunks.values()
+        )
 
     def retrieve(
         self,
@@ -96,7 +104,7 @@ class QdrantDenseSearch:
             FieldCondition(key=key, match=MatchValue(value=value))
             for key, value in filters.model_dump(exclude_none=True).items()
         ]
-        scope = access_condition(access)
+        scope = access_condition(access) if self.has_restricted else None
         if scope is not None:
             conditions.append(scope)
         try:

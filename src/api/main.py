@@ -5,9 +5,9 @@ from contextlib import asynccontextmanager
 
 from loguru import logger
 
-from src.agents.factory import create_generator
-from src.agents.gemini import GeminiAnswerGenerator
+from src.agents.factory import create_router
 from src.agents.graph import AskService
+from src.agents.router import ModelRouter
 from src.api.app import create_app
 from src.api.dependencies import AccessResolver, ApiServices
 from src.common.agent_errors import LLMUnavailable
@@ -19,15 +19,15 @@ from src.retrieval.search_factory import open_search_service
 
 @asynccontextmanager
 async def open_services() -> AsyncIterator[ApiServices]:
-    """/search and /sources work without an LLM key; /ask then answers 503 LLM_UNAVAILABLE."""
+    """/search and /sources work without any LLM; /ask then answers 503 LLM_UNAVAILABLE."""
     settings = get_settings()
     access = AccessResolver.from_settings(
         AccessPolicy.from_config(load_yaml_config(DEFAULT_CONFIG_PATH)), settings
     )
     logger.info("Access control roles_with_keys={}", access.configured_roles)
-    generator: GeminiAnswerGenerator | None
+    generator: ModelRouter | None
     try:
-        generator = create_generator(settings)
+        generator = create_router(settings)
     except LLMUnavailable:
         generator = None
         logger.warning("No LLM configured; /ask is disabled")

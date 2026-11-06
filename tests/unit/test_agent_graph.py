@@ -121,6 +121,7 @@ async def test_grounded_answer_maps_citations_from_metadata() -> None:
         "plan",
         "retrieve:1",
         "temporal_check",
+        "route:local:only_local",
         "draft",
         "audit:pass",
         "verify:1/1",

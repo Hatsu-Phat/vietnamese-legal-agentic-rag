@@ -75,7 +75,7 @@ def test_sdk_errors_are_translated_by_adapter(
 
     client = Mock()
     client.query_points.side_effect = failure
-    adapter = QdrantDenseSearch(client, "test", Mock())
+    adapter = QdrantDenseSearch(client, "test", Mock(chunks={}))
     with pytest.raises(expected) as error:
         adapter.retrieve([1.0], SearchFilters(), 10, time.monotonic() + 10)
     assert "private" not in str(error.value)

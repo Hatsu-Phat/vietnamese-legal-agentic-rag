@@ -1,8 +1,10 @@
 """P2 role-based access: scopes are server-side, applied before top-k, and never leak."""
 
 import hashlib
+import time
 from collections.abc import Iterator
 from pathlib import Path
+from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
@@ -30,7 +32,7 @@ from src.core.search_release import SearchRuntime
 from src.retrieval.search_adapters import BM25SparseSearch, QdrantDenseSearch
 from src.retrieval.search_catalog import CatalogSources, ChunkCatalog
 from src.retrieval.search_service import SearchService
-from tests.search_support import Encoder, real_bm25
+from tests.search_support import Encoder, real_bm25, write_catalog
 from tests.unit.test_agent_graph import FakeGenerator, FakeSearch, answer, hit
 from tests.unit.test_api import client_for
 
@@ -272,3 +274,30 @@ async def test_agent_retrieves_with_the_callers_scope() -> None:
     await service.ask(AskRequest(question="q"), uuid4())
     await service.ask(AskRequest(question="q"), uuid4(), MANAGER)
     assert search.scopes == [PUBLIC_ONLY, MANAGER]
+
+
+class RecordingClient:
+    """Stands in for Qdrant Cloud, which rejects filters on keys without a payload index."""
+
+    def __init__(self) -> None:
+        self.filters: list[object] = []
+
+    def query_points(self, collection: str, **kwargs: object) -> object:
+        self.filters.append(kwargs["query_filter"])
+        return SimpleNamespace(points=[])
+
+
+def test_public_only_release_sends_no_access_filter(tmp_path: Path, catalog: ChunkCatalog) -> None:
+    # A pre-P1 release (all public, no access_level index on Cloud): no access filter, or
+    # Qdrant Cloud answers 400 and every search fails.
+    public = write_catalog(tmp_path / "public.jsonl", count=3)
+    client = RecordingClient()
+    dense = QdrantDenseSearch(client, "v2", public)  # type: ignore[arg-type]
+    assert not dense.has_restricted
+    dense.retrieve([0.0] * 4, SearchFilters(), 5, time.monotonic() + 30, PUBLIC_ONLY)
+    assert client.filters == [None]
+    # A release with restricted chunks keeps the filter for limited scopes.
+    mixed = QdrantDenseSearch(client, "v3", catalog)  # type: ignore[arg-type]
+    assert mixed.has_restricted
+    mixed.retrieve([0.0] * 4, SearchFilters(), 5, time.monotonic() + 30, PUBLIC_ONLY)
+    assert client.filters[-1] is not None

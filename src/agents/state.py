@@ -5,6 +5,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.agents.router import RouteDecision
 from src.core.access import PUBLIC_ONLY, AccessScope
 from src.core.agent import (
     AbstainReason,
@@ -27,6 +28,8 @@ class AgentState(BaseModel):
     # Set when the question contained personal identifiers (masked before any node runs);
     # the P3 router must keep such requests on the local model.
     contains_pii: bool = False
+    # Provider used for the current draft; verify reuses it (P3 router).
+    route: RouteDecision | None = None
     query: str = ""
     rounds: int = 0
     evidence: list[Evidence] = Field(default_factory=list)

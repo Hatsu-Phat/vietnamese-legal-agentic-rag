@@ -1,7 +1,7 @@
-"""LangGraph workflow: plan → retrieve → temporal check → draft → audit → verify → route.
+"""LangGraph workflow: plan → retrieve → temporal check → select LLM → draft → audit → verify.
 
-Routing, validity screening, citation audit and the retry budget are deterministic Python;
-the LLM only drafts structured answers, rewrites queries and reviews claim support.
+Routing (including local/cloud LLM choice), validity screening, citation audit and the retry
+budget are deterministic Python; the LLM only drafts structured answers, rewrites queries and reviews claim support.
 """
 
 import time
@@ -11,6 +11,7 @@ from uuid import UUID
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
+from src.agents.router import ModelRouter, RouteDecision
 from src.agents.state import AgentState
 from src.citation.abstention import ABSTAIN_MESSAGES, route_after_audit
 from src.citation.review import apply_review
@@ -58,6 +59,7 @@ def to_evidence(hit: SearchHit, citation_id: str) -> Evidence:
         status=hit.status,
         issued_year=hit.issued_year,
         source_url=hit.source_url,
+        access_level=hit.access_level,
     )
 
 
@@ -74,10 +76,22 @@ def merge_evidence(current: list[Evidence], hits: list[SearchHit]) -> list[Evide
     return merged
 
 
+def as_router(generator: AnswerGenerator | ModelRouter) -> ModelRouter:
+    """A bare generator is a single trusted (local) provider, as in tests and offline tools."""
+    return generator if isinstance(generator, ModelRouter) else ModelRouter(local=generator)
+
+
 def build_ask_graph(
-    search: SearchPort, generator: AnswerGenerator, max_rounds: int, verify_claims: bool = True
+    search: SearchPort,
+    generator: AnswerGenerator | ModelRouter,
+    max_rounds: int,
+    verify_claims: bool = True,
 ) -> Any:
     """Compile the bounded workflow; `request_id` is passed through the run config."""
+    router = as_router(generator)
+
+    def trace_route(decision: RouteDecision, used: RouteDecision) -> list[str]:
+        return [] if used == decision else [f"fallback:{used.label}"]
 
     def plan(state: AgentState) -> dict[str, Any]:
         return {"query": state.request.question, "trace": ["plan"]}
@@ -101,14 +115,27 @@ def build_ask_graph(
         usable, limitations = screen_evidence(state.evidence, state.request.as_of_date)
         return {"usable": usable, "limitations": limitations, "trace": ["temporal_check"]}
 
-    def after_temporal(state: AgentState) -> Literal["draft", "rewrite", "abstain"]:
+    def after_temporal(state: AgentState) -> Literal["select_llm", "rewrite", "abstain"]:
         if state.usable:
-            return "draft"
+            return "select_llm"
         return "rewrite" if state.rounds < max_rounds else "abstain"
 
+    def select_llm(state: AgentState) -> dict[str, Any]:
+        # All evidence seen so far, not only usable: once restricted, the request stays local.
+        decision = router.decide(state.request.question, state.evidence, state.contains_pii)
+        return {"route": decision, "trace": [f"route:{decision.label}"]}
+
     async def draft(state: AgentState) -> dict[str, Any]:
-        result = await generator.draft(state.request.question, state.usable)
-        return {"draft": result, "unsupported": False, "trace": ["draft"]}
+        assert state.route is not None
+        result, used = await router.run(
+            state.route, lambda llm: llm.draft(state.request.question, state.usable)
+        )
+        return {
+            "draft": result,
+            "unsupported": False,
+            "route": used,
+            "trace": [*trace_route(state.route, used), "draft"],
+        }
 
     def audit(state: AgentState) -> dict[str, Any]:
         assert state.draft is not None
@@ -123,15 +150,20 @@ def build_ask_graph(
         return "rewrite" if route == "retry" else route
 
     async def verify(state: AgentState) -> dict[str, Any]:
-        assert state.draft is not None
-        review = await generator.review(state.draft.claims, state.usable)
+        assert state.draft is not None and state.route is not None
+        claims = state.draft.claims
+        review, used = await router.run(state.route, lambda llm: llm.review(claims, state.usable))
         reviewed, limitations = apply_review(state.draft, review)
         removed = len(state.draft.claims) - len(reviewed.claims)
         return {
             "draft": reviewed,
             "unsupported": not reviewed.claims,
             "limitations": state.limitations + limitations,
-            "trace": [f"verify:{len(reviewed.claims)}/{len(reviewed.claims) + removed}"],
+            "route": used,
+            "trace": [
+                *trace_route(state.route, used),
+                f"verify:{len(reviewed.claims)}/{len(reviewed.claims) + removed}",
+            ],
         }
 
     def after_verify(state: AgentState) -> Literal["finalize", "rewrite", "abstain"]:
@@ -148,8 +180,14 @@ def build_ask_graph(
             feedback = describe_issues(state.audit)
         else:
             feedback = "evidence judged insufficient"
-        query = await generator.rewrite_query(state.request.question, feedback)
-        return {"query": query.strip()[:2000] or state.request.question, "trace": ["rewrite"]}
+        decision = router.decide(state.request.question, state.evidence, state.contains_pii)
+        query, used = await router.run(
+            decision, lambda llm: llm.rewrite_query(state.request.question, feedback)
+        )
+        return {
+            "query": query.strip()[:2000] or state.request.question,
+            "trace": [f"route:{decision.label}", *trace_route(decision, used), "rewrite"],
+        }
 
     def abstain(state: AgentState) -> dict[str, Any]:
         reason: AbstainReason | None
@@ -170,6 +208,7 @@ def build_ask_graph(
     graph.add_node("plan", plan)
     graph.add_node("retrieve", retrieve)
     graph.add_node("temporal_check", temporal_check)
+    graph.add_node("select_llm", select_llm)
     graph.add_node("draft", draft)
     graph.add_node("audit", audit)
     graph.add_node("verify", verify)
@@ -180,6 +219,7 @@ def build_ask_graph(
     graph.add_edge("plan", "retrieve")
     graph.add_edge("retrieve", "temporal_check")
     graph.add_conditional_edges("temporal_check", after_temporal)
+    graph.add_edge("select_llm", "draft")
     graph.add_edge("draft", "audit")
     graph.add_conditional_edges("audit", after_audit)
     graph.add_conditional_edges("verify", after_verify)
@@ -262,7 +302,7 @@ class AskService:
     def __init__(
         self,
         search: SearchPort,
-        generator: AnswerGenerator,
+        generator: AnswerGenerator | ModelRouter,
         max_rounds: int,
         verify_claims: bool = True,
     ) -> None:

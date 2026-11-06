@@ -50,6 +50,8 @@ class AppSettings(BaseSettings):
         env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        # Blank lines such as `LOCAL_LLM_TIMEOUT_SECONDS=` fall back to the defaults below.
+        env_ignore_empty=True,
     )
 
     # Application Environment
@@ -66,6 +68,16 @@ class AppSettings(BaseSettings):
     llm_model: str = Field(default="gemini-2.5-flash", alias="LLM_MODEL")
     llm_temperature: float = Field(default=0.0, alias="LLM_TEMPERATURE")
     llm_timeout_seconds: int = Field(default=30, alias="LLM_TIMEOUT_SECONDS")
+
+    # Local LLM and routing (P3)
+    local_llm_provider: str = Field(default="ollama", alias="LOCAL_LLM_PROVIDER")
+    ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
+    local_llm_model: str = Field(default="qwen2.5:3b", alias="LOCAL_LLM_MODEL")
+    local_llm_timeout_seconds: float = Field(default=120.0, alias="LOCAL_LLM_TIMEOUT_SECONDS")
+    local_llm_num_ctx: int = Field(default=8192, alias="LOCAL_LLM_NUM_CTX")
+    # auto: router decides; local / cloud: prefer one provider. Sensitive data is always local.
+    # Default cloud until P4 improves the 3B model (docs/design/p3-llm-router.md section 5).
+    llm_routing_mode: str = Field(default="cloud", alias="LLM_ROUTING_MODE")
 
     # Embeddings & Retrieval
     embedding_model_name: str = Field(default="BAAI/bge-m3", alias="EMBEDDING_MODEL_NAME")
