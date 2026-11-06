@@ -1,0 +1,174 @@
+{
+  "query": "khung lương bậc E3 và E4",
+  "question": "Thời hiệu khởi kiện tranh chấp hợp đồng là bao lâu?",
+  "runs": [
+    {
+      "role": "legal",
+      "startup_s": 489.9,
+      "tools": [
+        "ask",
+        "get_source",
+        "search_legal"
+      ],
+      "search": {
+        "is_error": false,
+        "elapsed_s": 1.68,
+        "hits": [
+          {
+            "chunk_id": "internal_2026_qd_tnt_09__art_2__c0",
+            "access_level": "confidential"
+          },
+          {
+            "chunk_id": "law_2020_tt_btttt_29__art_6__c1",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2015_ttlt_bnv_btc_01__art_3__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "internal_2026_qd_tnt_09__art_3__c0",
+            "access_level": "confidential"
+          },
+          {
+            "chunk_id": "law_2010_tt_bqp_73__art_3__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "internal_2026_qd_tnt_16__art_2__c0",
+            "access_level": "confidential"
+          },
+          {
+            "chunk_id": "law_2010_tt_bqp_73__art_4__c1",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2015_ttlt_bnv_btc_01__art_3__c2",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2016_tt_bldtbxh_27__art_4__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2013_tt_bca_17__art_8__c0",
+            "access_level": "public"
+          }
+        ]
+      },
+      "get_source": {
+        "chunk_id": "internal_2026_qd_tnt_09__art_2__c0",
+        "is_error": false,
+        "error": null,
+        "access_level": "opened"
+      },
+      "probe_chunk": "internal_2026_qd_tnt_09__art_2__c0",
+      "ask": [
+        {
+          "is_error": false,
+          "error": null,
+          "decision": "answer",
+          "citations": [
+            "law_2015_qh13_91__art_429__c0"
+          ],
+          "cache_hit": false,
+          "elapsed_s": 4.36
+        },
+        {
+          "is_error": false,
+          "error": null,
+          "decision": "answer",
+          "citations": [
+            "law_2015_qh13_91__art_429__c0"
+          ],
+          "cache_hit": true,
+          "elapsed_s": 0.0
+        }
+      ]
+    },
+    {
+      "role": "employee",
+      "startup_s": 101.2,
+      "tools": [
+        "ask",
+        "get_source",
+        "search_legal"
+      ],
+      "search": {
+        "is_error": false,
+        "elapsed_s": 1.25,
+        "hits": [
+          {
+            "chunk_id": "law_2020_tt_btttt_29__art_6__c1",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2015_ttlt_bnv_btc_01__art_3__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2010_tt_bqp_73__art_3__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2015_ttlt_bnv_btc_01__art_3__c2",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2010_tt_bqp_73__art_4__c1",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2016_tt_bldtbxh_27__art_4__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2017_tt_bnv_07__art_4__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2013_tt_bca_17__art_8__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2016_tt_bqp_170__art_4__c0",
+            "access_level": "public"
+          },
+          {
+            "chunk_id": "law_2017_tt_bnv_07__art_7__c4",
+            "access_level": "public"
+          }
+        ]
+      },
+      "get_source": {
+        "chunk_id": "internal_2026_qd_tnt_09__art_2__c0",
+        "is_error": true,
+        "error": "Error executing tool get_source: SOURCE_NOT_FOUND: Không tìm thấy nguồn được yêu cầu.",
+        "access_level": null
+      },
+      "probe_chunk": "internal_2026_qd_tnt_09__art_2__c0",
+      "ask": [
+        {
+          "is_error": false,
+          "error": null,
+          "decision": "answer",
+          "citations": [
+            "law_2015_qh13_91__art_429__c0"
+          ],
+          "cache_hit": false,
+          "elapsed_s": 7.97
+        },
+        {
+          "is_error": false,
+          "error": null,
+          "decision": "answer",
+          "citations": [
+            "law_2015_qh13_91__art_429__c0"
+          ],
+          "cache_hit": true,
+          "elapsed_s": 0.0
+        }
+      ]
+    }
+  ]
+}

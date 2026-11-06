@@ -22,6 +22,7 @@ from src.common.agent_errors import AgentError, LLMUnavailable
 from src.common.logger import logger
 from src.core.agent import AnswerGenerator, Evidence
 from src.core.enums import AccessLevel
+from src.observability.metrics import METRICS
 
 Route = Literal["local", "cloud"]
 RoutingMode = Literal["auto", "local", "cloud"]
@@ -177,7 +178,8 @@ class ModelRouter:
     ) -> tuple[T, RouteDecision]:
         """Run one LLM call; return its result and the decision actually used."""
         try:
-            return await call(self._provider(decision)), decision
+            result = await self._counted(decision, call)
+            return result, decision
         except AgentError as exc:
             fallback = self._fallback(decision)
             if fallback is None:
@@ -188,7 +190,20 @@ class ModelRouter:
                 exc.code,
                 fallback.route,
             )
-            return await call(self._provider(fallback)), fallback
+            return await self._counted(fallback, call), fallback
+
+    async def _counted(
+        self, decision: RouteDecision, call: Callable[[AnswerGenerator], Awaitable[T]]
+    ) -> T:
+        llm = self._provider(decision)
+        provider = type(llm).__name__
+        try:
+            result = await call(llm)
+        except AgentError:
+            METRICS.llm_calls.inc(decision.route, provider, "error")
+            raise
+        METRICS.llm_calls.inc(decision.route, provider, "ok")
+        return result
 
     def _fallback(self, decision: RouteDecision) -> RouteDecision | None:
         if decision.route == "cloud" and self.local is not None:
