@@ -78,6 +78,12 @@ class AppSettings(BaseSettings):
     # auto: router decides; local / cloud: prefer one provider. Sensitive data is always local.
     # Default cloud until P4 improves the 3B model (docs/design/p3-llm-router.md section 5).
     llm_routing_mode: str = Field(default="cloud", alias="LLM_ROUTING_MODE")
+    # P4: draft prompt variant (zero_shot / few_shot / cot) per provider, chosen from
+    # docs/reports/prompting_v1.md: zero_shot is best on Gemini, cot on qwen2.5:3b.
+    prompt_variant: str = Field(default="zero_shot", alias="PROMPT_VARIANT")
+    local_prompt_variant: str = Field(default="cot", alias="LOCAL_PROMPT_VARIANT")
+    # Evidence chunks shown to the local model per draft/review (None = all, as for cloud).
+    local_max_evidence: int | None = Field(default=None, ge=1, alias="LOCAL_LLM_MAX_EVIDENCE")
 
     # Embeddings & Retrieval
     embedding_model_name: str = Field(default="BAAI/bge-m3", alias="EMBEDDING_MODEL_NAME")

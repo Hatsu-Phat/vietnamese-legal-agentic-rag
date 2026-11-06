@@ -128,9 +128,14 @@ def build_ask_graph(
     async def draft(state: AgentState) -> dict[str, Any]:
         assert state.route is not None
         result, used = await router.run(
-            state.route, lambda llm: llm.draft(state.request.question, state.usable)
+            state.route,
+            lambda llm: llm.draft(
+                state.request.question, router.evidence_for(router.route_of(llm), state.usable)
+            ),
         )
+        # Audit, review and the response use only the evidence this model was shown.
         return {
+            "usable": router.evidence_for(used.route, state.usable),
             "draft": result,
             "unsupported": False,
             "route": used,
@@ -152,7 +157,10 @@ def build_ask_graph(
     async def verify(state: AgentState) -> dict[str, Any]:
         assert state.draft is not None and state.route is not None
         claims = state.draft.claims
-        review, used = await router.run(state.route, lambda llm: llm.review(claims, state.usable))
+        review, used = await router.run(
+            state.route,
+            lambda llm: llm.review(claims, router.evidence_for(router.route_of(llm), state.usable)),
+        )
         reviewed, limitations = apply_review(state.draft, review)
         removed = len(state.draft.claims) - len(reviewed.claims)
         return {

@@ -36,6 +36,18 @@ from src.retrieval.search_factory import open_search_service
 DEFAULT_CASES = "tests/eval/ask_dev_authored.jsonl"
 
 
+def merge_usage(
+    before: dict[str, dict[str, int]], after: dict[str, dict[str, int]]
+) -> dict[str, dict[str, int]]:
+    """A --retry-errors run adds its calls and tokens to those of the run it completes."""
+    merged = {route: dict(counters) for route, counters in before.items()}
+    for route, counters in after.items():
+        target = merged.setdefault(route, {})
+        for key, value in counters.items():
+            target[key] = target.get(key, 0) + value
+    return merged
+
+
 def llm_label(settings: AppSettings, router: ModelRouter) -> str:
     """Models that may answer in this run, e.g. `ollama:qwen2.5:3b+gemini:gemini-2.5-flash`."""
     names = []
@@ -62,6 +74,16 @@ async def run() -> int:
         help="override LLM_ROUTING_MODE; sensitive cases stay local in every mode",
     )
     parser.add_argument(
+        "--prompt",
+        choices=["zero_shot", "few_shot", "cot"],
+        help="override PROMPT_VARIANT and LOCAL_PROMPT_VARIANT for the draft step (P4)",
+    )
+    parser.add_argument(
+        "--local-max-evidence",
+        type=int,
+        help="override LOCAL_LLM_MAX_EVIDENCE (evidence chunks shown to the local model)",
+    )
+    parser.add_argument(
         "--retry-errors",
         action="store_true",
         help="re-run only the cases that errored in the existing report and replace them",
@@ -74,15 +96,20 @@ async def run() -> int:
     cases += load_cases(resolve_project_path(args.cases))
     output = args.output or paths.reports_dir / "ask_dev.json"
     previous: list[AskCaseResult] = []
+    previous_usage: dict[str, dict[str, int]] = {}
     retried: list[str] = []
     if args.retry_errors:
-        previous = AskEvaluationReport.model_validate_json(
+        previous_report = AskEvaluationReport.model_validate_json(
             output.read_text(encoding="utf-8")
-        ).results
+        )
+        previous = previous_report.results
+        usage_before = previous_report.parameters.get("llm_usage")
+        if isinstance(usage_before, dict):
+            previous_usage = usage_before
         retried = [r.case_id for r in previous if r.error_code is not None]
         cases = [c for c in cases if c.case_id in set(retried)]
     try:
-        generator = create_router(settings, args.routing)
+        generator = create_router(settings, args.routing, args.prompt, args.local_max_evidence)
         async with open_search_service(args.config_path, args.device) as search:
             service = AskService(
                 search,
@@ -119,6 +146,10 @@ async def run() -> int:
                     "llm_routing_mode": generator.mode,
                     "llm_providers": generator.providers,
                     "local_llm_num_ctx": settings.local_llm_num_ctx,
+                    "prompt_variant": args.prompt
+                    or f"local={settings.local_prompt_variant},cloud={settings.prompt_variant}",
+                    "local_max_evidence": generator.local_max_evidence,
+                    "llm_usage": merge_usage(previous_usage, generator.usage()),
                     "retried_error_cases": retried,
                 },
                 complete=all(r.error_code is None for r in results),

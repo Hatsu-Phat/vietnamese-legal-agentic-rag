@@ -2,15 +2,17 @@
 
 import asyncio
 import json
+from collections import Counter
 from typing import Any
 
 import httpx
 from pydantic import SecretStr, ValidationError
 
 from src.agents.prompts import (
-    DRAFT_SYSTEM,
     REVIEW_SYSTEM,
     REWRITE_SYSTEM,
+    PromptVariant,
+    draft_system,
     draft_user_message,
     review_user_message,
     rewrite_user_message,
@@ -72,6 +74,7 @@ class GeminiAnswerGenerator:
         timeout_seconds: float = 30.0,
         client: httpx.AsyncClient | None = None,
         retry_delay_seconds: float = 2.0,
+        prompt_variant: PromptVariant = "zero_shot",
     ) -> None:
         self._api_key = api_key
         self._model = model
@@ -79,6 +82,9 @@ class GeminiAnswerGenerator:
         self._client = client or httpx.AsyncClient(base_url=GEMINI_BASE_URL)
         self._timeout = timeout_seconds
         self._retry_delay = retry_delay_seconds
+        self._draft_system = draft_system(prompt_variant)
+        # calls / prompt_tokens / output_tokens / schema_errors, for P4 cost reports.
+        self.usage: Counter[str] = Counter()
 
     async def aclose(self) -> None:
         await self._client.aclose()
@@ -128,21 +134,31 @@ class GeminiAnswerGenerator:
         if response.status_code != 200:
             logger.warning("Gemini returned HTTP {}", response.status_code)
             raise LLMUnavailable()
+        self.usage["calls"] += 1
+        try:
+            meta = response.json().get("usageMetadata") or {}
+            self.usage["prompt_tokens"] += int(meta.get("promptTokenCount") or 0)
+            self.usage["output_tokens"] += int(meta.get("candidatesTokenCount") or 0)
+            self.usage["thought_tokens"] += int(meta.get("thoughtsTokenCount") or 0)
+        except (ValueError, AttributeError, TypeError):
+            pass
         try:
             parts = response.json()["candidates"][0]["content"]["parts"]
             return json.loads("".join(p.get("text", "") for p in parts))
         except (KeyError, IndexError, TypeError, ValueError):
             logger.warning("Gemini response was not the expected JSON shape")
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None
 
     async def draft(self, question: str, evidence: list[Evidence]) -> DraftAnswer:
-        raw = await self._generate_json(DRAFT_SYSTEM, draft_user_message(question, evidence))
+        raw = await self._generate_json(self._draft_system, draft_user_message(question, evidence))
         try:
             return DraftAnswer.model_validate(coerce_draft(raw))
         except ValidationError as exc:
             # Log field locations only; values may contain evidence or question text.
             locations = [".".join(str(p) for p in e["loc"]) for e in exc.errors()]
             logger.warning("Gemini draft failed schema validation at {}", locations)
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None
 
     async def rewrite_query(self, question: str, feedback: str) -> str:
@@ -156,4 +172,5 @@ class GeminiAnswerGenerator:
             return ClaimReview.model_validate(raw)
         except ValidationError:
             logger.warning("Gemini review failed schema validation")
+            self.usage["schema_errors"] += 1
             raise LLMUnavailable() from None
