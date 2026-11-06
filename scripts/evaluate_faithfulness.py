@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.agents.factory import create_generator
+from src.agents.factory import create_router
 from src.agents.graph import AskService
 from src.common.agent_errors import AgentError, LLMUnavailable
 from src.common.atomic import atomic_open
@@ -54,7 +54,7 @@ async def run() -> int:
         if key is None:
             raise LLMUnavailable()
         judge = gemini_faithfulness(key, settings.gemini_model_id)
-        generator = create_generator(settings)
+        generator = create_router(settings)
         async with open_search_service(args.config_path, args.device) as search:
             service = AskService(
                 search,

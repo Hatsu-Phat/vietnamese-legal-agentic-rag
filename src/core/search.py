@@ -15,7 +15,7 @@ from pydantic import (
     model_validator,
 )
 
-from src.core.enums import LegalValidityStatus
+from src.core.enums import AccessLevel, LegalValidityStatus
 
 Branch = Literal["dense", "bm25"]
 ErrorCode = Literal["INVALID_REQUEST", "SEARCH_UNAVAILABLE", "SEARCH_TIMEOUT", "INTERNAL_ERROR"]
@@ -83,6 +83,8 @@ class SearchHit(Contract):
     issued_year: int | None
     status: LegalValidityStatus
     source_url: str | None
+    # None for releases built before P1; such chunks are public law.
+    access_level: AccessLevel | None = None
     rank: int = Field(ge=1)
     score: float = Field(gt=0, allow_inf_nan=False)
     matched_by: list[Branch] = Field(min_length=1, max_length=2)

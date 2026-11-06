@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Protocol
 
 from pydantic import UUID4, ConfigDict, Field, StrictInt, StrictStr, field_validator
 
-from src.core.enums import LegalValidityStatus
+from src.core.enums import AccessLevel, LegalValidityStatus
 from src.core.search import Contract, SearchFilters, normalize_string
 
 Decision = Literal["answer", "clarify", "abstain"]
@@ -70,6 +70,8 @@ class Evidence(Contract):
     status: LegalValidityStatus
     issued_year: int | None
     source_url: str | None
+    # Copied from retrieval; the router keeps internal/confidential evidence off cloud LLMs.
+    access_level: AccessLevel | None = None
 
 
 class DraftClaim(Contract):

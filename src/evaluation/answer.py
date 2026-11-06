@@ -83,6 +83,7 @@ def score_case(
         gold_precision=precision,
         retrieval_rounds=response.retrieval_rounds,
         elapsed_ms=response.elapsed_ms,
+        llm_routes=[t for t in response.trace if t.startswith(("route:", "fallback:"))],
     )
 
 

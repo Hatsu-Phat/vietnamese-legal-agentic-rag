@@ -42,6 +42,9 @@ class AskCaseResult(Contract):
     gold_precision: float | None = None
     retrieval_rounds: int = 0
     elapsed_ms: float = 0.0
+    # P3 router trace entries, e.g. ["route:local:simple"] or ["route:cloud:complex",
+    # "fallback:local:cloud_failed"]; empty for reports made before P3.
+    llm_routes: list[str] = Field(default_factory=list)
 
 
 class AskMetrics(Contract):

@@ -188,6 +188,7 @@ class SearchService:
                         "document_type",
                         "issued_year",
                         "status",
+                        "access_level",
                     },
                 )
                 hits.append(
