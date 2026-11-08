@@ -1,0 +1,1119 @@
+{
+  "run_date": "2026-11-08",
+  "role": "manager",
+  "access_scope": [
+    "internal",
+    "public"
+  ],
+  "config": "configs/experiments/p6_final.yaml",
+  "dataset": "enterprise_v1.jsonl",
+  "routing_mode": "auto",
+  "providers": {
+    "local": "OllamaAnswerGenerator",
+    "cloud": "CloudSpy"
+  },
+  "local_model": "qwen2.5:3b",
+  "cloud_model": "gemini-3.5-flash-lite",
+  "cases": 78,
+  "errors": {
+    "LLM_TIMEOUT": 1
+  },
+  "cloud_calls": {
+    "draft": 43,
+    "rewrite": 16,
+    "review": 13
+  },
+  "cloud_calls_with_restricted_evidence": 0,
+  "restricted_call_details": [],
+  "cases_routed_local_for_restricted_evidence": 46,
+  "answers_citing_restricted": 10,
+  "decision_accuracy": 0.5714285714285714,
+  "route_counts": {
+    "route:local:restricted_evidence": 98,
+    "route:cloud:complex": 59,
+    "route:local:simple": 8
+  },
+  "results": [
+    {
+      "case_id": "int_pub_01",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_02",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "int_pub_03",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_04",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_05",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "int_pub_06",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_07",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_08",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_pub_09",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "int_int_01",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_02",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_03",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_04",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_05",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_06",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_07",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_08",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_09",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_10",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_11",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_12",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_13",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_int_14",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_int_15",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "int_conf_01",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_02",
+      "category": "internal_policy",
+      "decision": "answer",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "int_conf_03",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_04",
+      "category": "internal_policy",
+      "decision": "clarify",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_05",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_06",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_07",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_08",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_09",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "int_conf_10",
+      "category": "internal_policy",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_01",
+      "category": "policy_and_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "mix_02",
+      "category": "policy_and_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_03",
+      "category": "policy_and_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_04",
+      "category": "policy_and_law",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_05",
+      "category": "policy_and_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "mix_06",
+      "category": "policy_and_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "internal"
+      ]
+    },
+    {
+      "case_id": "mix_07",
+      "category": "policy_and_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_08",
+      "category": "policy_and_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "mix_09",
+      "category": "policy_and_law",
+      "decision": "answer",
+      "expected": [
+        "answer",
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "mix_10",
+      "category": "policy_and_law",
+      "decision": "clarify",
+      "expected": [
+        "answer",
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_11",
+      "category": "policy_and_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "mix_12",
+      "category": "policy_and_law",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "probe_01",
+      "category": "access_probe",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "probe_02",
+      "category": "access_probe",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "probe_03",
+      "category": "access_probe",
+      "error_code": "LLM_TIMEOUT"
+    },
+    {
+      "case_id": "probe_04",
+      "category": "access_probe",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "probe_05",
+      "category": "access_probe",
+      "decision": "clarify",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "oos_01",
+      "category": "out_of_scope",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "oos_02",
+      "category": "out_of_scope",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "oos_03",
+      "category": "out_of_scope",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:simple",
+        "route:local:simple",
+        "route:local:simple"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "oos_04",
+      "category": "out_of_scope",
+      "decision": "clarify",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "oos_05",
+      "category": "out_of_scope",
+      "decision": "abstain",
+      "expected": [
+        "abstain"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_01",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_02",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_03",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_04",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_05",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_06",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_07",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_08",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_09",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:simple"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_10",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_11",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_12",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:simple",
+        "route:local:simple",
+        "route:local:simple"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_13",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_14",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:simple"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_15",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_16",
+      "category": "new_law",
+      "decision": "clarify",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_17",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    },
+    {
+      "case_id": "law_18",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_19",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:cloud:complex"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_20",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_21",
+      "category": "new_law",
+      "decision": "answer",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": [
+        "public"
+      ]
+    },
+    {
+      "case_id": "law_22",
+      "category": "new_law",
+      "decision": "abstain",
+      "expected": [
+        "answer"
+      ],
+      "llm_routes": [
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence",
+        "route:local:restricted_evidence"
+      ],
+      "cited_levels": []
+    }
+  ]
+}
