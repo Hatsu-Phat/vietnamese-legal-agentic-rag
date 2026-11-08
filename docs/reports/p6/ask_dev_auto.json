@@ -1,0 +1,1605 @@
+{
+  "split": "dev",
+  "llm_model": "ollama:qwen2.5:3b+gemini:gemini-3.5-flash-lite",
+  "release_fingerprint": "e09d3b5044bf9cc39ee8ccc7a9a82cc7c48db120291921ab0a8a1116f2d24187",
+  "run_date": "2026-11-08",
+  "seed": 42,
+  "parameters": {
+    "answerable_sample": 30,
+    "authored_cases": "tests/eval/ask_dev_authored.jsonl",
+    "max_retrieval_rounds": 2,
+    "strict_citation_verification": true,
+    "llm_temperature": 0.0,
+    "top_k": 8,
+    "delay_seconds": 2.0,
+    "llm_routing_mode": "auto",
+    "llm_providers": {
+      "local": "OllamaAnswerGenerator",
+      "cloud": "GeminiAnswerGenerator"
+    },
+    "local_llm_num_ctx": 8192,
+    "prompt_variant": "local=cot,cloud=zero_shot",
+    "local_max_evidence": null,
+    "llm_usage": {
+      "local": {
+        "calls": 21,
+        "prompt_tokens": 50973,
+        "output_tokens": 2636
+      },
+      "cloud": {
+        "calls": 102,
+        "prompt_tokens": 265259,
+        "output_tokens": 10441,
+        "thought_tokens": 0
+      }
+    },
+    "retried_error_cases": []
+  },
+  "complete": true,
+  "overall": {
+    "cases": 52,
+    "errors": 0,
+    "decision_accuracy": 0.9230769230769231,
+    "answer_rate_on_answerable": 0.8888888888888888,
+    "false_abstention_rate": 0.1111111111111111,
+    "false_answer_rate_on_unanswerable": 0.0,
+    "clarify_rate_on_ambiguous": 1.0,
+    "citation_validity": 1.0,
+    "gold_hit_rate": 0.9090909090909091,
+    "citation_gold_precision": 0.9090909090909091,
+    "mean_ms": 6749.573619228054,
+    "p95_ms": 23131.72720000148
+  },
+  "by_type": {
+    "adversarial": {
+      "cases": 5,
+      "errors": 0,
+      "decision_accuracy": 1.0,
+      "answer_rate_on_answerable": 1.0,
+      "false_abstention_rate": 0.0,
+      "false_answer_rate_on_unanswerable": 0.0,
+      "clarify_rate_on_ambiguous": null,
+      "citation_validity": 1.0,
+      "gold_hit_rate": 1.0,
+      "citation_gold_precision": 1.0,
+      "mean_ms": 6651.67184000602,
+      "p95_ms": 19102.857500023674
+    },
+    "ambiguous": {
+      "cases": 6,
+      "errors": 0,
+      "decision_accuracy": 1.0,
+      "answer_rate_on_answerable": null,
+      "false_abstention_rate": null,
+      "false_answer_rate_on_unanswerable": 0.0,
+      "clarify_rate_on_ambiguous": 1.0,
+      "citation_validity": null,
+      "gold_hit_rate": null,
+      "citation_gold_precision": null,
+      "mean_ms": 5799.324600001758,
+      "p95_ms": 23131.72720000148
+    },
+    "direct": {
+      "cases": 30,
+      "errors": 0,
+      "decision_accuracy": 0.8666666666666667,
+      "answer_rate_on_answerable": 0.8666666666666667,
+      "false_abstention_rate": 0.13333333333333333,
+      "false_answer_rate_on_unanswerable": null,
+      "clarify_rate_on_ambiguous": null,
+      "citation_validity": 1.0,
+      "gold_hit_rate": 0.8846153846153846,
+      "citation_gold_precision": 0.8846153846153846,
+      "mean_ms": 7023.415579995101,
+      "p95_ms": 19721.191399992676
+    },
+    "exact_reference": {
+      "cases": 2,
+      "errors": 0,
+      "decision_accuracy": 1.0,
+      "answer_rate_on_answerable": 1.0,
+      "false_abstention_rate": 0.0,
+      "false_answer_rate_on_unanswerable": null,
+      "clarify_rate_on_ambiguous": null,
+      "citation_validity": 1.0,
+      "gold_hit_rate": 1.0,
+      "citation_gold_precision": 1.0,
+      "mean_ms": 3469.117399989045,
+      "p95_ms": 3642.9812999849673
+    },
+    "temporal": {
+      "cases": 1,
+      "errors": 0,
+      "decision_accuracy": 1.0,
+      "answer_rate_on_answerable": 1.0,
+      "false_abstention_rate": 0.0,
+      "false_answer_rate_on_unanswerable": null,
+      "clarify_rate_on_ambiguous": null,
+      "citation_validity": 1.0,
+      "gold_hit_rate": 1.0,
+      "citation_gold_precision": 1.0,
+      "mean_ms": 3005.952300009085,
+      "p95_ms": 3005.952300009085
+    },
+    "unanswerable": {
+      "cases": 8,
+      "errors": 0,
+      "decision_accuracy": 1.0,
+      "answer_rate_on_answerable": null,
+      "false_abstention_rate": null,
+      "false_answer_rate_on_unanswerable": 0.0,
+      "clarify_rate_on_ambiguous": null,
+      "citation_validity": null,
+      "gold_hit_rate": null,
+      "citation_gold_precision": null,
+      "mean_ms": 7784.608362497238,
+      "p95_ms": 31395.048200007295
+    }
+  },
+  "results": [
+    {
+      "case_id": "qa_dev:3033e56375bdac44130a2985182adf36",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Kế hoạch nạo vét duy tu luồng hàng hải công cộng thuộc Kế hoạch bảo trì kết cấu hạ tầng hàng hải hàng năm do Bộ Giao thông vận tải phê duyệt, bao gồm nội dung kế hoạch thực hiện nạo vét duy tu của năm kế hoạch và kế hoạch chuẩn bị cho các công trình của năm tiếp theo.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2019_tt_bgtvt_35__art_4__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_tt_bgtvt_35__art_4"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 9850.957099988591,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:864a1af242c05bb0f32b9dc468ffe251",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Việc quyết toán kinh phí ngân sách nhà nước hỗ trợ tư vấn cho doanh nghiệp nhỏ và vừa được thực hiện theo quy định tại Luật Ngân sách nhà nước, các văn bản hướng dẫn Luật và các văn bản quy phạm pháp luật về chế độ kế toán ngân sách nhà nước.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2019_tt_btc_54__art_8__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_tt_btc_54__art_8"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4222.279199981131,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:69868df2db32128936fbaa24f78779c5",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Cán bộ, chiến sĩ Công an có quyền từ chối làm việc, giải quyết ngay các yêu cầu trong lĩnh vực quản lý hành chính về trật tự xã hội đối với những người ăn mặc phản cảm.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2020_tt_bca_15__art_12__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2020_tt_bca_15__art_12"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3810.967099998379,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:b60dc0f5de2394613a2a0dbcefa577a2",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hàng hóa trung chuyển được vận chuyển bằng đường biển từ nước ngoài vào khu vực trung chuyển tại cảng biển, sau đó đưa ra nước ngoài từ chính khu vực này hoặc đưa đến khu vực trung chuyển tại cảng biển khác; hoạt động này bao gồm việc xếp dỡ, vận chuyển, lưu giữ hàng hóa theo yêu cầu tại cửa khẩu nhập hoặc cửa khẩu xuất, chịu sự giám sát của cơ quan hải quan và có thời hạn lưu giữ không quá 30 ngày kể từ ngày hoàn thành thủ tục hải quan.",
+      "claims": 3,
+      "cited_chunk_ids": [
+        "law_2018_nd_cp_59__art_1__c28",
+        "law_2018_nd_cp_59__art_1__c29"
+      ],
+      "cited_provision_ids": [
+        "law_2018_nd_cp_59__art_1"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": false,
+      "gold_precision": 0.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3559.1725999838673,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:cff6d37f0e34502207eeef74d3f3d942",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Các đối tượng được cấp giấy xác nhận kiến thức về an toàn thực phẩm đối với cơ sở sản xuất, kinh doanh thực phẩm nông, lâm, thủy sản bao gồm: chủ cơ sở sản xuất kinh doanh (chủ cơ sở hoặc người được chủ cơ sở thuê, ủy quyền điều hành trực tiếp hoạt động sản xuất kinh doanh) và người trực tiếp sản xuất kinh doanh (người tham gia trực tiếp vào các công đoạn sản xuất kinh doanh thực phẩm nông, lâm, thủy sản tại các cơ sở).",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2018_tt_bnnptnt_38__art_18__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_tt_bnnptnt_38__art_18"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4311.748699983582,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:5793bde2190606ac8de05695fa08a131",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Công tác chuẩn bị kiểm kê đất đai và lập bản đồ hiện trạng sử dụng đất định kỳ tại Tổng cục Quản lý đất đai bao gồm việc xây dựng dự án trình Bộ trưởng trình Thủ tướng Chính phủ phê duyệt trước 04 tháng, xây dựng kế hoạch và văn bản hướng dẫn trình Bộ trưởng phê duyệt, hoàn thành tập huấn nghiệp vụ cho các địa phương trước 02 tháng, và thu thập các tài liệu quy hoạch, kế hoạch sử dụng đất cùng kết quả thống kê, kiểm kê đất đai các kỳ trước.",
+      "claims": 3,
+      "cited_chunk_ids": [
+        "law_2018_tt_btnmt_27__art_20__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_tt_btnmt_27__art_20"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4655.9164999926,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:3be0c8413d604ddaa1f78b881a934cd7",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Cơ quan quản lý khu bảo tồn có trách nhiệm xây dựng Quy chế quản lý khu bảo tồn sau khi được thành lập và trình cấp có thẩm quyền ban hành.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_66__art_18__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_66__art_18"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3352.965199999744,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:ce6a3b861c83bb111514f9dd7e2f6682",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Theo quy định, đối với trường hợp viên chức nghiện ma túy để áp dụng hình thức kỷ luật buộc thôi việc thì bắt buộc phải có xác nhận của cơ sở y tế hoặc thông báo của cơ quan có thẩm quyền.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2020_nd_cp_112__art_19__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2020_nd_cp_112__art_19"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 31412.90830000071,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:33e010756673f72dc3fb08d6e29f03f5",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Công ty quản lý quỹ phải đền bù thiệt hại cho quỹ và nhà đầu tư giao dịch chứng chỉ quỹ khi định giá sai giá trị tài sản ròng với các mức sai lệnh đạt từ 0,75% giá trị tài sản ròng trở lên đối với quỹ trái phiếu và đạt từ 1% giá trị tài sản ròng trở lên đối với các quỹ khác.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2020_tt_btc_98__art_36__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2020_tt_btc_98__art_36"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3613.912500004517,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:04bbfe37cfa4ee0150a5d809972d3fa7",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Phạt tiền từ 600.000 đồng đến 800.000 đồng",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_100__art_23__c1"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_100__art_23"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 19721.191399992676,
+      "llm_routes": [
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:a8f9b43878c2a31e164187da81e77de7",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 7251.227900007507,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:c33d5a1454c48402a5a8481f71b8e70f",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hồ sơ đề nghị điều chỉnh nội dung giấy phép hoạt động đối với cơ sở khám bệnh, chữa bệnh thuộc Bộ Quốc phòng khi thay đổi quy mô giường bệnh bao gồm công văn đề nghị của Thủ trưởng đơn vị quản lý trực tiếp, bản kê khai cơ sở vật chất, thiết bị y tế và hồ sơ nhân sự tương ứng, cùng dự kiến phạm vi chuyên môn cần điều chỉnh.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2014_tt_bqp_18__art_28__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2014_tt_bqp_18__art_28"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": false,
+      "gold_precision": 0.0,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 6976.390800002264,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:18db132513637bb80d1f679adffe42d3",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "UNSUPPORTED_CLAIMS",
+      "error_code": null,
+      "answer": "Các nhận định soạn được không được đoạn trích dẫn hỗ trợ trực tiếp; hệ thống từ chối trả lời.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 14556.022200005827,
+      "llm_routes": [
+        "route:local:simple",
+        "route:local:simple",
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:27281408d6d412644d2c2994019148b2",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hành vi nuôi gia súc, gia cầm, động vật gây mất vệ sinh chung ở khu dân cư bị phạt cảnh cáo hoặc phạt tiền từ 100.000 đồng đến 300.000 đồng.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2013_nd_cp_167__art_7__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2013_nd_cp_167__art_7"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3506.951499992283,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:dddb2bd50143569ab4864e58ac967103",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hành vi thu hồi, xử lý thực phẩm không đảm bảo an toàn không phù hợp với quy định của pháp luật hoặc không đúng nội dung yêu cầu của cơ quan nhà nước có thẩm quyền bị phạt tiền từ 10.000.000 đồng đến 15.000.000 đồng; hành vi không thực hiện thu hồi theo quy định đối với thực phẩm không đảm bảo an toàn bị phạt tiền từ 20.000.000 đồng đến 30.000.000 đồng.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2018_nd_cp_115__art_26__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_nd_cp_115__art_26"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3470.7594999927096,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:1bef3be1686e5da9fdf2af7b0296561d",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Mức phạt là từ 2.000.000 đồng đến 3.000.000 đồng",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_100__art_16__c2"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_100__art_16"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 12737.144499988062,
+      "llm_routes": [
+        "route:local:simple",
+        "route:local:simple",
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:cc65431218126738da964e7b4c241c2c",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hóa đơn bán hàng là hóa đơn áp dụng đối với người bán hàng hóa, cung cấp dịch vụ thực hiện khai thuế giá trị gia tăng theo phương pháp trực tiếp, bao gồm cả hóa đơn được khởi tạo từ máy tính tiền có kết nối chuyển dữ liệu điện tử với cơ quan thuế.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2018_nd_cp_119__art_5__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_nd_cp_119__art_5"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3792.7483999810647,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:24695ba9849ffd12689624de2e8d43a2",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "UNSUPPORTED_CLAIMS",
+      "error_code": null,
+      "answer": "Các nhận định soạn được không được đoạn trích dẫn hỗ trợ trực tiếp; hệ thống từ chối trả lời.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 16214.282400003867,
+      "llm_routes": [
+        "route:local:simple",
+        "route:local:simple",
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:bbd8b4e9e09426bdff7560de4f636c9d",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Mô hình liên thông giữa Tổ chức cung cấp dịch vụ chứng thực chữ ký số quốc gia và Tổ chức cung cấp dịch vụ chứng thực chữ ký số chuyên dùng Chính phủ là mô hình công nhận chéo.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2019_tt_btttt_04__art_4__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_tt_btttt_04__art_4"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3357.49009999563,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:94291dcc292496163eb5c8a3ec2a4a8f",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4613.5143999999855,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:3d1cfb52f4ebaff75ab21b382e091242",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Sở Y tế chịu trách nhiệm tổ chức thẩm định kế hoạch lựa chọn nhà thầu cung cấp thuốc tập trung cấp địa phương.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2016_tt_byt_11__art_29__c1"
+      ],
+      "cited_provision_ids": [
+        "law_2016_tt_byt_11__art_29"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": false,
+      "gold_precision": 0.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3013.468400022248,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:c2e2fba3221edadf9a7c52b8a09eca3c",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Ngân sách nhà nước hỗ trợ tối đa 100% kinh phí xây dựng nội dung tuyên truyền khuyến nông trên các phương tiện thông tin đại chúng, xuất bản tạp chí, tài liệu, ấn phẩm khuyến nông, tổ chức sự kiện khuyến nông, xây dựng và quản lý cơ sở dữ liệu thông tin khuyến nông và các hình thức thông tin tuyên truyền khuyến nông khác. Đồng thời, đối tượng chuyển giao và đối tượng nhận chuyển giao công nghệ khi tham dự các sự kiện khuyến nông được hỗ trợ chi phí tài liệu, đi lại, tiền ăn, nơi ở theo quy định hiện hành.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2018_nd_cp_83__art_28__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_nd_cp_83__art_28"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3314.9851999769453,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:db3b85cdeb3bc07116eb62860957affc",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Khi nhận được khiếu nại, tố cáo về hành vi, quyết định tố tụng trái pháp luật xâm phạm quyền và lợi ích hợp pháp của người tham gia tố tụng là người dưới 18 tuổi, cơ quan, người có thẩm quyền tiến hành tố tụng phải phân loại, phối hợp giải quyết kịp thời và gửi văn bản giải quyết theo đúng trình tự, thủ tục quy định. Trường hợp khiếu nại, tố cáo lệnh, quyết định bắt, giữ, tạm giữ, tạm giam trong giai đoạn điều tra, truy tố, xét xử, Viện kiểm sát hoặc Tòa án phải giải quyết ngay trong thời hạn 24 giờ kể từ khi nhận được, hoặc tối đa không quá 03 ngày nếu cần thời gian xác minh.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2018_ttlt_vksndtc_tandtc_bca_btp_bldtbxh_06__art_17__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2018_ttlt_vksndtc_tandtc_bca_btp_bldtbxh_06__art_17"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 5130.850199988345,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:1f6c99df77252cf954735b0d30f67135",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Phiếu đồng ý tham gia nghiên cứu (Assent Form - AF)",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2017_tt_byt_45__art_3__c2"
+      ],
+      "cited_provision_ids": [
+        "law_2017_tt_byt_45__art_3"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 6935.164600028656,
+      "llm_routes": [
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:894350072c8a31ef0059c2bad606f6e9",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Hành vi chuyển mục đích sử dụng rừng sang mục đích khác đã đảm bảo điều kiện nhưng chưa thực hiện đầy đủ trình tự, thủ tục đối với rừng sản xuất có diện tích từ 7.000 m2 đến dưới 10.000 m2 bị phạt tiền từ 60.000.000 đồng đến 80.000.000 đồng.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_35__art_12__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_35__art_12"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4262.970200012205,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:6332dda2c245889fe3fb4750d08be99b",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Việc nộp hồ sơ xin cấp giấy phép hoạt động đo đạc và bản đồ được quy định tùy thuộc vào từng nhóm tổ chức: tổ chức thuộc các bộ, cơ quan ngang bộ, cơ quan thuộc Chính phủ, tổng công ty do Thủ tướng Chính phủ quyết định thành lập và một số tổ chức thuộc cơ quan trung ương nộp hồ sơ qua hệ thống dịch vụ công trực tuyến, trực tiếp hoặc qua dịch vụ bưu chính tới cơ quan quản lý chuyên ngành về đo đạc và bản đồ thuộc Bộ Tài nguyên và Môi trường. Các tổ chức đề nghị cấp giấy phép không thuộc các trường hợp trên gửi hồ sơ qua hệ thống dịch vụ công trực tuyến của Ủy ban nhân dân cấp tỉnh liên thông với hệ thống của Bộ Tài nguyên và Môi trường hoặc gửi trực tiếp, qua dịch vụ bưu chính tới cơ quan chuyên môn về tài nguyên và môi trường thuộc Ủy ban nhân dân cấp tỉnh.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_27__art_33__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_27__art_33"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4685.03259998397,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:a156a22e5949614194c77de4b9fbb0e5",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Mức phạt tiền đối với hành vi mua dâm là từ 500.000 đồng đến 1.000.000 đồng.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2013_nd_cp_167__art_22__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2013_nd_cp_167__art_22"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 6749.187299981713,
+      "llm_routes": [
+        "route:local:simple"
+      ]
+    },
+    {
+      "case_id": "qa_dev:473f8b1fed35f566908d8192d95dfa7c",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Lãi suất giấy tờ có giá do tổ chức tín dụng, chi nhánh ngân hàng nước ngoài phát hành quyết định phù hợp với quy định hiện hành về lãi suất của Ngân hàng Nhà nước trong từng thời kỳ.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2021_tt_nhnn_01__art_9__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2021_tt_nhnn_01__art_9"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3835.1895999803673,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:fd8ee1e3efb5fc671af492f42403849a",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Theo quy định, những nội dung không thuộc phạm vi giải trình bao gồm: nội dung thuộc bí mật nhà nước, bí mật đời sống riêng tư, bí mật cá nhân, bí mật kinh doanh theo quy định của pháp luật; và nội dung chỉ đạo, điều hành, tổ chức thực hiện nhiệm vụ, công vụ trong nội bộ cơ quan, tổ chức, đơn vị mà chưa ban hành, chưa thực hiện hoặc nội dung chỉ đạo, điều hành của cơ quan cấp trên với cơ quan cấp dưới.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2019_nd_cp_59__art_6__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2019_nd_cp_59__art_6"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3250.696999981301,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "qa_dev:e53f345a8938582ebfd4e4be65213285",
+      "question_type": "direct",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Cơ quan đăng ký tài sản và cơ quan đăng ký giao dịch bảo đảm có trách nhiệm thực hiện đăng ký quyền sở hữu tài sản, quyền sử dụng đất cho người mua hoặc người được thi hành án nhận tài sản để trừ vào số tiền được thi hành án, đồng thời thu hồi, sửa đổi, hủy và cấp mới các giấy tờ chứng nhận quyền sở hữu tài sản, quyền sử dụng đất, giấy tờ đăng ký giao dịch bảo đảm đã cấp cho người phải thi hành án.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2020_nd_cp_08__art_60__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2020_nd_cp_08__art_60"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4536.372000002302,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_01",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4845.977099990705,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_02",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4594.562599988421,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_03",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4148.881600005552,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_04",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 31395.048200007295,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_05",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4337.656999996398,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_06",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4371.811399993021,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_07",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4536.7129999795,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "unans_08",
+      "question_type": "unanswerable",
+      "expected_decisions": [
+        "abstain",
+        "clarify"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4046.2160000170115,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_01",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 1678.9354000065941,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_02",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 1716.755600005854,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_03",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 23131.72720000148,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_04",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 2307.0805000024848,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_05",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 1774.1476999945007,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "ambig_06",
+      "question_type": "ambiguous",
+      "expected_decisions": [
+        "clarify"
+      ],
+      "decision": "clarify",
+      "abstain_reason": "NEEDS_CLARIFICATION",
+      "error_code": null,
+      "answer": "Câu hỏi cần thêm thông tin để tra cứu chính xác.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 4187.301199999638,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "adv_01",
+      "question_type": "adversarial",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Thời hiệu khởi kiện để yêu cầu Tòa án giải quyết tranh chấp hợp đồng là 03 năm, kể từ ngày người có quyền yêu cầu biết hoặc phải biết quyền và lợi ích hợp pháp của mình bị xâm phạm.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2015_qh13_91__art_429__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2015_qh13_91__art_429"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3636.871099995915,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "adv_02",
+      "question_type": "adversarial",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Nam từ đủ 20 tuổi trở lên và nữ từ đủ 18 tuổi trở lên.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2014_qh13_52__art_8__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2014_qh13_52__art_8"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3193.862200016156,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "adv_03",
+      "question_type": "adversarial",
+      "expected_decisions": [
+        "answer",
+        "abstain"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Theo quy định pháp luật, thời hiệu khởi kiện để yêu cầu Tòa án giải quyết tranh chấp hợp đồng là 03 năm, kể từ ngày người có quyền yêu cầu biết hoặc phải biết quyền và lợi ích hợp pháp của mình bị xâm phạm.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2015_qh13_91__art_429__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2015_qh13_91__art_429"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 19102.857500023674,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "adv_04",
+      "question_type": "adversarial",
+      "expected_decisions": [
+        "abstain",
+        "clarify"
+      ],
+      "decision": "abstain",
+      "abstain_reason": "INSUFFICIENT_EVIDENCE",
+      "error_code": null,
+      "answer": "Căn cứ tìm được chưa đủ để trả lời chắc chắn câu hỏi này.",
+      "claims": 0,
+      "cited_chunk_ids": [],
+      "cited_provision_ids": [],
+      "unresolved_citations": 0,
+      "limitations": [],
+      "gold_hit": null,
+      "gold_precision": null,
+      "retrieval_rounds": 2,
+      "elapsed_ms": 4846.481299988227,
+      "llm_routes": [
+        "route:cloud:complex",
+        "route:cloud:complex",
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "adv_05",
+      "question_type": "adversarial",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Nữ phải từ đủ 18 tuổi trở lên mới được kết hôn.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2014_qh13_52__art_8__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2014_qh13_52__art_8"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 2478.2871000061277,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "temp_01",
+      "question_type": "temporal",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Thời hiệu khởi kiện để yêu cầu Tòa án giải quyết tranh chấp hợp đồng là 03 năm, kể từ ngày người có quyền yêu cầu biết hoặc phải biết quyền và lợi ích hợp pháp của mình bị xâm phạm.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2015_qh13_91__art_429__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2015_qh13_91__art_429"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "AS_OF_DATE_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3005.952300009085,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "exact_01",
+      "question_type": "exact_reference",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Thời hiệu khởi kiện để yêu cầu Tòa án giải quyết tranh chấp hợp đồng là 03 năm, kể từ ngày người có quyền yêu cầu biết hoặc phải biết quyền và lợi ích hợp pháp của mình bị xâm phạm.",
+      "claims": 1,
+      "cited_chunk_ids": [
+        "law_2015_qh13_91__art_429__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2015_qh13_91__art_429"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3295.253499993123,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    },
+    {
+      "case_id": "exact_02",
+      "question_type": "exact_reference",
+      "expected_decisions": [
+        "answer"
+      ],
+      "decision": "answer",
+      "abstain_reason": null,
+      "error_code": null,
+      "answer": "Theo Luật Hôn nhân và gia đình 2014, nam, nữ kết hôn với nhau phải tuân theo các điều kiện về độ tuổi, sự tự nguyện, năng lực hành vi dân sự và không thuộc trường hợp cấm kết hôn; đồng thời Nhà nước không thừa nhận hôn nhân giữa những người cùng giới tính.",
+      "claims": 2,
+      "cited_chunk_ids": [
+        "law_2014_qh13_52__art_8__c0"
+      ],
+      "cited_provision_ids": [
+        "law_2014_qh13_52__art_8"
+      ],
+      "unresolved_citations": 0,
+      "limitations": [
+        "VALIDITY_UNVERIFIED",
+        "SOURCE_URL_UNAVAILABLE"
+      ],
+      "gold_hit": true,
+      "gold_precision": 1.0,
+      "retrieval_rounds": 1,
+      "elapsed_ms": 3642.9812999849673,
+      "llm_routes": [
+        "route:cloud:complex"
+      ]
+    }
+  ]
+}

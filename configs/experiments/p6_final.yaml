@@ -1,0 +1,120 @@
+# ==============================================================================
+# P6 final evaluation (configs/experiments/p6_final.yaml)
+# Identical to p1_release_v3.yaml (pinned collection vn_legal_bge_m3_v3, same
+# retrieval/agent parameters, reranker off); only reports_dir differs so final
+# numbers land in docs/reports/p6 without overwriting the P1 reports.
+# ==============================================================================
+pipeline:
+  name: "vietnamese-legal-agentic-rag"
+  version: "0.1.0"
+  environment: "development"
+
+# Shared directory layout. Relative paths are resolved from the repository root.
+paths:
+  raw_dir: "data/raw"
+  samples_dir: "data/samples"
+  benchmarks_dir: "data/benchmarks"
+  processed_dir: "data/artifacts/releases/p1/local/processed"
+  indexes_dir: "data/artifacts/releases/p1/local/indexes"
+  manifests_dir: "data/artifacts/releases/p1/local/manifests"
+  reports_dir: "docs/reports/p6"
+
+# ------------------------------------------------------------------------------
+# LLM Provider Configuration
+# ------------------------------------------------------------------------------
+llm:
+  provider: "gemini"
+  model_id: "gemini-2.5-flash"
+  temperature: 0.0
+  timeout_seconds: 30
+
+
+# ------------------------------------------------------------------------------
+# Chunking Strategy Configuration
+# ------------------------------------------------------------------------------
+chunking:
+  strategy: "hierarchical_provision"
+  max_words_per_chunk: 400        # Word budget; không bảo đảm embedding_text <= 512 tokens
+  overlap_words: 50               # Word overlap; kiểm tra token bằng tokenizer BGE-M3
+  min_words_per_chunk: 15
+  include_breadcrumb_in_embedding_text: true
+
+# ------------------------------------------------------------------------------
+# Indexing Configuration (BM25 + Qdrant)
+# ------------------------------------------------------------------------------
+indexing:
+  bm25:
+    segment_vietnamese: true
+    k1: 1.2
+    b: 0.65
+  qdrant:
+    mode: "local"                 # Có thể ghi đè bằng QDRANT_MODE=server trong .env
+    url: "http://localhost:6333"
+    collection_name: "vn_legal_bge_m3_v3"  # pinned collection, not the alias
+    embedding_model_id: "BAAI/bge-m3"
+    embedding_revision: "5617a9f61b028005a4858fdac845db406aefb181"
+    vector_size: 1024
+    distance: "Cosine"
+    normalize_embeddings: true
+    batch_size: 32
+    max_seq_length: 512
+    on_disk_payload: true
+
+
+# ------------------------------------------------------------------------------
+# Hybrid Retrieval Configuration
+# ------------------------------------------------------------------------------
+retrieval:
+  timeout_seconds: 30
+  # Dense Retrieval via BGE-M3
+  dense:
+    enabled: true
+    top_k: 10
+
+  # Sparse Keyword Retrieval via BM25
+  sparse:
+    enabled: true
+    engine: "rank_bm25"
+    top_k: 10
+
+  # Rank Fusion via Reciprocal Rank Fusion (RRF)
+  fusion:
+    method: "rrf"
+    rrf_k: 60
+    top_candidates: 10
+
+  # Cross-Encoder Reranking (Disabled in baseline MVP, evaluated in Phase 5)
+  # Dev ablation 2026-11-05: MRR 0.72 -> 0.81 but +17-33 s/query on CPU; keep off until GPU.
+  # See docs/reports/rerank_ablation_v1.md.
+  reranking:
+    enabled: false
+    model_name: "BAAI/bge-reranker-v2-m3"
+    top_n: 5
+
+# ------------------------------------------------------------------------------
+# Access Control (P2): role -> access levels. API keys live in .env
+# (AUTH_API_KEY_EMPLOYEE/MANAGER/LEGAL), never here. No X-API-Key header = anonymous.
+# ------------------------------------------------------------------------------
+access_control:
+  anonymous: ["public"]
+  roles:
+    employee: ["public"]
+    manager: ["public", "internal"]
+    legal: ["public", "internal", "confidential"]
+
+# ------------------------------------------------------------------------------
+# LangGraph Agentic Workflow Configuration
+# ------------------------------------------------------------------------------
+agent:
+  # Strict loop bounds to prevent infinite tool calling
+  max_retrieval_rounds: 2
+  # Enforce citation audit before generating final answer
+  require_citation_verification: true
+  # Abstention policy: reject if evidence confidence is insufficient or ambiguous
+  abstention_threshold: 0.4
+  timeout_seconds: 30
+
+# ------------------------------------------------------------------------------
+# Storage & Persistence
+# ------------------------------------------------------------------------------
+# Active vector storage is configured under indexing.qdrant above.

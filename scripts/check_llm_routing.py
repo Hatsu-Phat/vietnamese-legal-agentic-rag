@@ -88,6 +88,7 @@ async def run() -> int:
     parser.add_argument("--delay", type=float, default=2.0)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    args.config_path = resolve_project_path(args.config_path)
     role: Role = args.role
     config = load_yaml_config(args.config_path)
     scope = AccessPolicy.from_config(config).roles[role]

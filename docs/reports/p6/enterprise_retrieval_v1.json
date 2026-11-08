@@ -1,0 +1,3458 @@
+{
+  "dataset": "enterprise_v1.jsonl",
+  "collection": "vn_legal_bge_m3_v3",
+  "release_fingerprint": "e09d3b5044bf9cc39ee8ccc7a9a82cc7c48db120291921ab0a8a1116f2d24187",
+  "query_top_k": 10,
+  "cases_total": 78,
+  "cases_with_gold": 73,
+  "errors": 0,
+  "complete": true,
+  "by_category": {
+    "access_probe": {
+      "recall_at_k": {
+        "1": 0.4,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "mrr": 0.6,
+      "mean_ms": 1443.7999999994645,
+      "p95_ms": 2360.000000000582
+    },
+    "internal_policy": {
+      "recall_at_k": {
+        "1": 0.6764705882352942,
+        "5": 0.9117647058823529,
+        "10": 0.9411764705882353
+      },
+      "mrr": 0.7803921568627451,
+      "mean_ms": 1020.2352941174895,
+      "p95_ms": 1750.0
+    },
+    "new_law": {
+      "recall_at_k": {
+        "1": 0.5454545454545454,
+        "5": 0.8636363636363636,
+        "10": 0.9090909090909091
+      },
+      "mrr": 0.7242424242424242,
+      "mean_ms": 862.2272727278124,
+      "p95_ms": 1110.000000000582
+    },
+    "policy_and_law": {
+      "recall_at_k": {
+        "1": 0.3611111111111111,
+        "5": 0.6944444444444445,
+        "10": 0.7777777777777778
+      },
+      "mrr": 0.875,
+      "mean_ms": 1089.9166666664921,
+      "p95_ms": 1843.9999999973224
+    }
+  },
+  "by_access_level": {
+    "public": {
+      "recall_at_k": {
+        "1": 0.515625,
+        "5": 0.875,
+        "10": 0.9375
+      },
+      "mrr": 0.7020833333333333,
+      "mean_ms": 1033.7187499999345,
+      "p95_ms": 1750.0
+    },
+    "internal": {
+      "recall_at_k": {
+        "1": 0.6458333333333334,
+        "5": 0.8541666666666666,
+        "10": 0.8958333333333334
+      },
+      "mrr": 0.875,
+      "mean_ms": 930.9999999998885,
+      "p95_ms": 1406.9999999919673
+    },
+    "confidential": {
+      "recall_at_k": {
+        "1": 0.5490196078431373,
+        "5": 0.8725490196078431,
+        "10": 0.8725490196078431
+      },
+      "mrr": 0.7352941176470589,
+      "mean_ms": 1090.117647059207,
+      "p95_ms": 2360.000000000582
+    }
+  },
+  "overall": {
+    "recall_at_k": {
+      "1": 0.5662100456621005,
+      "5": 0.8675799086757991,
+      "10": 0.9086757990867579
+    },
+    "mrr": 0.7666666666666667,
+    "mean_ms": 1013.0821917808458,
+    "p95_ms": 1750.0
+  },
+  "parameters": {
+    "collection": "vn_legal_bge_m3_v3",
+    "embedding_model_id": "BAAI/bge-m3",
+    "embedding_revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "device": "cpu",
+    "canonical_chunks_sha256": "9a287c02e4cbd2ba4d29f8a94f1440a72489dc0dc30d84fbb6d2de0a00d7831d",
+    "bm25_index_sha256": "a7e84370a03c2a8322ba7f6addad0fd1160305ea70c2d6b96f00055cb139da56",
+    "bm25_metadata_sha256": "eabdec0d7a8ed26d7f5cae0936c954ed8f54a560310a5b6b1829d2b93a746a73",
+    "stopwords_sha256": "724f5cb2b5611f6510ba3788122eafeb34f4425cc5693958b780b2788355c4fb",
+    "versions": {
+      "python": "3.12.15",
+      "rank-bm25": "0.2.2",
+      "pyvi": "0.1.1",
+      "numpy": "2.5.4"
+    },
+    "timeout_seconds": 30.0,
+    "dense_candidates": 10,
+    "sparse_candidates": 10,
+    "fusion_candidates": 10,
+    "rrf_k": 60,
+    "max_query_tokens": 512,
+    "vector_size": 1024,
+    "mode": "hybrid metrics; dense/bm25 rankings kept per case",
+    "access_scope": [
+      "confidential",
+      "internal",
+      "public"
+    ]
+  },
+  "results": [
+    {
+      "case_id": "int_pub_01",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_18__art_4"
+      ],
+      "hybrid_rank": 6,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2018_nd_cp_91__art_63",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2019_tt_nhnn_23__art_11",
+          "internal_2026_qd_tnt_35__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "law_2020_qh14_59__art_4",
+          "law_2018_nd_cp_91__art_41",
+          "law_2014_ttlt_byt_bnnptnt_bct_34__art_12"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_18__art_4",
+          "law_2016_nd_cp_24__art_13",
+          "law_2017_tt_btc_133__art_20",
+          "law_2010_nd_cp_16__art_10",
+          "law_2016_nd_cp_24__art_3",
+          "law_2019_tt_btc_12__art_3",
+          "law_2018_tt_btc_06__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "law_2018_nd_cp_91__art_63",
+          "law_2019_tt_nhnn_23__art_11",
+          "internal_2026_qd_tnt_18__art_4",
+          "internal_2026_qd_tnt_35__art_1",
+          "law_2016_nd_cp_24__art_13",
+          "law_2017_tt_btc_133__art_20",
+          "law_2020_qh14_59__art_4"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_02",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_20__art_4"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_20__art_4",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2019_qh14_45__art_26",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "internal_2026_qd_tnt_03__art_2",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_qd_tnt_03__art_3",
+          "internal_2026_qd_tnt_02__art_6",
+          "internal_2026_cs_tnt_20__art_2",
+          "law_2015_ttlt_btnmt_bnv_54__art_9"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_20__art_4",
+          "internal_2026_qd_tnt_02__art_5",
+          "internal_2026_cs_tnt_20__art_3",
+          "internal_2026_cs_tnt_20__art_2",
+          "law_2016_tt_bkhcn_13__art_15",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2016_tt_bkhcn_13__art_13",
+          "law_2016_nd_cp_33__art_9",
+          "internal_2026_qd_tnt_03__art_3",
+          "internal_2026_qd_tnt_18__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_20__art_4",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_cs_tnt_20__art_2",
+          "internal_2026_qd_tnt_03__art_3",
+          "internal_2026_qd_tnt_02__art_5",
+          "law_2019_qh14_45__art_26",
+          "internal_2026_cs_tnt_20__art_3",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2016_tt_bkhcn_13__art_15",
+          "internal_2026_qd_tnt_03__art_2"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_03",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_28__art_6"
+      ],
+      "hybrid_rank": 3,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_cs_tnt_28__art_6",
+          "law_2025_nd_cp_356__art_8",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "law_2025_qh15_116__art_25",
+          "internal_2026_qt_tnt_25__art_4",
+          "law_2020_nd_cp_91__art_36",
+          "law_2021_nd_cp_58__art_29",
+          "internal_2026_qt_tnt_30__art_4"
+        ],
+        "bm25": [
+          "internal_2026_qt_tnt_25__art_4",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "law_2025_qh15_91__art_23",
+          "internal_2026_cs_tnt_28__art_6",
+          "internal_2026_qt_tnt_30__art_4",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2025_nd_cp_356__art_28",
+          "internal_2026_qd_tnt_40__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qt_tnt_25__art_4",
+          "internal_2026_cs_tnt_28__art_6",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qt_tnt_30__art_4",
+          "law_2025_nd_cp_356__art_8",
+          "law_2025_qh15_91__art_23",
+          "law_2025_qh15_116__art_25"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_04",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_40__art_5"
+      ],
+      "hybrid_rank": 5,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qt_tnt_30__art_3",
+          "internal_2026_qd_tnt_40__art_5",
+          "internal_2026_qd_tnt_29__art_4",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_cs_tnt_28__art_2",
+          "law_2015_tt_btnmt_36__art_14",
+          "law_2019_tt_bnv_07__art_10",
+          "law_2012_tt_bnv_11__art_11",
+          "internal_2026_qd_tnt_02__art_5",
+          "law_2015_tt_btnmt_36__art_17"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_28__art_2",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_qt_tnt_30__art_3",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_qd_tnt_50__art_3",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_cs_tnt_44__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_qt_tnt_30__art_3",
+          "internal_2026_cs_tnt_28__art_2",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_40__art_5",
+          "internal_2026_qd_tnt_29__art_4",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "law_2015_tt_btnmt_36__art_14",
+          "law_2019_tt_bnv_07__art_10"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_05",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_41__art_1"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_41__art_1",
+          "internal_2026_cs_tnt_44__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_qd_tnt_12__art_3",
+          "law_2018_nd_cp_57__art_10",
+          "internal_2026_qd_tnt_41__art_3",
+          "internal_2026_bc_tnt_36__art_1",
+          "law_2021_nd_cp_58__art_29",
+          "law_2018_nd_cp_57__art_13"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_44__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_qd_tnt_41__art_1",
+          "internal_2026_cs_tnt_28__art_2",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qt_tnt_30__art_3"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_44__art_1",
+          "internal_2026_qd_tnt_41__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_cs_tnt_28__art_2",
+          "internal_2026_qd_tnt_12__art_3",
+          "law_2018_nd_cp_57__art_10",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_qd_tnt_41__art_3"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_06",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_41__art_3"
+      ],
+      "hybrid_rank": 3,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_41__art_3",
+          "internal_2026_qd_tnt_40__art_1",
+          "law_2014_nd_cp_84__art_27",
+          "law_2019_tt_btc_55__art_8",
+          "law_2012_ttlt_btc_bldtbxh_bvhttdl_149__art_10",
+          "internal_2026_qt_tnt_30__art_3",
+          "law_2014_tt_bldtbxh_19__art_21",
+          "internal_2026_qd_tnt_13__art_8"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_cs_tnt_28__art_2",
+          "internal_2026_qt_tnt_30__art_3",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_cs_tnt_44__art_1",
+          "internal_2026_qd_tnt_50__art_3"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_qt_tnt_30__art_3",
+          "internal_2026_qd_tnt_41__art_3",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "law_2014_nd_cp_84__art_27",
+          "law_2019_tt_btc_55__art_8",
+          "internal_2026_cs_tnt_28__art_2",
+          "law_2012_ttlt_btc_bldtbxh_bvhttdl_149__art_10"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_07",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_45__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_45__art_2",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2018_tt_btc_71__art_12",
+          "law_2018_qd_ttg_12__art_5",
+          "internal_2026_qd_tnt_10__art_6",
+          "internal_2026_qd_tnt_10__art_5",
+          "law_2016_nd_cp_53__art_8"
+        ],
+        "bm25": [
+          "law_2020_tt_byt_17__art_4",
+          "law_2019_nd_cp_59__art_27",
+          "law_2019_nd_cp_59__art_26",
+          "law_2019_nd_cp_59__art_28",
+          "law_2016_nd_cp_134__art_8",
+          "internal_2026_cs_tnt_45__art_2",
+          "law_2013_tt_bca_16__art_6",
+          "internal_2026_qd_tnt_18__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_45__art_2",
+          "internal_2026_qd_tnt_18__art_1",
+          "law_2020_tt_byt_17__art_4",
+          "law_2019_nd_cp_59__art_27",
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2019_nd_cp_59__art_26",
+          "law_2019_nd_cp_59__art_28",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2016_nd_cp_134__art_8",
+          "internal_2026_qd_tnt_09__art_3"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_08",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_46__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_46__art_2",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2021_nd_cp_06__art_28",
+          "law_2016_tt_bxd_09__art_19",
+          "law_2021_nd_cp_58__art_27",
+          "internal_2026_cs_tnt_46__art_3",
+          "law_2005_qh11_36__art_318",
+          "law_2017_tt_nhnn_25__art_7",
+          "internal_2026_qd_tnt_41__art_1",
+          "law_2021_nd_cp_58__art_29"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_46__art_2",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2015_tt_btnmt_58__art_18",
+          "law_2021_nd_cp_06__art_28",
+          "law_2016_tt_bxd_09__art_19",
+          "law_2021_nd_cp_06__art_29",
+          "internal_2026_qd_tnt_01__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_46__art_2",
+          "law_2021_nd_cp_06__art_28",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2015_tt_btnmt_58__art_18",
+          "law_2016_tt_bxd_09__art_19",
+          "law_2021_nd_cp_58__art_27",
+          "internal_2026_cs_tnt_46__art_3"
+        ]
+      }
+    },
+    {
+      "case_id": "int_pub_09",
+      "category": "internal_policy",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_34__art_1"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_46__art_1",
+          "internal_2026_qd_tnt_33__art_3",
+          "law_2016_ttlt_btp_bnv_08__art_9",
+          "law_2013_tt_ttcp_06__art_13",
+          "internal_2026_qd_tnt_40__art_1",
+          "law_2013_tt_ttcp_06__art_14",
+          "law_2019_nd_cp_31__art_12",
+          "law_2019_nd_cp_31__art_11"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_46__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_qd_tnt_33__art_3",
+          "internal_2026_cs_tnt_37__art_4",
+          "law_2012_nd_cp_88__art_14",
+          "internal_2026_cs_tnt_28__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_34__art_1",
+          "internal_2026_qd_tnt_33__art_1",
+          "internal_2026_cs_tnt_46__art_1",
+          "internal_2026_qd_tnt_33__art_3",
+          "internal_2026_bc_tnt_36__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2016_ttlt_btp_bnv_08__art_9",
+          "internal_2026_bc_tnt_36__art_2",
+          "law_2013_tt_ttcp_06__art_13",
+          "internal_2026_qd_tnt_40__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_01",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_03__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_03__art_2",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_cs_tnt_20__art_4",
+          "internal_2026_qd_tnt_03__art_4",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2014_nd_cp_27__art_8",
+          "internal_2026_cs_tnt_20__art_2",
+          "internal_2026_qd_tnt_03__art_5",
+          "law_2017_tt_nhnn_25__art_7"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_03__art_2",
+          "internal_2026_qd_tnt_01__art_1",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_28__art_1",
+          "law_2014_tt_bct_40__art_128",
+          "law_2014_tt_bct_40__art_120",
+          "law_2014_tt_bct_40__art_124",
+          "law_2014_tt_bct_40__art_129",
+          "law_2014_tt_bct_40__art_125",
+          "law_2014_tt_bct_40__art_121"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_03__art_2",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_qd_tnt_18__art_1",
+          "internal_2026_cs_tnt_20__art_4",
+          "internal_2026_cs_tnt_28__art_1",
+          "internal_2026_qd_tnt_03__art_4",
+          "law_2014_tt_bct_40__art_128",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2014_tt_bct_40__art_120"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_02",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_04__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_04__art_3",
+          "law_2019_qh14_45__art_48",
+          "internal_2026_qd_tnt_04__art_4",
+          "law_2014_nd_cp_27__art_11",
+          "law_2014_nd_cp_27__art_12",
+          "law_2018_n_cp_146__art_23",
+          "law_2018_nd_cp_146__art_23",
+          "law_2015_qh13_91__art_550",
+          "law_2019_nd_cp_59__art_13",
+          "law_2013_tt_btttt_12__art_8"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_04__art_3",
+          "law_2018_nd_cp_29__art_9",
+          "law_2018_tt_btp_03__art_11",
+          "law_2015_qh13_91__art_230",
+          "internal_2026_qd_tnt_01__art_3",
+          "internal_2026_qd_tnt_05__art_4",
+          "law_2017_tt_btnmt_07__art_19",
+          "law_2013_tt_btp_19__art_32",
+          "law_2020_tt_btp_05__art_22",
+          "internal_2026_qd_tnt_04__art_4"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_04__art_3",
+          "internal_2026_qd_tnt_04__art_4",
+          "law_2018_nd_cp_29__art_9",
+          "law_2019_qh14_45__art_48",
+          "law_2018_tt_btp_03__art_11",
+          "law_2014_nd_cp_27__art_11",
+          "law_2015_qh13_91__art_230",
+          "internal_2026_qd_tnt_01__art_3",
+          "law_2014_nd_cp_27__art_12",
+          "law_2018_n_cp_146__art_23"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_03",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_05__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_05__art_2",
+          "law_2019_qh14_45__art_111",
+          "law_2014_nd_cp_27__art_22",
+          "law_2019_qh14_45__art_105",
+          "law_2017_tt_bldtbxh_11__art_5",
+          "law_2014_tt_bldtbxh_19__art_17",
+          "internal_2026_qd_tnt_05__art_4",
+          "law_1999_qd_ttg_188__art_2",
+          "law_2019_nd_cp_08__art_10",
+          "law_1999_qd_ttg_188__art_7"
+        ],
+        "bm25": [
+          "law_2014_tt_bqp_18__art_14",
+          "internal_2026_qd_tnt_05__art_2",
+          "law_2014_tt_bldtbxh_19__art_13",
+          "law_2013_qd_ttg_14__art_5",
+          "law_2017_tt_bldtbxh_11__art_5",
+          "law_2020_tt_btc_10__art_14",
+          "law_2014_tt_bldtbxh_19__art_6",
+          "internal_2026_cs_tnt_08__art_4",
+          "law_2019_qh14_45__art_105",
+          "internal_2026_qd_tnt_06__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_05__art_2",
+          "law_2017_tt_bldtbxh_11__art_5",
+          "law_2019_qh14_45__art_105",
+          "law_2014_tt_bqp_18__art_14",
+          "law_2019_qh14_45__art_111",
+          "law_2014_tt_bldtbxh_19__art_13",
+          "law_2014_nd_cp_27__art_22",
+          "law_2013_qd_ttg_14__art_5",
+          "law_2020_tt_btc_10__art_14",
+          "law_2014_tt_bldtbxh_19__art_17"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_04",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_06__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_06__art_3",
+          "law_2011_qd_ttg_73__art_2",
+          "law_2014_tt_bqp_109__art_3",
+          "law_2011_qd_ttg_73__art_3",
+          "law_2017_nd_cp_30__art_18",
+          "law_2017_nd_cp_83__art_33",
+          "law_2017_tt_btc_40__art_6",
+          "internal_2026_qd_tnt_06__art_4"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_06__art_3",
+          "law_2014_tt_bqp_109__art_3",
+          "internal_2026_cs_tnt_08__art_3",
+          "internal_2026_qd_tnt_01__art_3",
+          "law_2017_nd_cp_30__art_18",
+          "law_2014_tt_bct_40__art_61",
+          "law_2014_tt_bct_28__art_3",
+          "law_2014_tt_bct_40__art_59",
+          "law_2009_qh12_40__art_67",
+          "law_2015_nd_cp_26__art_4"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_06__art_3",
+          "law_2014_tt_bqp_109__art_3",
+          "law_2017_nd_cp_30__art_18",
+          "law_2011_qd_ttg_73__art_2",
+          "internal_2026_cs_tnt_08__art_3",
+          "internal_2026_qd_tnt_01__art_3",
+          "law_2011_qd_ttg_73__art_3",
+          "law_2014_tt_bct_40__art_61",
+          "law_2014_tt_bct_28__art_3"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_05",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_07__art_2"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_07__art_2",
+          "law_2016_nd_cp_163__art_43",
+          "law_2021_nd_cp_23__art_36",
+          "law_2019_nd_cp_29__art_27",
+          "law_2020_nd_cp_126__art_43",
+          "law_2012_tt_bqp_13__art_2",
+          "law_2016_tt_btc_342__art_26",
+          "law_2016_nd_cp_82__art_17",
+          "law_2014_nd_cp_27__art_23",
+          "law_2005_qh11_34__art_71"
+        ],
+        "bm25": [
+          "law_2018_tt_bgtvt_22__art_4",
+          "law_2016_tt_btc_58__art_4",
+          "law_2014_qd_ttg_09__art_13",
+          "law_2014_tt_bct_02__art_16",
+          "law_2016_tt_btc_342__art_26",
+          "law_2017_tt_btc_55__art_16",
+          "law_2013_ttlt_bca_bqp_btc_12__art_8",
+          "law_2020_nd_cp_117__art_42",
+          "law_2018_tt_btc_52__art_1"
+        ],
+        "hybrid": [
+          "law_2018_tt_bgtvt_22__art_4",
+          "internal_2026_qd_tnt_07__art_2",
+          "law_2016_nd_cp_163__art_43",
+          "law_2016_tt_btc_58__art_4",
+          "law_2014_qd_ttg_09__art_13",
+          "law_2021_nd_cp_23__art_36",
+          "law_2019_nd_cp_29__art_27",
+          "law_2014_tt_bct_02__art_16",
+          "law_2020_nd_cp_126__art_43",
+          "law_2016_tt_btc_342__art_26"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_06",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_11__art_4"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2015_tt_btc_200__art_14",
+          "internal_2026_qd_tnt_11__art_4",
+          "law_2018_tt_btc_12__art_5",
+          "law_2019_tt_btc_15__art_15",
+          "law_2020_tt_bgddt_22__art_5",
+          "internal_2026_qd_tnt_11__art_1",
+          "law_2017_tt_bkhcn_17__art_16",
+          "law_2010_tt_bldtbxh_19__art_5"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_09__art_4",
+          "internal_2026_qd_tnt_10__art_3",
+          "internal_2026_qd_tnt_11__art_4",
+          "law_2018_qd_ttg_24__art_4",
+          "law_2017_qd_ttg_04__art_3",
+          "law_2017_qd_ttg_04__art_5",
+          "law_2018_qd_ttg_24__art_5",
+          "law_2011_nd_cp_21__art_15",
+          "law_2011_nd_cp_21__art_16",
+          "law_2011_nd_cp_21__art_23"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_11__art_4",
+          "law_2015_tt_btc_200__art_14",
+          "internal_2026_qd_tnt_09__art_4",
+          "internal_2026_qd_tnt_10__art_3",
+          "law_2018_qd_ttg_24__art_4",
+          "law_2018_tt_btc_12__art_5",
+          "law_2019_tt_btc_15__art_15",
+          "law_2017_qd_ttg_04__art_3",
+          "law_2017_qd_ttg_04__art_5"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_07",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_12__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_12__art_3",
+          "law_2013_qh13_38__art_47",
+          "law_2018_nd_cp_57__art_10",
+          "internal_2026_qd_tnt_03__art_4",
+          "law_2015_nd_cp_48__art_23",
+          "law_2018_nd_cp_86__art_30",
+          "law_2015_nd_cp_48__art_16",
+          "law_2013_nd_cp_143__art_3",
+          "law_2014_ttlt_bkhdt_btc_04__art_9",
+          "law_2015_ttlt_bgddt_btc_04__art_2"
+        ],
+        "bm25": [
+          "law_2017_tt_btc_58__art_3",
+          "law_2017_nd_cp_101__art_8",
+          "internal_2026_qd_tnt_12__art_3",
+          "law_2015_qd_ttg_46__art_4",
+          "law_2016_tt_btc_152__art_7",
+          "law_2019_tt_btc_48__art_6",
+          "law_2019_tt_btc_49__art_12",
+          "law_2015_ttlt_bgddt_btc_04__art_2",
+          "law_2020_nd_cp_116__art_4",
+          "law_2018_nd_cp_41__art_18"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_12__art_3",
+          "law_2015_ttlt_bgddt_btc_04__art_2",
+          "law_2017_tt_btc_58__art_3",
+          "law_2013_qh13_38__art_47",
+          "law_2017_nd_cp_101__art_8",
+          "law_2018_nd_cp_57__art_10",
+          "internal_2026_qd_tnt_03__art_4",
+          "law_2015_qd_ttg_46__art_4",
+          "law_2015_nd_cp_48__art_23",
+          "law_2016_tt_btc_152__art_7"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_08",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_17__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_17__art_3",
+          "internal_2026_qd_tnt_17__art_4",
+          "law_2013_nd_cp_158__art_45",
+          "law_2017_tt_btc_40__art_7",
+          "law_2019_nd_cp_45__art_10",
+          "law_2018_tt_btc_71__art_7",
+          "law_2020_tt_btc_07__art_8",
+          "law_2019_nd_cp_45__art_11"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_17__art_3",
+          "law_2019_tt_bgtvt_39__art_18",
+          "law_2017_tt_btc_40__art_7",
+          "law_2020_tt_btc_07__art_8",
+          "law_2012_tt_bgtvt_43__art_13",
+          "internal_2026_qd_tnt_17__art_4",
+          "law_2012_tt_bgtvt_43__art_5",
+          "law_2012_tt_bgtvt_43__art_3"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_17__art_3",
+          "internal_2026_qd_tnt_17__art_4",
+          "law_2020_tt_btc_07__art_8",
+          "law_2019_tt_bgtvt_39__art_18",
+          "law_2013_nd_cp_158__art_45",
+          "law_2017_tt_btc_40__art_7",
+          "law_2012_tt_bgtvt_43__art_13"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_09",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_23__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_23__art_2",
+          "law_2020_tt_nhnn_09__art_28",
+          "law_2016_tt_bkhdt_13__art_5",
+          "law_2019_tt_bldtbxh_11__art_10",
+          "law_2014_tt_btc_161__art_20",
+          "law_2018_tt_nhnn_35__art_1",
+          "law_2018_nd_cp_130__art_76",
+          "law_2019_tt_bgddt_26__art_6",
+          "law_2020_qd_ttg_20__art_4",
+          "law_2021_nd_cp_58__art_29"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_23__art_2",
+          "law_2019_tt_bldtbxh_11__art_10",
+          "law_2017_tt_btttt_03__art_3",
+          "law_2019_tt_bgddt_26__art_2",
+          "law_2013_tt_btc_136__art_14",
+          "law_2019_tt_btc_36__art_14",
+          "law_2016_tt_bkhdt_13__art_5",
+          "law_2015_tt_btc_110__art_3",
+          "law_2017_tt_btc_133__art_10",
+          "law_2021_tt_btc_36__art_9"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_23__art_2",
+          "law_2019_tt_bldtbxh_11__art_10",
+          "law_2016_tt_bkhdt_13__art_5",
+          "law_2020_tt_nhnn_09__art_28",
+          "law_2017_tt_btttt_03__art_3",
+          "law_2019_tt_bgddt_26__art_2",
+          "law_2013_tt_btc_136__art_14",
+          "law_2014_tt_btc_161__art_20",
+          "law_2019_tt_btc_36__art_14",
+          "law_2018_tt_nhnn_35__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_10",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_26__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_26__art_2",
+          "law_2016_tt_bkhdt_13__art_5",
+          "law_2014_tt_nhnn_01__art_37",
+          "law_2017_tt_btc_33__art_26",
+          "law_2014_tt_nhnn_01__art_36",
+          "law_2020_qd_ttg_20__art_11",
+          "law_2014_tt_nhnn_01__art_34",
+          "law_2017_tt_btttt_41__art_16",
+          "internal_2026_qd_tnt_26__art_1",
+          "law_2014_tt_nhnn_01__art_28"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_26__art_2",
+          "law_2014_tt_nhnn_01__art_37",
+          "law_2014_tt_nhnn_01__art_33",
+          "law_2017_tt_btc_33__art_28",
+          "law_2014_tt_nhnn_01__art_28",
+          "law_2020_tt_nhnn_09__art_28",
+          "law_2017_tt_btc_33__art_14",
+          "law_2014_tt_nhnn_01__art_30",
+          "law_2017_tt_btc_33__art_26",
+          "law_2014_tt_nhnn_01__art_31"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_26__art_2",
+          "law_2014_tt_nhnn_01__art_37",
+          "law_2017_tt_btc_33__art_26",
+          "law_2014_tt_nhnn_01__art_28",
+          "law_2016_tt_bkhdt_13__art_5",
+          "law_2014_tt_nhnn_01__art_33",
+          "law_2017_tt_btc_33__art_28",
+          "law_2014_tt_nhnn_01__art_36",
+          "law_2020_tt_nhnn_09__art_28",
+          "law_2020_qd_ttg_20__art_11"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_11",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_27__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_27__art_2",
+          "internal_2026_kh_tnt_51__art_1",
+          "internal_2026_qt_tnt_25__art_1",
+          "internal_2026_qd_tnt_27__art_1",
+          "internal_2026_cs_tnt_21__art_4",
+          "internal_2026_qd_tnt_06__art_3",
+          "internal_2026_bc_tnt_36__art_3",
+          "law_2020_tt_btttt_02__art_13",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_kh_tnt_52__art_2"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_27__art_2",
+          "internal_2026_qd_tnt_27__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "internal_2026_kh_tnt_51__art_1",
+          "internal_2026_cs_tnt_21__art_4",
+          "law_2025_qh15_148__art_26",
+          "law_2025_qh15_148__art_38",
+          "internal_2026_qd_tnt_38__art_1",
+          "law_2023_qh15_20__art_45",
+          "internal_2026_qt_tnt_25__art_1"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_27__art_2",
+          "internal_2026_qd_tnt_27__art_1",
+          "internal_2026_kh_tnt_51__art_1",
+          "internal_2026_cs_tnt_21__art_4",
+          "internal_2026_qt_tnt_25__art_1",
+          "internal_2026_qd_tnt_40__art_1",
+          "law_2025_qh15_148__art_26",
+          "internal_2026_qd_tnt_06__art_3",
+          "internal_2026_bc_tnt_36__art_3",
+          "law_2025_qh15_148__art_38"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_12",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qt_tnt_30__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qt_tnt_30__art_3",
+          "law_2025_nd_cp_356__art_5",
+          "law_2025_nd_cp_356__art_19",
+          "law_2020_nd_cp_156__art_51",
+          "law_2025_qh15_91__art_14",
+          "internal_2026_cs_tnt_20__art_3",
+          "law_2025_nd_cp_356__art_20",
+          "internal_2026_qd_tnt_40__art_5"
+        ],
+        "bm25": [
+          "law_2025_qh15_91__art_14",
+          "internal_2026_qt_tnt_30__art_3",
+          "law_2025_nd_cp_356__art_5",
+          "law_2017_tt_bgddt_35__art_6",
+          "law_2020_tt_bgddt_19__art_8",
+          "internal_2026_qt_tnt_30__art_2",
+          "law_2017_tt_bgddt_35__art_7",
+          "law_2017_tt_bgddt_35__art_2",
+          "law_2016_tt_bgddt_07__art_9",
+          "law_2024_qh15_60__art_26"
+        ],
+        "hybrid": [
+          "internal_2026_qt_tnt_30__art_3",
+          "law_2025_nd_cp_356__art_5",
+          "law_2025_qh15_91__art_14",
+          "law_2017_tt_bgddt_35__art_6",
+          "law_2025_nd_cp_356__art_19",
+          "law_2020_tt_bgddt_19__art_8",
+          "internal_2026_qt_tnt_30__art_2",
+          "law_2020_nd_cp_156__art_51"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_13",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_32__art_2"
+      ],
+      "hybrid_rank": null,
+      "ranked_provisions": {
+        "dense": [
+          "law_2018_tt_nhnn_35__art_1",
+          "law_2016_tt_btc_11__art_15",
+          "law_2017_tt_btc_115__art_20",
+          "law_2010_tt_btttt_10__art_10",
+          "law_2013_tt_btttt_12__art_10",
+          "law_2025_qh15_91__art_28",
+          "law_2017_tt_btc_10__art_1",
+          "law_2021_nd_cp_37__art_1",
+          "law_2011_tt_btc_35__art_5"
+        ],
+        "bm25": [
+          "law_2020_nd_cp_44__art_38",
+          "law_2025_qh15_91__art_28",
+          "law_2014_tt_btc_56__art_15",
+          "law_2018_tt_bldtbxh_27__art_30",
+          "internal_2026_cs_tnt_28__art_2",
+          "law_2020_tt_btttt_01__art_11",
+          "law_2013_tt_btttt_12__art_10",
+          "law_2020_nd_cp_100__art_13",
+          "internal_2026_qd_tnt_33__art_5",
+          "law_2014_ttlt_btc_bgtvt_152__art_8"
+        ],
+        "hybrid": [
+          "law_2025_qh15_91__art_28",
+          "law_2013_tt_btttt_12__art_10",
+          "law_2018_tt_nhnn_35__art_1",
+          "law_2020_nd_cp_44__art_38",
+          "law_2016_tt_btc_11__art_15",
+          "law_2017_tt_btc_115__art_20",
+          "law_2014_tt_btc_56__art_15",
+          "law_2010_tt_btttt_10__art_10",
+          "law_2018_tt_bldtbxh_27__art_30",
+          "internal_2026_cs_tnt_28__art_2"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_14",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_37__art_5"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_37__art_5",
+          "internal_2026_qd_tnt_38__art_3",
+          "law_2020_tt_btc_96__art_33",
+          "law_2015_tt_btc_155__art_28",
+          "law_2015_tt_btc_123__art_10",
+          "law_2018_nd_cp_91__art_39",
+          "law_2015_nd_cp_118__art_21"
+        ],
+        "bm25": [
+          "law_2014_tt_btc_184__art_8",
+          "law_2013_nd_cp_174__art_61",
+          "law_2020_tt_byt_26__art_2",
+          "law_2017_tt_bkhcn_17__art_10",
+          "internal_2026_qd_tnt_38__art_3",
+          "internal_2026_qd_tnt_26__art_1",
+          "internal_2026_cs_tnt_37__art_3",
+          "law_2015_tt_btc_185__art_12",
+          "law_2018_tt_btc_74__art_21"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_38__art_3",
+          "internal_2026_cs_tnt_37__art_5",
+          "law_2014_tt_btc_184__art_8",
+          "law_2013_nd_cp_174__art_61",
+          "law_2020_tt_byt_26__art_2",
+          "law_2020_tt_btc_96__art_33",
+          "law_2017_tt_bkhcn_17__art_10",
+          "law_2015_tt_btc_155__art_28"
+        ]
+      }
+    },
+    {
+      "case_id": "int_int_15",
+      "category": "internal_policy",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_38__art_1"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_38__art_1",
+          "internal_2026_cs_tnt_37__art_3",
+          "law_2016_ttlt_bgddt_btttt_17__art_23",
+          "law_2018_tt_bct_43__art_6",
+          "law_2018_nd_cp_27__art_1",
+          "law_2023_qh15_20__art_53",
+          "law_2014_tt_btc_184__art_2",
+          "internal_2026_qd_tnt_32__art_2",
+          "internal_2026_qt_tnt_25__art_1",
+          "law_2014_tt_btttt_24__art_23"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_38__art_1",
+          "internal_2026_cs_tnt_21__art_4",
+          "internal_2026_kh_tnt_51__art_1",
+          "internal_2026_cs_tnt_37__art_3",
+          "law_2019_qh14_46__art_28",
+          "law_2015_ttlt_bvhttdl_bnv_07__art_2",
+          "law_2019_qh14_46__art_33",
+          "internal_2026_qd_tnt_40__art_1",
+          "law_2020_nd_cp_93__art_29",
+          "law_2019_qh14_46__art_29"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_38__art_1",
+          "internal_2026_cs_tnt_37__art_3",
+          "internal_2026_cs_tnt_21__art_4",
+          "law_2016_ttlt_bgddt_btttt_17__art_23",
+          "internal_2026_kh_tnt_51__art_1",
+          "law_2018_tt_bct_43__art_6",
+          "law_2018_nd_cp_27__art_1",
+          "law_2019_qh14_46__art_28",
+          "law_2015_ttlt_bvhttdl_bnv_07__art_2",
+          "law_2023_qh15_20__art_53"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_01",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_09__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_09__art_2",
+          "internal_2026_qd_tnt_16__art_2",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2020_tt_btttt_29__art_5",
+          "internal_2026_kh_tnt_52__art_3",
+          "law_2015_ttlt_bldtbxh_bnv_35__art_9",
+          "internal_2026_cs_tnt_44__art_2",
+          "internal_2026_qd_tnt_11__art_3",
+          "law_2017_tt_bnv_07__art_5",
+          "law_2015_ttlt_bkhcn_bnv_btc_21__art_11"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_09__art_2",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2010_tt_bqp_73__art_4",
+          "internal_2026_qd_tnt_16__art_2",
+          "internal_2026_cs_tnt_44__art_2",
+          "law_2016_ttlt_btttt_bnv_11__art_18",
+          "law_2019_tt_nhnn_12__art_4",
+          "law_2019_tt_btc_77__art_5",
+          "law_2019_tt_btc_77__art_14"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_09__art_2",
+          "internal_2026_qd_tnt_09__art_3",
+          "internal_2026_qd_tnt_16__art_2",
+          "internal_2026_cs_tnt_44__art_2",
+          "law_2010_tt_bqp_73__art_4",
+          "law_2020_tt_btttt_29__art_5",
+          "internal_2026_kh_tnt_52__art_3",
+          "law_2015_ttlt_bldtbxh_bnv_35__art_9",
+          "law_2016_ttlt_btttt_bnv_11__art_18"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_02",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_09__art_5"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_09__art_5",
+          "law_2019_qh14_45__art_101",
+          "law_2016_tt_bldtbxh_26__art_13",
+          "law_2020_nd_cp_20__art_15",
+          "law_2016_tt_bldtbxh_28__art_9",
+          "law_2019_qh14_45__art_97",
+          "law_2020_nd_cp_20__art_7",
+          "law_2015_qh13_84__art_49",
+          "internal_2026_cs_tnt_08__art_3",
+          "law_2014_tt_byt_18__art_9"
+        ],
+        "bm25": [
+          "law_2019_qh14_45__art_113",
+          "law_2016_nd_cp_33__art_9",
+          "law_2015_nd_cp_115__art_7",
+          "law_2014_qh13_46__art_7",
+          "law_2018_tt_btc_06__art_1",
+          "law_2019_qh14_45__art_101",
+          "law_2016_ttlt_bqp_bca_bldtbxh_105__art_13",
+          "internal_2026_qd_tnt_09__art_5",
+          "law_2016_tt_bldtbxh_33__art_11"
+        ],
+        "hybrid": [
+          "law_2019_qh14_45__art_101",
+          "internal_2026_qd_tnt_09__art_5",
+          "law_2019_qh14_45__art_113",
+          "law_2016_nd_cp_33__art_9",
+          "law_2015_nd_cp_115__art_7",
+          "law_2016_tt_bldtbxh_26__art_13",
+          "law_2020_nd_cp_20__art_15",
+          "law_2014_qh13_46__art_7",
+          "law_2018_tt_btc_06__art_1",
+          "law_2016_tt_bldtbxh_28__art_9"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_03",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_10__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_10__art_2",
+          "law_2016_nd_cp_53__art_8",
+          "law_2016_ttlt_bqp_bca_bldtbxh_105__art_13",
+          "law_2013_tt_bldtbxh_30__art_13",
+          "law_2013_ttlt_bca_bqp_btc_12__art_8",
+          "law_2016_nd_cp_52__art_8",
+          "law_2015_ttlt_bnv_btc_01__art_3"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_10__art_2",
+          "law_2016_tt_bldtbxh_38__art_8",
+          "law_2017_nd_cp_91__art_69",
+          "law_2016_nd_cp_52__art_8",
+          "law_2018_tt_bldtbxh_16__art_4",
+          "law_2018_tt_bgtvt_13__art_28",
+          "law_2016_tt_bldtbxh_27__art_22",
+          "internal_2026_qd_tnt_10__art_3",
+          "law_2013_tt_btc_136__art_2",
+          "law_2019_tt_btc_36__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_10__art_2",
+          "law_2016_nd_cp_52__art_8",
+          "law_2016_tt_bldtbxh_38__art_8",
+          "law_2016_nd_cp_53__art_8",
+          "law_2016_ttlt_bqp_bca_bldtbxh_105__art_13",
+          "law_2017_nd_cp_91__art_69",
+          "law_2013_tt_bldtbxh_30__art_13",
+          "law_2018_tt_bldtbxh_16__art_4",
+          "law_2013_ttlt_bca_bqp_btc_12__art_8"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_04",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_10__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_10__art_3",
+          "law_2020_nd_cp_20__art_14",
+          "law_2021_tt_btc_36__art_7",
+          "law_2017_nd_cp_93__art_21",
+          "law_2018_tt_btc_49__art_15",
+          "law_2019_nd_cp_39__art_50",
+          "law_2019_tt_btc_15__art_12",
+          "law_2016_nd_cp_52__art_7"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_10__art_3",
+          "law_2016_tt_bldtbxh_28__art_18",
+          "law_2017_tt_btc_01__art_8",
+          "law_2016_nd_cp_53__art_8",
+          "law_2020_nd_cp_20__art_14",
+          "law_2016_tt_bldtbxh_27__art_22",
+          "law_2013_tt_btc_188__art_12",
+          "law_2015_tt_btc_162__art_35",
+          "law_2017_nd_cp_93__art_21",
+          "law_2020_nd_cp_20__art_9"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_10__art_3",
+          "law_2020_nd_cp_20__art_14",
+          "law_2017_nd_cp_93__art_21",
+          "law_2016_tt_bldtbxh_28__art_18",
+          "law_2017_tt_btc_01__art_8",
+          "law_2021_tt_btc_36__art_7",
+          "law_2016_nd_cp_53__art_8",
+          "law_2018_tt_btc_49__art_15",
+          "law_2019_nd_cp_39__art_50",
+          "law_2016_tt_bldtbxh_27__art_22"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_05",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_16__art_4"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_16__art_4",
+          "law_2019_qh14_45__art_125",
+          "law_2015_tt_btc_05__art_33",
+          "law_2015_tt_bqp_114__art_4",
+          "law_2017_nd_cp_126__art_43",
+          "law_2020_nd_cp_115__art_57",
+          "law_2020_nd_cp_159__art_53",
+          "law_2014_nd_cp_128__art_17",
+          "law_2015_tt_bldtbxh_44__art_3",
+          "internal_2026_qd_tnt_13__art_6"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_16__art_4",
+          "law_2020_tt_btc_119__art_23",
+          "law_2015_tt_btc_05__art_33",
+          "law_2011_tt_bca_21__art_10",
+          "law_2020_nd_cp_156__art_8",
+          "law_2017_nd_cp_102__art_63",
+          "law_2017_n_cp_102__art_63",
+          "law_2014_qh13_47__art_29",
+          "law_2019_tt_btp_07__art_9"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_16__art_4",
+          "law_2015_tt_btc_05__art_33",
+          "law_2020_tt_btc_119__art_23",
+          "law_2019_qh14_45__art_125",
+          "law_2015_tt_bqp_114__art_4",
+          "law_2017_nd_cp_126__art_43",
+          "law_2011_tt_bca_21__art_10",
+          "law_2020_nd_cp_156__art_8",
+          "law_2020_nd_cp_115__art_57"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_06",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_bc_tnt_36__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_bc_tnt_36__art_2",
+          "law_2025_qh15_116__art_20",
+          "law_2020_tt_nhnn_09__art_2",
+          "law_2025_qh15_116__art_8",
+          "law_2018_qh14_24__art_21",
+          "law_2025_qh15_116__art_36",
+          "internal_2026_qt_tnt_25__art_1",
+          "law_2024_qh15_60__art_25",
+          "law_2020_nd_cp_15__art_89",
+          "law_2025_qh15_116__art_13"
+        ],
+        "bm25": [
+          "internal_2026_bc_tnt_36__art_4",
+          "internal_2026_cs_tnt_21__art_4",
+          "internal_2026_cs_tnt_21__art_2",
+          "internal_2026_bc_tnt_36__art_3",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_kh_tnt_52__art_4",
+          "law_2024_qh15_60__art_25",
+          "law_2015_tt_bgtvt_86__art_19",
+          "internal_2026_qd_tnt_18__art_2",
+          "law_2019_tt_btc_81__art_6"
+        ],
+        "hybrid": [
+          "internal_2026_bc_tnt_36__art_2",
+          "law_2024_qh15_60__art_25",
+          "internal_2026_bc_tnt_36__art_4",
+          "internal_2026_cs_tnt_21__art_4",
+          "law_2025_qh15_116__art_20",
+          "internal_2026_cs_tnt_21__art_2",
+          "law_2020_tt_nhnn_09__art_2",
+          "internal_2026_bc_tnt_36__art_3",
+          "law_2025_qh15_116__art_8",
+          "law_2018_qh14_24__art_21"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_07",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_44__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_44__art_3",
+          "internal_2026_qd_tnt_10__art_5",
+          "internal_2026_qd_tnt_47__art_2",
+          "law_2012_tt_nhnn_01__art_9",
+          "law_2013_tt_nhnn_04__art_13",
+          "law_2012_tt_nhnn_01__art_11",
+          "law_2018_tt_btc_49__art_15",
+          "law_2016_tt_btc_86__art_5",
+          "law_2016_nd_cp_53__art_6",
+          "law_2020_qh14_64__art_82"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_44__art_3",
+          "law_2013_tt_nhnn_04__art_13",
+          "law_2012_tt_nhnn_01__art_2",
+          "law_2012_tt_nhnn_01__art_6",
+          "law_2013_tt_nhnn_04__art_11",
+          "law_2012_tt_nhnn_01__art_10",
+          "law_2021_tt_bca_60__art_7",
+          "law_2012_tt_nhnn_01__art_14",
+          "internal_2026_qd_tnt_10__art_5",
+          "law_2018_nd_cp_76__art_4"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_44__art_3",
+          "law_2013_tt_nhnn_04__art_13",
+          "internal_2026_qd_tnt_10__art_5",
+          "internal_2026_qd_tnt_47__art_2",
+          "law_2012_tt_nhnn_01__art_2",
+          "law_2012_tt_nhnn_01__art_6",
+          "law_2012_tt_nhnn_01__art_9",
+          "law_2013_tt_nhnn_04__art_11",
+          "law_2012_tt_nhnn_01__art_10",
+          "law_2012_tt_nhnn_01__art_11"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_08",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_47__art_2"
+      ],
+      "hybrid_rank": null,
+      "ranked_provisions": {
+        "dense": [
+          "law_2020_nd_cp_150__art_8",
+          "law_2018_nd_cp_70__art_33",
+          "law_2016_nd_cp_163__art_21",
+          "law_2018_tt_btc_71__art_33",
+          "law_2020_nd_cp_40__art_29",
+          "law_2019_tt_bnnptnt_05__art_16",
+          "law_2016_nd_cp_163__art_20",
+          "law_2017_tt_bxd_12__art_6",
+          "law_2018_tt_btc_71__art_31"
+        ],
+        "bm25": [
+          "law_2018_tt_btc_27__art_3",
+          "law_2014_ttlt_btc_bct_26__art_6",
+          "law_2015_tt_btc_74__art_6",
+          "law_2018_tt_btc_28__art_8",
+          "law_2020_tt_btc_62__art_7",
+          "law_2020_nd_cp_11__art_7",
+          "law_2016_tt_btc_338__art_5",
+          "law_2016_tt_btc_302__art_4"
+        ],
+        "hybrid": [
+          "law_2018_tt_btc_27__art_3",
+          "law_2020_nd_cp_150__art_8",
+          "law_2014_ttlt_btc_bct_26__art_6",
+          "law_2018_nd_cp_70__art_33",
+          "law_2016_nd_cp_163__art_21",
+          "law_2015_tt_btc_74__art_6",
+          "law_2018_tt_btc_71__art_33",
+          "law_2018_tt_btc_28__art_8"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_09",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_kh_tnt_51__art_3"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_kh_tnt_51__art_3",
+          "internal_2026_kh_tnt_52__art_3",
+          "law_2018_tt_bldtbxh_25__art_6",
+          "internal_2026_kh_tnt_51__art_2",
+          "law_2017_tt_btc_69__art_5",
+          "law_2017_tt_bgddt_16__art_4",
+          "law_2020_nd_cp_107__art_1",
+          "law_2017_tt_bgddt_16__art_5",
+          "law_2017_tt_btc_71__art_4",
+          "internal_2026_qd_tnt_09__art_3"
+        ],
+        "bm25": [
+          "internal_2026_kh_tnt_52__art_4",
+          "internal_2026_qd_tnt_22__art_1",
+          "internal_2026_qd_tnt_53__art_2",
+          "law_2015_tt_bgtvt_14__art_6",
+          "law_2021_tt_bgddt_17__art_14",
+          "law_2016_tt_btnmt_09__art_4",
+          "law_2018_nd_cp_91__art_39",
+          "law_2018_nd_cp_92__art_9",
+          "law_2018_tt_bkhdt_07__art_6",
+          "law_2018_tt_bkhdt_07__art_40"
+        ],
+        "hybrid": [
+          "internal_2026_kh_tnt_52__art_4",
+          "internal_2026_kh_tnt_51__art_3",
+          "internal_2026_qd_tnt_22__art_1",
+          "internal_2026_kh_tnt_52__art_3",
+          "internal_2026_qd_tnt_53__art_2",
+          "law_2018_tt_bldtbxh_25__art_6",
+          "internal_2026_kh_tnt_51__art_2",
+          "law_2015_tt_bgtvt_14__art_6",
+          "law_2021_tt_bgddt_17__art_14",
+          "law_2017_tt_btc_69__art_5"
+        ]
+      }
+    },
+    {
+      "case_id": "int_conf_10",
+      "category": "internal_policy",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_kh_tnt_52__art_1"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_kh_tnt_51__art_1",
+          "law_2019_tt_btc_05__art_77",
+          "law_2018_tt_bldtbxh_16__art_3",
+          "law_2014_tt_btc_25__art_13",
+          "internal_2026_bc_tnt_36__art_4",
+          "law_2020_nd_cp_155__art_112",
+          "law_2015_tt_btc_200__art_12",
+          "law_2016_tt_bldtbxh_28__art_13",
+          "law_2019_tt_btc_05__art_78"
+        ],
+        "bm25": [
+          "internal_2026_kh_tnt_52__art_1",
+          "law_2017_tt_btc_41__art_3",
+          "law_2015_tt_btc_200__art_5",
+          "law_2020_nd_cp_132__art_14",
+          "law_2019_tt_btc_05__art_78",
+          "law_2020_nd_cp_132__art_19",
+          "law_2020_nd_cp_155__art_107"
+        ],
+        "hybrid": [
+          "internal_2026_kh_tnt_52__art_1",
+          "law_2019_tt_btc_05__art_78",
+          "law_2017_tt_btc_41__art_3",
+          "internal_2026_kh_tnt_51__art_1",
+          "law_2019_tt_btc_05__art_77",
+          "law_2018_tt_bldtbxh_16__art_3",
+          "law_2015_tt_btc_200__art_5",
+          "law_2020_nd_cp_132__art_14",
+          "law_2014_tt_btc_25__art_13"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_01",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_03__art_2",
+        "law_2019_qh14_45__art_25"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_03__art_2",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_cs_tnt_20__art_4",
+          "law_2014_nd_cp_27__art_8",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2019_qh14_45__art_26",
+          "internal_2026_qd_tnt_03__art_5",
+          "law_2019_qh14_45__art_24",
+          "law_2014_tt_bqp_18__art_19",
+          "law_2019_qh14_45__art_61"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_03__art_2",
+          "internal_2026_qd_tnt_03__art_3",
+          "law_2014_nd_cp_27__art_8",
+          "law_2019_qh14_45__art_24",
+          "internal_2026_qd_tnt_03__art_5",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2005_qh11_34__art_60",
+          "law_2020_nd_cp_28__art_9",
+          "law_2018_nd_cp_148__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_03__art_2",
+          "law_2014_nd_cp_27__art_8",
+          "law_2019_qh14_45__art_24",
+          "internal_2026_qd_tnt_03__art_5",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "internal_2026_qd_tnt_03__art_3",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_cs_tnt_20__art_4",
+          "law_2019_qh14_45__art_26",
+          "internal_2026_qd_tnt_01__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_02",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_03__art_3",
+        "law_2019_qh14_45__art_26"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_03__art_3",
+          "law_2019_qh14_45__art_26",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "internal_2026_cs_tnt_20__art_4",
+          "law_2020_nd_cp_28__art_9",
+          "law_2019_qh14_45__art_25",
+          "internal_2026_qd_tnt_03__art_2",
+          "law_2018_tt_btc_29__art_9",
+          "law_2017_tt_btc_103__art_21",
+          "law_2016_tt_bldtbxh_26__art_13"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_03__art_3",
+          "law_2015_tt_bldtbxh_17__art_7",
+          "internal_2026_cs_tnt_20__art_4",
+          "law_2016_ttlt_btp_btc_07__art_3",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2016_nd_cp_53__art_6",
+          "law_2020_nd_cp_28__art_9",
+          "law_2016_tt_bldtbxh_27__art_6",
+          "law_2014_nd_cp_94__art_5",
+          "law_2016_tt_bldtbxh_33__art_14"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_03__art_3",
+          "internal_2026_cs_tnt_20__art_4",
+          "law_2014_tt_bldtbxh_19__art_7",
+          "law_2020_nd_cp_28__art_9",
+          "law_2019_qh14_45__art_26",
+          "law_2015_tt_bldtbxh_17__art_7",
+          "law_2016_ttlt_btp_btc_07__art_3",
+          "law_2019_qh14_45__art_25",
+          "law_2016_nd_cp_53__art_6",
+          "internal_2026_qd_tnt_03__art_2"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_03",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_07__art_1",
+        "law_2019_qh14_45__art_113"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_07__art_1",
+          "law_2015_ttlt_bnv_btc_01__art_2",
+          "internal_2026_qd_tnt_07__art_2",
+          "law_2016_tt_bqp_113__art_5",
+          "law_2019_qh14_45__art_114",
+          "law_2014_nd_cp_27__art_23",
+          "law_2019_qh14_45__art_113",
+          "law_2019_nd_cp_08__art_10",
+          "internal_2026_qd_tnt_07__art_4"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_13__art_8",
+          "internal_2026_qd_tnt_03__art_3",
+          "internal_2026_qt_tnt_15__art_4",
+          "internal_2026_qd_tnt_07__art_2",
+          "law_2019_qh14_45__art_129",
+          "law_2017_tt_bqp_37__art_4",
+          "law_2015_tt_bldtbxh_44__art_3",
+          "internal_2026_qd_tnt_07__art_1",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2020_nd_cp_28__art_28"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_07__art_2",
+          "internal_2026_qd_tnt_07__art_1",
+          "internal_2026_qd_tnt_13__art_8",
+          "internal_2026_qd_tnt_03__art_3",
+          "law_2015_ttlt_bnv_btc_01__art_2",
+          "internal_2026_qt_tnt_15__art_4",
+          "law_2019_qh14_45__art_129",
+          "law_2016_tt_bqp_113__art_5",
+          "law_2019_qh14_45__art_114"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_04",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_06__art_2",
+        "law_2019_qh14_45__art_98"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2014_tt_bldtbxh_19__art_14",
+          "law_2019_qh14_45__art_98",
+          "internal_2026_qd_tnt_06__art_2",
+          "law_2014_ttlt_btc_btp_191__art_2",
+          "law_2020_nd_cp_28__art_17",
+          "law_2019_qh14_45__art_107",
+          "law_2014_tt_bldtbxh_19__art_18",
+          "law_2015_tt_bct_24__art_10",
+          "internal_2026_qd_tnt_06__art_1",
+          "law_2019_qh14_45__art_108"
+        ],
+        "bm25": [
+          "law_2016_nd_cp_33__art_9",
+          "law_2013_tt_bca_15__art_39",
+          "law_2024_qh15_41__art_66",
+          "law_2012_qh13_20__art_1",
+          "law_2014_tt_bldtbxh_19__art_14",
+          "law_2016_tt_btc_07__art_19",
+          "law_2015_tt_bct_24__art_10",
+          "law_2024_qh15_41__art_79",
+          "law_2019_qh14_45__art_98"
+        ],
+        "hybrid": [
+          "law_2014_tt_bldtbxh_19__art_14",
+          "law_2019_qh14_45__art_98",
+          "law_2015_tt_bct_24__art_10",
+          "law_2016_nd_cp_33__art_9",
+          "law_2013_tt_bca_15__art_39",
+          "internal_2026_qd_tnt_06__art_2",
+          "law_2014_ttlt_btc_btp_191__art_2",
+          "law_2024_qh15_41__art_66",
+          "law_2020_nd_cp_28__art_17"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_05",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_13__art_2",
+        "law_2019_qh14_45__art_123"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_13__art_2",
+          "law_2020_nd_cp_130__art_23",
+          "law_2015_nd_cp_87__art_47",
+          "law_2013_nd_cp_78__art_28",
+          "law_2014_tt_btc_161__art_25",
+          "law_2020_qh14_59__art_110",
+          "law_2013_tt_ttcp_08__art_30",
+          "law_2019_qh14_45__art_123",
+          "law_2014_nd_cp_71__art_29",
+          "law_2015_tt_bkhdt_02__art_14"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_13__art_2",
+          "internal_2026_qd_tnt_01__art_8",
+          "law_2019_qh14_45__art_123",
+          "law_2019_qh14_45__art_125",
+          "law_2015_qh13_101__art_177",
+          "law_2017_nd_cp_128__art_6",
+          "law_2014_nd_cp_71__art_29",
+          "internal_2026_qd_tnt_01__art_1",
+          "law_2015_tt_bkhcn_11__art_9",
+          "law_2019_nd_cp_75__art_16"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_13__art_2",
+          "law_2019_qh14_45__art_123",
+          "law_2014_nd_cp_71__art_29",
+          "law_2020_nd_cp_130__art_23",
+          "internal_2026_qd_tnt_01__art_8",
+          "law_2015_nd_cp_87__art_47",
+          "law_2013_nd_cp_78__art_28",
+          "law_2019_qh14_45__art_125",
+          "law_2014_tt_btc_161__art_25",
+          "law_2015_qh13_101__art_177"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_06",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qt_tnt_15__art_1",
+        "law_2019_qh14_45__art_35"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qt_tnt_15__art_1",
+          "law_2014_nd_cp_27__art_12",
+          "law_2014_nd_cp_27__art_11",
+          "law_2019_qh14_45__art_36",
+          "law_2019_qh14_45__art_35",
+          "law_2014_tt_bldtbxh_19__art_8",
+          "law_2010_qh12_58__art_29",
+          "internal_2026_qd_tnt_07__art_2",
+          "law_2014_tt_bldtbxh_19__art_11"
+        ],
+        "bm25": [
+          "internal_2026_qt_tnt_15__art_1",
+          "law_2019_qh14_45__art_35",
+          "law_2019_qh14_45__art_36",
+          "law_2010_qh12_58__art_29",
+          "law_2018_tt_bgtvt_23__art_22",
+          "law_2016_tt_nhnn_02__art_7",
+          "law_2020_nd_cp_88__art_11",
+          "law_2017_tt_bldtbxh_26__art_4",
+          "law_2015_qh13_91__art_434",
+          "law_2012_tt_btc_117__art_8"
+        ],
+        "hybrid": [
+          "internal_2026_qt_tnt_15__art_1",
+          "law_2019_qh14_45__art_35",
+          "law_2019_qh14_45__art_36",
+          "law_2010_qh12_58__art_29",
+          "law_2014_nd_cp_27__art_12",
+          "law_2014_nd_cp_27__art_11",
+          "law_2018_tt_bgtvt_23__art_22",
+          "law_2014_tt_bldtbxh_19__art_8",
+          "law_2016_tt_nhnn_02__art_7"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_07",
+      "category": "policy_and_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_28__art_6",
+        "law_2025_qh15_91__art_23"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_28__art_6",
+          "law_2025_qh15_91__art_23",
+          "law_2025_nd_cp_356__art_29",
+          "internal_2026_qt_tnt_30__art_4",
+          "law_2025_nd_cp_356__art_41",
+          "law_2015_tt_bkhdt_02__art_14",
+          "law_2025_nd_cp_356__art_8",
+          "internal_2026_qd_tnt_29__art_2",
+          "internal_2026_qt_tnt_25__art_4",
+          "law_2025_nd_cp_356__art_28"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_28__art_6",
+          "internal_2026_qt_tnt_30__art_4",
+          "law_2025_nd_cp_356__art_29",
+          "internal_2026_qt_tnt_25__art_4",
+          "law_2025_qh15_91__art_23",
+          "law_2025_nd_cp_356__art_8",
+          "law_2016_tt_btttt_38__art_5",
+          "law_2018_nd_cp_27__art_1",
+          "law_2016_tt_bxd_27__art_9",
+          "law_2020_qh14_59__art_72"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_28__art_6",
+          "internal_2026_qt_tnt_30__art_4",
+          "law_2025_nd_cp_356__art_29",
+          "law_2025_qh15_91__art_23",
+          "internal_2026_qt_tnt_25__art_4",
+          "law_2025_nd_cp_356__art_8",
+          "law_2025_nd_cp_356__art_41",
+          "law_2015_tt_bkhdt_02__art_14",
+          "law_2016_tt_btttt_38__art_5",
+          "law_2018_nd_cp_27__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_08",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qt_tnt_39__art_2",
+        "law_2005_qh11_36__art_301"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2014_nd_cp_71__art_8",
+          "law_2014_nd_cp_71__art_12",
+          "law_2014_nd_cp_71__art_11",
+          "law_2005_qh11_36__art_301",
+          "law_2014_nd_cp_71__art_13",
+          "law_2019_nd_cp_75__art_6",
+          "law_2019_nd_cp_75__art_7",
+          "law_2014_nd_cp_71__art_15",
+          "law_2014_nd_cp_71__art_10",
+          "law_2014_nd_cp_71__art_9"
+        ],
+        "bm25": [
+          "law_2016_tt_bxd_08__art_24",
+          "law_2015_qh13_91__art_418",
+          "law_2018_qh14_23__art_111",
+          "law_2019_tt_bgtvt_35__art_28",
+          "law_2017_tt_nhnn_02__art_19",
+          "law_2005_qh11_36__art_301",
+          "law_2016_tt_bxd_09__art_21",
+          "law_2005_qh11_36__art_300",
+          "law_2019_nd_cp_75__art_4",
+          "law_2019_tt_nhnn_32__art_1"
+        ],
+        "hybrid": [
+          "law_2005_qh11_36__art_301",
+          "law_2014_nd_cp_71__art_8",
+          "law_2016_tt_bxd_08__art_24",
+          "law_2015_qh13_91__art_418",
+          "law_2014_nd_cp_71__art_12",
+          "law_2018_qh14_23__art_111",
+          "law_2014_nd_cp_71__art_11",
+          "law_2019_tt_bgtvt_35__art_28",
+          "law_2017_tt_nhnn_02__art_19",
+          "law_2014_nd_cp_71__art_13"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_09",
+      "category": "policy_and_law",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_50__art_2",
+        "law_2020_qh14_59__art_167"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2020_nd_cp_155__art_293",
+          "law_2020_qh14_59__art_167",
+          "law_2016_tt_btc_07__art_66",
+          "law_2012_tt_btc_212__art_16",
+          "law_2017_tt_nhnn_25__art_11",
+          "law_2020_tt_btc_96__art_31",
+          "law_2015_tt_btc_162__art_11",
+          "law_2014_tt_btc_118__art_4"
+        ],
+        "bm25": [
+          "law_2016_tt_btc_07__art_66",
+          "law_2020_qh14_59__art_167",
+          "law_2020_nd_cp_155__art_288",
+          "law_2020_nd_cp_155__art_293",
+          "law_2016_tt_btc_07__art_14",
+          "law_2019_qh14_54__art_41",
+          "law_2020_nd_cp_155__art_278",
+          "law_2020_nd_cp_155__art_273",
+          "law_2020_tt_btc_98__art_59"
+        ],
+        "hybrid": [
+          "law_2016_tt_btc_07__art_66",
+          "law_2020_qh14_59__art_167",
+          "law_2020_nd_cp_155__art_293",
+          "law_2020_nd_cp_155__art_288",
+          "law_2012_tt_btc_212__art_16",
+          "law_2017_tt_nhnn_25__art_11",
+          "law_2016_tt_btc_07__art_14",
+          "law_2019_qh14_54__art_41",
+          "law_2020_tt_btc_96__art_31"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_10",
+      "category": "policy_and_law",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_09__art_6",
+        "law_2024_qh15_41__art_33",
+        "law_2024_qh15_41__art_34"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2020_nd_cp_58__art_4",
+          "internal_2026_qd_tnt_09__art_6",
+          "law_2016_nd_cp_33__art_14",
+          "law_2018_nd_cp_143__art_13",
+          "law_2015_ttlt_bca_byt_btc_09__art_4",
+          "law_2018_nd_cp_143__art_12",
+          "law_2024_qh15_41__art_33",
+          "law_2015_nd_cp_115__art_17",
+          "law_2014_qh13_46__art_7",
+          "law_2024_qh15_41__art_32"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_09__art_6",
+          "law_2015_nd_cp_115__art_7",
+          "law_2016_nd_cp_33__art_9",
+          "law_2015_nd_cp_115__art_17",
+          "law_2016_nd_cp_33__art_12",
+          "law_2016_ttlt_bqp_bca_bldtbxh_105__art_13",
+          "law_2024_qh15_41__art_66",
+          "law_2015_nd_cp_115__art_11",
+          "law_2016_tt_bldtbxh_01__art_3",
+          "law_2017_tt_bqp_37__art_4"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_09__art_6",
+          "law_2015_nd_cp_115__art_17",
+          "law_2020_nd_cp_58__art_4",
+          "law_2015_nd_cp_115__art_7",
+          "law_2016_nd_cp_33__art_9",
+          "law_2016_nd_cp_33__art_14",
+          "law_2018_nd_cp_143__art_13",
+          "law_2015_ttlt_bca_byt_btc_09__art_4",
+          "law_2016_nd_cp_33__art_12",
+          "law_2018_nd_cp_143__art_12"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_11",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_37__art_1",
+        "law_2005_qh11_50__art_39"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_37__art_1",
+          "internal_2026_cs_tnt_37__art_3",
+          "law_2017_nd_cp_73__art_29",
+          "law_2018_nd_cp_22__art_17",
+          "law_2011_nd_cp_85__art_1",
+          "law_2016_tt_bxd_08__art_19",
+          "law_2009_qh12_36__art_1",
+          "law_2018_nd_cp_22__art_27",
+          "law_2005_qh11_50__art_121",
+          "internal_2026_qd_tnt_01__art_6"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_37__art_2",
+          "internal_2026_qd_tnt_01__art_6",
+          "internal_2026_cs_tnt_37__art_1",
+          "law_2009_qh12_36__art_1",
+          "law_2005_qh11_50__art_10",
+          "law_2005_qh11_50__art_8",
+          "law_2011_nd_cp_85__art_1",
+          "law_2005_qh11_50__art_7",
+          "law_2005_qh11_50__art_219",
+          "law_2005_qh11_50__art_198"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_37__art_1",
+          "internal_2026_qd_tnt_01__art_6",
+          "internal_2026_cs_tnt_37__art_2",
+          "internal_2026_cs_tnt_37__art_3",
+          "law_2017_nd_cp_73__art_29",
+          "law_2009_qh12_36__art_1",
+          "law_2018_nd_cp_22__art_17",
+          "law_2005_qh11_50__art_10",
+          "law_2011_nd_cp_85__art_1",
+          "law_2016_tt_bxd_08__art_19"
+        ]
+      }
+    },
+    {
+      "case_id": "mix_12",
+      "category": "policy_and_law",
+      "gold_access": "internal",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_43__art_1",
+        "law_2023_qh15_20__art_23"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2023_qh15_20__art_23",
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2018_nd_cp_130__art_8",
+          "law_2020_nd_cp_30__art_5",
+          "law_2007_nd_cp_64__art_35",
+          "law_2023_qh15_20__art_38",
+          "law_2018_qd_ttg_28__art_4",
+          "law_2015_qd_ttg_08__art_14",
+          "law_2019_nd_cp_85__art_38",
+          "law_2017_tt_btc_133__art_8"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2015_nd_cp_23__art_36",
+          "law_2015_nd_cp_23__art_3",
+          "law_2020_nd_cp_82__art_7",
+          "law_2012_tt_btc_212__art_24",
+          "law_2017_nd_cp_144__art_14",
+          "law_2020_tt_btp_01__art_20",
+          "law_2012_tt_btc_212__art_30",
+          "law_2017_tt_btc_133__art_13",
+          "law_2020_nd_cp_82__art_6"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2023_qh15_20__art_23",
+          "law_2015_nd_cp_23__art_36",
+          "law_2015_nd_cp_23__art_3",
+          "law_2018_nd_cp_130__art_8",
+          "law_2020_nd_cp_30__art_5",
+          "law_2020_nd_cp_82__art_7",
+          "law_2012_tt_btc_212__art_24",
+          "law_2007_nd_cp_64__art_35",
+          "law_2017_nd_cp_144__art_14"
+        ]
+      }
+    },
+    {
+      "case_id": "probe_01",
+      "category": "access_probe",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_09__art_2"
+      ],
+      "hybrid_rank": 4,
+      "ranked_provisions": {
+        "dense": [
+          "law_2017_tt_btttt_45__art_9",
+          "law_2016_tt_bldtbxh_27__art_4",
+          "law_2020_tt_btttt_29__art_6",
+          "law_2015_ttlt_bnnptnt_bnv_36__art_17",
+          "law_2016_tt_bldtbxh_31__art_3",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2016_tt_bldtbxh_38__art_8",
+          "law_2015_ttlt_byt_bnv_27__art_10",
+          "law_2016_tt_bldtbxh_45__art_4"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_09__art_2",
+          "law_2020_tt_btttt_29__art_6",
+          "law_2010_tt_bqp_73__art_3",
+          "law_2016_nd_cp_20__art_14",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2020_tt_btttt_29__art_5",
+          "law_2010_tt_bqp_73__art_4",
+          "law_2015_ttlt_bnv_btc_01__art_3",
+          "law_2013_tt_bca_17__art_8",
+          "law_2017_tt_bnv_07__art_7"
+        ],
+        "hybrid": [
+          "law_2020_tt_btttt_29__art_6",
+          "internal_2026_qd_tnt_09__art_3",
+          "law_2017_tt_btttt_45__art_9",
+          "internal_2026_qd_tnt_09__art_2",
+          "law_2016_tt_bldtbxh_27__art_4",
+          "law_2010_tt_bqp_73__art_3",
+          "law_2015_ttlt_bnnptnt_bnv_36__art_17",
+          "law_2016_nd_cp_20__art_14",
+          "law_2016_tt_bldtbxh_31__art_3",
+          "law_2020_tt_btttt_29__art_5"
+        ]
+      }
+    },
+    {
+      "case_id": "probe_02",
+      "category": "access_probe",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_kh_tnt_51__art_3"
+      ],
+      "hybrid_rank": 4,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_kh_tnt_51__art_3",
+          "internal_2026_kh_tnt_52__art_3",
+          "law_2020_nd_cp_28__art_11",
+          "internal_2026_bc_tnt_36__art_4",
+          "law_2015_ttlt_bnv_btc_01__art_7",
+          "law_2017_qh14_12__art_1",
+          "internal_2026_kh_tnt_51__art_2",
+          "law_2015_ttlt_bnv_btc_01__art_2",
+          "law_2020_nd_cp_28__art_4"
+        ],
+        "bm25": [
+          "internal_2026_kh_tnt_51__art_4",
+          "internal_2026_bc_tnt_36__art_4",
+          "internal_2026_kh_tnt_51__art_2",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_qd_tnt_22__art_1",
+          "internal_2026_kh_tnt_51__art_1",
+          "internal_2026_kh_tnt_52__art_1",
+          "internal_2026_qd_tnt_13__art_4",
+          "internal_2026_qd_tnt_26__art_3",
+          "internal_2026_kh_tnt_52__art_4"
+        ],
+        "hybrid": [
+          "internal_2026_bc_tnt_36__art_4",
+          "internal_2026_kh_tnt_51__art_2",
+          "internal_2026_kh_tnt_51__art_4",
+          "internal_2026_kh_tnt_51__art_3",
+          "internal_2026_kh_tnt_52__art_3",
+          "law_2020_nd_cp_28__art_11",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_qd_tnt_22__art_1",
+          "law_2015_ttlt_bnv_btc_01__art_7",
+          "internal_2026_kh_tnt_51__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "probe_03",
+      "category": "access_probe",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_bc_tnt_36__art_2"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_bc_tnt_36__art_3",
+          "internal_2026_bc_tnt_36__art_4",
+          "internal_2026_qt_tnt_25__art_3",
+          "internal_2026_cs_tnt_21__art_3",
+          "law_2020_tt_btc_121__art_11",
+          "internal_2026_qd_tnt_11__art_3",
+          "internal_2026_qd_tnt_33__art_2",
+          "internal_2026_cs_tnt_21__art_4",
+          "law_2020_tt_nhnn_09__art_2"
+        ],
+        "bm25": [
+          "law_2017_tt_btnmt_03__art_20",
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_bc_tnt_36__art_3",
+          "law_2020_nd_cp_91__art_32",
+          "law_2017_tt_btc_87__art_9",
+          "law_2013_nd_cp_203__art_4",
+          "law_2015_tt_btc_155__art_9",
+          "law_2016_tt_btc_07__art_30",
+          "internal_2026_cs_tnt_21__art_2"
+        ],
+        "hybrid": [
+          "internal_2026_bc_tnt_36__art_2",
+          "internal_2026_bc_tnt_36__art_3",
+          "law_2017_tt_btnmt_03__art_20",
+          "internal_2026_bc_tnt_36__art_4",
+          "law_2020_nd_cp_91__art_32",
+          "internal_2026_qt_tnt_25__art_3",
+          "law_2017_tt_btc_87__art_9",
+          "internal_2026_cs_tnt_21__art_3",
+          "law_2020_tt_btc_121__art_11"
+        ]
+      }
+    },
+    {
+      "case_id": "probe_04",
+      "category": "access_probe",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_cs_tnt_44__art_3"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_cs_tnt_44__art_3",
+          "internal_2026_qd_tnt_47__art_2",
+          "law_2012_tt_nhnn_01__art_9",
+          "law_2020_nd_cp_155__art_291",
+          "law_2017_nd_cp_126__art_33",
+          "law_2018_tt_btc_49__art_15",
+          "law_2020_qh14_59__art_126",
+          "law_2016_tt_btc_86__art_5",
+          "law_2013_nd_cp_78__art_14",
+          "law_2020_qh14_59__art_102"
+        ],
+        "bm25": [
+          "internal_2026_cs_tnt_44__art_3",
+          "law_2012_tt_nhnn_01__art_10",
+          "law_2016_tt_btc_07__art_60",
+          "law_2016_tt_btc_07__art_38",
+          "law_2012_qh13_23__art_38",
+          "law_2020_qh14_59__art_162",
+          "law_2005_nd_cp_18__art_27",
+          "law_2020_qh14_59__art_82",
+          "law_2020_qh14_59__art_165"
+        ],
+        "hybrid": [
+          "internal_2026_cs_tnt_44__art_3",
+          "law_2012_tt_nhnn_01__art_10",
+          "internal_2026_qd_tnt_47__art_2",
+          "law_2016_tt_btc_07__art_60",
+          "law_2012_tt_nhnn_01__art_9",
+          "law_2020_nd_cp_155__art_291",
+          "law_2016_tt_btc_07__art_38",
+          "law_2017_nd_cp_126__art_33",
+          "law_2012_qh13_23__art_38"
+        ]
+      }
+    },
+    {
+      "case_id": "probe_05",
+      "category": "access_probe",
+      "gold_access": "confidential",
+      "gold_provision_ids": [
+        "internal_2026_qd_tnt_16__art_1"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qd_tnt_16__art_1",
+          "internal_2026_qd_tnt_16__art_4",
+          "law_2017_nd_cp_126__art_9",
+          "law_2020_tt_btc_98__art_77",
+          "law_2021_tt_btp_02__art_10",
+          "law_2020_tt_btc_98__art_43",
+          "law_2015_tt_nhnn_36__art_25",
+          "law_2020_tt_btc_98__art_42",
+          "law_2020_nd_cp_156__art_33",
+          "law_2020_tt_btc_98__art_2"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_16__art_4",
+          "law_2012_tt_btc_212__art_23",
+          "internal_2026_qd_tnt_16__art_1",
+          "law_2020_qh14_59__art_133",
+          "law_2021_tt_btc_32__art_4",
+          "law_2020_nd_cp_150__art_34",
+          "law_2017_nd_cp_126__art_6",
+          "law_2017_nd_cp_126__art_35",
+          "law_2020_nd_cp_150__art_6"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_16__art_4",
+          "internal_2026_qd_tnt_16__art_1",
+          "law_2012_tt_btc_212__art_23",
+          "law_2017_nd_cp_126__art_9",
+          "law_2020_tt_btc_98__art_77",
+          "law_2020_qh14_59__art_133",
+          "law_2021_tt_btp_02__art_10",
+          "law_2020_tt_btc_98__art_43",
+          "law_2021_tt_btc_32__art_4"
+        ]
+      }
+    },
+    {
+      "case_id": "law_01",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_134__art_9"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_134__art_9",
+          "internal_2026_qd_tnt_33__art_2",
+          "law_2025_qh15_134__art_10",
+          "law_2025_qh15_71__art_43",
+          "law_2025_qh15_134__art_15",
+          "law_2025_qh15_134__art_13",
+          "law_2025_qh15_134__art_14",
+          "law_2025_qh15_134__art_6"
+        ],
+        "bm25": [
+          "law_2025_qh15_134__art_9",
+          "law_2025_qh15_134__art_10",
+          "law_2025_qh15_134__art_13",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_14",
+          "law_2025_qh15_91__art_30",
+          "law_2025_qh15_134__art_6",
+          "internal_2026_qd_tnt_33__art_2",
+          "law_2025_qh15_134__art_15",
+          "law_2025_qh15_134__art_8"
+        ],
+        "hybrid": [
+          "law_2025_qh15_134__art_9",
+          "law_2025_qh15_134__art_10",
+          "law_2025_qh15_134__art_13",
+          "internal_2026_qd_tnt_33__art_2",
+          "law_2025_qh15_134__art_14",
+          "law_2025_qh15_134__art_15",
+          "law_2025_qh15_134__art_6",
+          "law_2025_qh15_71__art_43",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_91__art_30"
+        ]
+      }
+    },
+    {
+      "case_id": "law_02",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_134__art_11",
+        "law_2025_qh15_71__art_44"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_134__art_11",
+          "law_2025_qh15_71__art_44",
+          "internal_2026_cs_tnt_34__art_2",
+          "law_2025_qh15_134__art_10",
+          "law_2025_qh15_134__art_27",
+          "internal_2026_qd_tnt_33__art_3",
+          "law_2025_qh15_134__art_14",
+          "law_2025_qh15_134__art_15",
+          "law_2025_qh15_134__art_28"
+        ],
+        "bm25": [
+          "law_2025_qh15_71__art_44",
+          "law_2025_qh15_134__art_11",
+          "law_2025_qh15_134__art_3",
+          "internal_2026_qd_tnt_33__art_3",
+          "law_2025_qh15_134__art_9",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_20",
+          "law_2025_qh15_134__art_25",
+          "law_2025_nd_cp_356__art_10",
+          "law_2025_qh15_134__art_5"
+        ],
+        "hybrid": [
+          "law_2025_qh15_71__art_44",
+          "law_2025_qh15_134__art_11",
+          "internal_2026_qd_tnt_33__art_3",
+          "law_2025_qh15_134__art_3",
+          "internal_2026_cs_tnt_34__art_2",
+          "law_2025_qh15_134__art_10",
+          "law_2025_qh15_134__art_9",
+          "law_2025_qh15_134__art_27",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_20"
+        ]
+      }
+    },
+    {
+      "case_id": "law_03",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_134__art_34"
+      ],
+      "hybrid_rank": null,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_134__art_35",
+          "law_2025_qh15_91__art_38",
+          "law_2025_qh15_134__art_2",
+          "law_2025_qh15_148__art_47",
+          "law_2017_tt_bkhcn_17__art_44",
+          "law_2013_nd_cp_154__art_28",
+          "law_2017_tt_bkhcn_08__art_21",
+          "law_2018_nd_cp_76__art_41",
+          "law_2019_tt_btp_02__art_20",
+          "law_2019_nd_cp_13__art_25"
+        ],
+        "bm25": [
+          "law_2025_qh15_134__art_35",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_13",
+          "law_2025_qh15_134__art_1",
+          "law_2025_qh15_134__art_3",
+          "law_2025_qh15_134__art_7",
+          "law_2025_qh15_134__art_30",
+          "internal_2026_qd_tnt_33__art_3",
+          "law_2025_qh15_134__art_8",
+          "law_2025_qh15_134__art_6"
+        ],
+        "hybrid": [
+          "law_2025_qh15_134__art_35",
+          "law_2025_qh15_91__art_38",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_2",
+          "law_2025_qh15_134__art_13",
+          "law_2025_qh15_148__art_47",
+          "law_2025_qh15_134__art_1",
+          "law_2025_qh15_134__art_3",
+          "law_2017_tt_bkhcn_17__art_44",
+          "law_2013_nd_cp_154__art_28"
+        ]
+      }
+    },
+    {
+      "case_id": "law_04",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_134__art_7"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_134__art_7",
+          "law_2025_qh15_71__art_12",
+          "law_2007_nd_cp_169__art_11",
+          "law_2025_qh15_116__art_7",
+          "law_2025_qh15_71__art_43",
+          "law_2024_qh15_60__art_10",
+          "law_2018_qh14_24__art_8",
+          "law_2025_qh15_134__art_6",
+          "law_2017_qh14_07__art_12",
+          "law_2025_qh15_148__art_5"
+        ],
+        "bm25": [
+          "law_2025_qh15_134__art_4",
+          "law_2025_qh15_134__art_7",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_29",
+          "law_2025_qh15_134__art_12",
+          "law_2025_qh15_134__art_3",
+          "law_2025_qh15_134__art_13",
+          "law_2025_nd_cp_356__art_10",
+          "law_2025_qh15_134__art_8",
+          "law_2025_qh15_134__art_10"
+        ],
+        "hybrid": [
+          "law_2025_qh15_134__art_7",
+          "law_2025_qh15_134__art_4",
+          "law_2025_qh15_71__art_12",
+          "law_2007_nd_cp_169__art_11",
+          "law_2025_qh15_71__art_45",
+          "law_2025_qh15_134__art_29",
+          "law_2025_qh15_116__art_7",
+          "law_2025_qh15_134__art_12",
+          "law_2025_qh15_71__art_43",
+          "law_2025_qh15_134__art_3"
+        ]
+      }
+    },
+    {
+      "case_id": "law_05",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_71__art_46"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_71__art_46",
+          "law_2025_qh15_71__art_47",
+          "law_2020_tt_nhnn_09__art_7",
+          "law_2025_qh15_71__art_48",
+          "law_2015_tt_bct_59__art_3",
+          "law_2025_qh15_71__art_34",
+          "law_2025_qh15_71__art_13",
+          "law_2014_tt_btc_184__art_10",
+          "law_2018_nd_cp_70__art_37",
+          "law_2025_qh15_71__art_28"
+        ],
+        "bm25": [
+          "law_2025_qh15_71__art_1",
+          "law_2014_tt_btc_103__art_7",
+          "law_2025_qh15_71__art_21",
+          "law_2025_qh15_71__art_9",
+          "law_2025_qh15_71__art_49",
+          "law_2025_qh15_71__art_35",
+          "law_2025_qh15_71__art_29",
+          "law_2025_qh15_71__art_34",
+          "law_2020_nd_cp_63__art_6",
+          "law_2021_nd_cp_21__art_17"
+        ],
+        "hybrid": [
+          "law_2025_qh15_71__art_1",
+          "law_2025_qh15_71__art_46",
+          "law_2014_tt_btc_103__art_7",
+          "law_2025_qh15_71__art_47",
+          "law_2025_qh15_71__art_21",
+          "law_2020_tt_nhnn_09__art_7",
+          "law_2025_qh15_71__art_9",
+          "law_2025_qh15_71__art_48",
+          "law_2015_tt_bct_59__art_3",
+          "law_2025_qh15_71__art_49"
+        ]
+      }
+    },
+    {
+      "case_id": "law_06",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_71__art_50"
+      ],
+      "hybrid_rank": null,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_148__art_47",
+          "law_2013_nd_cp_154__art_28",
+          "law_2025_qh15_91__art_38",
+          "law_2018_nd_cp_76__art_41",
+          "law_2025_qh15_71__art_51",
+          "law_2017_qh14_07__art_59",
+          "law_2018_nd_cp_130__art_83",
+          "law_2020_tt_btttt_04__art_10",
+          "law_2019_nd_cp_13__art_25",
+          "law_2025_qh15_116__art_44"
+        ],
+        "bm25": [
+          "law_2013_nd_cp_154__art_28",
+          "law_2005_qh11_50__art_220",
+          "law_2005_qh11_50__art_148",
+          "law_2005_qh11_50__art_95",
+          "law_2009_qh12_36__art_1",
+          "law_2005_qh11_50__art_114",
+          "law_2005_qh11_50__art_96",
+          "law_2016_tt_bkhcn_16__art_1",
+          "law_2025_qh15_71__art_51",
+          "law_2005_qh11_50__art_94"
+        ],
+        "hybrid": [
+          "law_2013_nd_cp_154__art_28",
+          "law_2025_qh15_71__art_51",
+          "law_2025_qh15_148__art_47",
+          "law_2005_qh11_50__art_220",
+          "law_2005_qh11_50__art_148",
+          "law_2025_qh15_91__art_38",
+          "law_2018_nd_cp_76__art_41",
+          "law_2005_qh11_50__art_95",
+          "law_2009_qh12_36__art_1",
+          "law_2005_qh11_50__art_114"
+        ]
+      }
+    },
+    {
+      "case_id": "law_07",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_148__art_8"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_148__art_8",
+          "law_2020_tt_nhnn_09__art_1",
+          "law_2017_tt_btttt_03__art_8",
+          "law_2019_tt_bnv_01__art_19",
+          "law_2017_tt_btnmt_47__art_6",
+          "law_2020_tt_nhnn_09__art_18",
+          "law_2020_tt_nhnn_23__art_5",
+          "law_2025_qh15_148__art_1",
+          "law_2019_tt_bct_30__art_1"
+        ],
+        "bm25": [
+          "law_2025_qh15_148__art_8",
+          "law_2020_tt_nhnn_09__art_52",
+          "law_2019_tt_btc_79__art_3",
+          "law_2010_tt_btc_225__art_13",
+          "law_2023_qh15_20__art_20",
+          "law_2020_tt_nhnn_09__art_51",
+          "law_2020_tt_nhnn_09__art_42",
+          "law_2024_qh15_41__art_74",
+          "law_2015_qd_ttg_12__art_4"
+        ],
+        "hybrid": [
+          "law_2025_qh15_148__art_8",
+          "law_2020_tt_nhnn_09__art_52",
+          "law_2019_tt_btc_79__art_3",
+          "law_2020_tt_nhnn_09__art_1",
+          "law_2010_tt_btc_225__art_13",
+          "law_2017_tt_btttt_03__art_8",
+          "law_2023_qh15_20__art_20",
+          "law_2019_tt_bnv_01__art_19",
+          "law_2017_tt_btnmt_47__art_6"
+        ]
+      }
+    },
+    {
+      "case_id": "law_08",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2024_qh15_60__art_13"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2024_qh15_60__art_13",
+          "law_2020_nd_cp_47__art_34",
+          "law_2020_tt_nhnn_09__art_4",
+          "law_2020_nd_cp_47__art_3",
+          "law_2024_qh15_60__art_3",
+          "law_2018_qh14_27__art_45",
+          "law_2025_qh15_116__art_8",
+          "law_2017_qd_ttg_05__art_9",
+          "law_2016_nd_cp_85__art_6",
+          "law_2025_qh15_91__art_2"
+        ],
+        "bm25": [
+          "law_2024_qh15_60__art_13",
+          "law_2016_tt_btnmt_20__art_6",
+          "law_2017_tt_btc_18__art_8",
+          "law_2025_nd_cp_356__art_5",
+          "law_2015_tt_btc_14__art_3",
+          "law_2017_tt_btnmt_05__art_43",
+          "law_2017_tt_btnmt_05__art_52",
+          "law_2013_tt_btp_06__art_2",
+          "law_2025_qh15_91__art_30"
+        ],
+        "hybrid": [
+          "law_2024_qh15_60__art_13",
+          "law_2020_nd_cp_47__art_34",
+          "law_2016_tt_btnmt_20__art_6",
+          "law_2020_tt_nhnn_09__art_4",
+          "law_2017_tt_btc_18__art_8",
+          "law_2020_nd_cp_47__art_3",
+          "law_2025_nd_cp_356__art_5",
+          "law_2024_qh15_60__art_3",
+          "law_2015_tt_btc_14__art_3",
+          "law_2018_qh14_27__art_45"
+        ]
+      }
+    },
+    {
+      "case_id": "law_09",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2024_qh15_60__art_23"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2024_qh15_60__art_23",
+          "law_2025_nd_cp_356__art_17",
+          "law_2025_qh15_91__art_20",
+          "law_2024_qh15_60__art_3",
+          "law_2024_qh15_60__art_17",
+          "law_2018_qh14_27__art_41",
+          "law_2024_qh15_60__art_13",
+          "internal_2026_cs_tnt_28__art_5",
+          "law_2020_nd_cp_77__art_5"
+        ],
+        "bm25": [
+          "law_2025_nd_cp_356__art_42",
+          "law_2024_qh15_60__art_13",
+          "law_2024_qh15_60__art_23",
+          "law_2024_qh15_60__art_14",
+          "law_2024_qh15_60__art_27",
+          "law_2024_qh15_60__art_25",
+          "law_2020_nd_cp_47__art_3",
+          "law_2025_qh15_91__art_39",
+          "law_2024_qh15_60__art_3",
+          "law_2025_qh15_148__art_8"
+        ],
+        "hybrid": [
+          "law_2024_qh15_60__art_23",
+          "law_2024_qh15_60__art_13",
+          "law_2024_qh15_60__art_3",
+          "law_2025_nd_cp_356__art_42",
+          "law_2025_nd_cp_356__art_17",
+          "law_2025_qh15_91__art_20",
+          "law_2024_qh15_60__art_14",
+          "law_2024_qh15_60__art_27",
+          "law_2024_qh15_60__art_17",
+          "law_2024_qh15_60__art_25"
+        ]
+      }
+    },
+    {
+      "case_id": "law_10",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2024_qh15_60__art_45"
+      ],
+      "hybrid_rank": 10,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_nd_cp_356__art_42",
+          "law_2025_qh15_91__art_38",
+          "law_2025_qh15_148__art_47",
+          "law_2025_qh15_116__art_44",
+          "law_2015_nd_cp_137__art_20",
+          "law_2024_qh15_60__art_4",
+          "law_2025_qh15_116__art_43",
+          "law_2020_nd_cp_59__art_19",
+          "law_2024_qh15_60__art_1",
+          "law_2018_qh14_27__art_60"
+        ],
+        "bm25": [
+          "law_2024_qh15_60__art_4",
+          "law_2024_qh15_60__art_44",
+          "law_2024_qh15_60__art_46",
+          "law_2024_qh15_60__art_45",
+          "law_2024_qh15_60__art_1",
+          "law_2025_qh15_116__art_43",
+          "law_2024_qh15_60__art_37",
+          "law_2025_qh15_71__art_49"
+        ],
+        "hybrid": [
+          "law_2024_qh15_60__art_4",
+          "law_2025_qh15_116__art_43",
+          "law_2024_qh15_60__art_1",
+          "law_2025_nd_cp_356__art_42",
+          "law_2025_qh15_91__art_38",
+          "law_2024_qh15_60__art_44",
+          "law_2024_qh15_60__art_46",
+          "law_2025_qh15_148__art_47",
+          "law_2025_qh15_116__art_44",
+          "law_2024_qh15_60__art_45"
+        ]
+      }
+    },
+    {
+      "case_id": "law_11",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_116__art_41"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_116__art_41",
+          "law_2018_qh14_24__art_41",
+          "law_2025_qh15_116__art_25",
+          "law_2018_qh14_24__art_26",
+          "law_2025_qh15_116__art_29",
+          "law_2025_qh15_116__art_14",
+          "law_2013_nd_cp_72__art_44",
+          "law_2018_qh14_24__art_25"
+        ],
+        "bm25": [
+          "law_2025_qh15_116__art_41",
+          "law_2025_qh15_116__art_14",
+          "law_2018_qh14_24__art_41",
+          "law_2025_qh15_116__art_25",
+          "law_2025_qh15_116__art_16",
+          "law_2025_qh15_116__art_39",
+          "internal_2026_cs_tnt_21__art_1",
+          "law_2025_qh15_116__art_20",
+          "law_2018_qh14_24__art_26",
+          "law_2018_qh14_24__art_29"
+        ],
+        "hybrid": [
+          "law_2025_qh15_116__art_41",
+          "law_2018_qh14_24__art_41",
+          "law_2025_qh15_116__art_25",
+          "law_2025_qh15_116__art_14",
+          "law_2018_qh14_24__art_26",
+          "law_2025_qh15_116__art_16",
+          "law_2025_qh15_116__art_29",
+          "law_2025_qh15_116__art_39",
+          "internal_2026_cs_tnt_21__art_1"
+        ]
+      }
+    },
+    {
+      "case_id": "law_12",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_116__art_44"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_116__art_44",
+          "law_2025_qh15_116__art_45",
+          "law_2018_nd_cp_130__art_83",
+          "law_2025_qh15_116__art_1",
+          "law_2025_qh15_148__art_47",
+          "law_2013_nd_cp_72__art_45",
+          "law_2020_tt_nhnn_09__art_56",
+          "law_2018_nd_cp_90__art_7",
+          "law_2013_nd_cp_174__art_102",
+          "law_2018_nd_cp_23__art_17"
+        ],
+        "bm25": [
+          "law_2025_qh15_116__art_43",
+          "law_2025_qh15_116__art_45",
+          "law_2025_qh15_116__art_44",
+          "law_2018_qh14_24__art_31",
+          "law_2018_qh14_24__art_26",
+          "law_2018_qh14_24__art_41",
+          "law_2018_qh14_24__art_33",
+          "law_2018_qh14_24__art_21"
+        ],
+        "hybrid": [
+          "law_2025_qh15_116__art_45",
+          "law_2025_qh15_116__art_44",
+          "law_2025_qh15_116__art_43",
+          "law_2018_nd_cp_130__art_83",
+          "law_2025_qh15_116__art_1",
+          "law_2025_qh15_148__art_47",
+          "law_2018_qh14_24__art_31",
+          "law_2013_nd_cp_72__art_45"
+        ]
+      }
+    },
+    {
+      "case_id": "law_13",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_91__art_9"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_91__art_9",
+          "law_2025_nd_cp_356__art_6",
+          "law_2025_qh15_91__art_19",
+          "law_2025_qh15_91__art_10",
+          "law_2025_qh15_91__art_39",
+          "law_2025_nd_cp_356__art_41",
+          "law_2025_nd_cp_356__art_5",
+          "law_2025_qh15_91__art_38",
+          "internal_2026_cs_tnt_28__art_4",
+          "law_2025_nd_cp_356__art_42"
+        ],
+        "bm25": [
+          "law_2025_qh15_91__art_9",
+          "law_2025_nd_cp_356__art_6",
+          "law_2025_qh15_91__art_10",
+          "law_2025_qh15_91__art_4",
+          "law_2024_qh15_60__art_35",
+          "law_2025_qh15_91__art_39",
+          "law_2025_nd_cp_356__art_5",
+          "internal_2026_cs_tnt_28__art_4",
+          "law_2025_nd_cp_356__art_7",
+          "law_2025_qh15_91__art_19"
+        ],
+        "hybrid": [
+          "law_2025_qh15_91__art_9",
+          "law_2025_nd_cp_356__art_6",
+          "law_2025_qh15_91__art_10",
+          "law_2025_qh15_91__art_39",
+          "law_2025_qh15_91__art_19",
+          "law_2025_nd_cp_356__art_5",
+          "internal_2026_cs_tnt_28__art_4",
+          "law_2025_qh15_91__art_4",
+          "law_2024_qh15_60__art_35",
+          "law_2025_nd_cp_356__art_41"
+        ]
+      }
+    },
+    {
+      "case_id": "law_14",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_91__art_14"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_qh15_91__art_14",
+          "law_2025_qh15_91__art_19",
+          "law_2025_nd_cp_356__art_27",
+          "law_2025_qh15_91__art_25",
+          "law_2025_qh15_91__art_4",
+          "law_2025_nd_cp_356__art_8",
+          "law_2025_qh15_91__art_2",
+          "law_2024_qh15_60__art_26",
+          "law_2025_nd_cp_356__art_9"
+        ],
+        "bm25": [
+          "law_2025_qh15_91__art_14",
+          "law_2024_qh15_60__art_26",
+          "law_2020_nd_cp_47__art_38",
+          "law_2025_qh15_91__art_25",
+          "law_2020_tt_btc_69__art_20",
+          "law_2025_qh15_91__art_28",
+          "law_2025_nd_cp_356__art_7",
+          "law_2025_nd_cp_356__art_16"
+        ],
+        "hybrid": [
+          "law_2025_qh15_91__art_14",
+          "law_2025_qh15_91__art_25",
+          "law_2024_qh15_60__art_26",
+          "law_2025_qh15_91__art_19",
+          "law_2020_nd_cp_47__art_38",
+          "law_2025_nd_cp_356__art_27",
+          "law_2020_tt_btc_69__art_20",
+          "law_2025_qh15_91__art_4",
+          "law_2025_qh15_91__art_28"
+        ]
+      }
+    },
+    {
+      "case_id": "law_15",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_91__art_20"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_nd_cp_356__art_17",
+          "law_2025_qh15_91__art_20",
+          "law_2024_qh15_60__art_23",
+          "law_2025_nd_cp_356__art_18",
+          "law_2025_qh15_91__art_17",
+          "law_2016_tt_btttt_38__art_2"
+        ],
+        "bm25": [
+          "law_2025_nd_cp_356__art_18",
+          "law_2025_nd_cp_356__art_17",
+          "law_2025_qh15_91__art_20",
+          "law_2025_qh15_91__art_22",
+          "law_2025_nd_cp_356__art_20",
+          "law_2025_nd_cp_356__art_22"
+        ],
+        "hybrid": [
+          "law_2025_nd_cp_356__art_17",
+          "law_2025_qh15_91__art_20",
+          "law_2025_nd_cp_356__art_18",
+          "law_2024_qh15_60__art_23",
+          "law_2025_qh15_91__art_22",
+          "law_2025_qh15_91__art_17"
+        ]
+      }
+    },
+    {
+      "case_id": "law_16",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2025_qh15_91__art_38"
+      ],
+      "hybrid_rank": 3,
+      "ranked_provisions": {
+        "dense": [
+          "law_2025_nd_cp_356__art_41",
+          "law_2025_qh15_91__art_38",
+          "law_2018_nd_cp_39__art_16",
+          "law_2025_qh15_91__art_21",
+          "law_2025_nd_cp_356__art_19",
+          "law_2025_nd_cp_356__art_22",
+          "internal_2026_qt_tnt_31__art_1",
+          "law_2025_qh15_91__art_19"
+        ],
+        "bm25": [
+          "law_2020_nd_cp_94__art_10",
+          "law_2025_nd_cp_356__art_20",
+          "law_2025_nd_cp_356__art_22",
+          "law_2020_nd_cp_100__art_24",
+          "law_2025_qh15_91__art_21",
+          "law_2025_qh15_91__art_39",
+          "law_2025_nd_cp_356__art_19",
+          "internal_2026_qt_tnt_31__art_1",
+          "law_2025_qh15_91__art_38",
+          "law_2025_nd_cp_356__art_41"
+        ],
+        "hybrid": [
+          "law_2025_qh15_91__art_21",
+          "law_2025_nd_cp_356__art_41",
+          "law_2025_qh15_91__art_38",
+          "law_2025_nd_cp_356__art_22",
+          "law_2025_nd_cp_356__art_19",
+          "internal_2026_qt_tnt_31__art_1",
+          "law_2020_nd_cp_94__art_10",
+          "law_2025_nd_cp_356__art_20",
+          "law_2018_nd_cp_39__art_16",
+          "law_2020_nd_cp_100__art_24"
+        ]
+      }
+    },
+    {
+      "case_id": "law_17",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2023_qh15_20__art_23"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "law_2023_qh15_20__art_23",
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2018_nd_cp_130__art_8",
+          "law_2020_nd_cp_30__art_5",
+          "law_2018_nd_cp_130__art_83",
+          "law_2023_qh15_20__art_22",
+          "law_2007_nd_cp_64__art_35",
+          "law_2023_qh15_20__art_53",
+          "law_2015_qd_ttg_08__art_14",
+          "law_2023_qh15_20__art_3"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2023_qh15_20__art_23",
+          "law_2023_qh15_20__art_27",
+          "law_2023_qh15_20__art_19",
+          "law_2023_qh15_20__art_6",
+          "law_2023_qh15_20__art_25",
+          "law_2023_qh15_20__art_26",
+          "law_2023_qh15_20__art_50",
+          "law_2023_qh15_20__art_46",
+          "law_2023_qh15_20__art_53"
+        ],
+        "hybrid": [
+          "internal_2026_qd_tnt_43__art_1",
+          "law_2023_qh15_20__art_23",
+          "law_2023_qh15_20__art_53",
+          "law_2023_qh15_20__art_27",
+          "law_2018_nd_cp_130__art_8",
+          "law_2023_qh15_20__art_19",
+          "law_2020_nd_cp_30__art_5",
+          "law_2018_nd_cp_130__art_83",
+          "law_2023_qh15_20__art_6",
+          "law_2023_qh15_20__art_25"
+        ]
+      }
+    },
+    {
+      "case_id": "law_18",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2023_qh15_20__art_34"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2023_qh15_20__art_34",
+          "law_2020_qh14_59__art_86",
+          "law_2015_qh13_91__art_133",
+          "law_2014_qh13_51__art_59",
+          "law_2013_tt_bldtbxh_30__art_14",
+          "law_2017_qh14_07__art_22",
+          "law_2016_tt_btc_07__art_66",
+          "law_2015_qh13_91__art_408",
+          "law_2015_qh13_91__art_128",
+          "law_2015_qh13_91__art_407"
+        ],
+        "bm25": [
+          "law_2023_qh15_20__art_34",
+          "law_2013_nd_cp_44__art_11",
+          "law_2019_qh14_45__art_49",
+          "law_2013_tt_bldtbxh_30__art_12",
+          "law_2015_qh13_91__art_408",
+          "law_2013_tt_bldtbxh_30__art_15",
+          "law_2019_tt_btc_36__art_19",
+          "law_2017_qh14_07__art_22",
+          "law_2016_tt_btc_07__art_66"
+        ],
+        "hybrid": [
+          "law_2023_qh15_20__art_34",
+          "law_2015_qh13_91__art_408",
+          "law_2017_qh14_07__art_22",
+          "law_2016_tt_btc_07__art_66",
+          "law_2020_qh14_59__art_86",
+          "law_2013_nd_cp_44__art_11",
+          "law_2015_qh13_91__art_133",
+          "law_2019_qh14_45__art_49",
+          "law_2013_tt_bldtbxh_30__art_12",
+          "law_2014_qh13_51__art_59"
+        ]
+      }
+    },
+    {
+      "case_id": "law_19",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2024_qh15_41__art_33",
+        "law_2024_qh15_41__art_34"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2018_nd_cp_143__art_12",
+          "law_2018_nd_cp_143__art_13",
+          "law_2020_nd_cp_58__art_4",
+          "law_2016_nd_cp_33__art_14",
+          "law_2024_qh15_41__art_32",
+          "law_2018_tt_bldtbxh_19__art_10",
+          "law_2024_qh15_41__art_34",
+          "law_2015_qh13_84__art_44",
+          "law_2024_qh15_41__art_33"
+        ],
+        "bm25": [
+          "internal_2026_qd_tnt_09__art_6",
+          "law_2024_qh15_41__art_34",
+          "law_2016_nd_cp_33__art_17",
+          "law_2015_nd_cp_115__art_16",
+          "law_2024_qh15_41__art_37",
+          "law_2024_qh15_41__art_4",
+          "law_2024_qh15_41__art_33",
+          "law_2016_nd_cp_33__art_14",
+          "law_2016_ttlt_bqp_bca_bldtbxh_105__art_26"
+        ],
+        "hybrid": [
+          "law_2024_qh15_41__art_34",
+          "law_2016_nd_cp_33__art_14",
+          "law_2024_qh15_41__art_33",
+          "law_2018_nd_cp_143__art_12",
+          "internal_2026_qd_tnt_09__art_6",
+          "law_2018_nd_cp_143__art_13",
+          "law_2020_nd_cp_58__art_4",
+          "law_2016_nd_cp_33__art_17",
+          "law_2015_nd_cp_115__art_16"
+        ]
+      }
+    },
+    {
+      "case_id": "law_20",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2019_qh14_45__art_113"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2019_qh14_45__art_113",
+          "law_2014_nd_cp_27__art_23",
+          "internal_2026_qd_tnt_07__art_1",
+          "law_2019_qh14_45__art_111",
+          "law_2014_nd_cp_27__art_22",
+          "law_2016_tt_bqp_113__art_5",
+          "law_2010_qh12_58__art_13",
+          "law_2014_tt_bldtbxh_19__art_17",
+          "law_2015_ttlt_bnv_btc_01__art_2",
+          "law_2019_nd_cp_08__art_10"
+        ],
+        "bm25": [
+          "law_2019_qh14_45__art_113",
+          "law_2019_qh14_45__art_98",
+          "law_2014_tt_bldtbxh_19__art_18",
+          "law_2018_nd_cp_148__art_1",
+          "law_2014_nd_cp_27__art_23",
+          "internal_2026_qd_tnt_07__art_1",
+          "internal_2026_qd_tnt_06__art_2",
+          "law_2020_nd_cp_28__art_17",
+          "law_2016_nd_cp_33__art_9",
+          "internal_2026_qd_tnt_01__art_3"
+        ],
+        "hybrid": [
+          "law_2019_qh14_45__art_113",
+          "law_2014_nd_cp_27__art_23",
+          "internal_2026_qd_tnt_07__art_1",
+          "law_2019_qh14_45__art_98",
+          "law_2014_tt_bldtbxh_19__art_18",
+          "law_2019_qh14_45__art_111",
+          "law_2018_nd_cp_148__art_1",
+          "law_2014_nd_cp_27__art_22",
+          "law_2016_tt_bqp_113__art_5",
+          "law_2010_qh12_58__art_13"
+        ]
+      }
+    },
+    {
+      "case_id": "law_21",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2005_qh11_50__art_39"
+      ],
+      "hybrid_rank": 1,
+      "ranked_provisions": {
+        "dense": [
+          "law_2005_qh11_50__art_39",
+          "internal_2026_cs_tnt_37__art_1",
+          "law_2018_nd_cp_22__art_17",
+          "law_2005_qh11_50__art_122",
+          "law_2011_nd_cp_85__art_1",
+          "law_2005_qh11_50__art_41",
+          "law_2005_qh11_50__art_37",
+          "law_2018_nd_cp_22__art_25",
+          "law_2005_qh11_50__art_22",
+          "law_2005_qh11_50__art_42"
+        ],
+        "bm25": [
+          "law_2014_tt_bkhcn_15__art_2",
+          "law_2005_qh11_50__art_39",
+          "law_2005_qh11_50__art_42",
+          "law_2005_qh11_50__art_50",
+          "law_2014_tt_bct_44__art_7",
+          "law_2018_nd_cp_22__art_27",
+          "law_2005_qh11_50__art_56",
+          "law_2013_qd_ttg_35__art_7",
+          "law_2014_tt_btc_103__art_7"
+        ],
+        "hybrid": [
+          "law_2005_qh11_50__art_39",
+          "law_2005_qh11_50__art_42",
+          "law_2014_tt_bkhcn_15__art_2",
+          "internal_2026_cs_tnt_37__art_1",
+          "law_2018_nd_cp_22__art_17",
+          "law_2005_qh11_50__art_122",
+          "law_2005_qh11_50__art_50",
+          "law_2014_tt_bct_44__art_7",
+          "law_2011_nd_cp_85__art_1",
+          "law_2005_qh11_50__art_41"
+        ]
+      }
+    },
+    {
+      "case_id": "law_22",
+      "category": "new_law",
+      "gold_access": "public",
+      "gold_provision_ids": [
+        "law_2005_qh11_36__art_301"
+      ],
+      "hybrid_rank": 2,
+      "ranked_provisions": {
+        "dense": [
+          "internal_2026_qt_tnt_39__art_2",
+          "law_2014_nd_cp_71__art_12",
+          "law_2014_nd_cp_71__art_8",
+          "law_2005_qh11_36__art_301",
+          "law_2014_nd_cp_71__art_20",
+          "law_2019_nd_cp_75__art_4",
+          "law_2018_qh14_23__art_111",
+          "law_2014_nd_cp_71__art_10",
+          "law_2020_nd_cp_98__art_75",
+          "law_2014_nd_cp_71__art_11"
+        ],
+        "bm25": [
+          "law_2016_tt_bxd_08__art_24",
+          "internal_2026_qt_tnt_39__art_2",
+          "law_2016_tt_bxd_09__art_21",
+          "law_2005_qh11_36__art_301",
+          "law_2015_qh13_91__art_418",
+          "law_2019_tt_bgtvt_35__art_28",
+          "law_2015_nd_cp_95__art_62",
+          "law_2017_tt_nhnn_02__art_19",
+          "law_2014_nd_cp_71__art_4",
+          "law_2020_nd_cp_98__art_75"
+        ],
+        "hybrid": [
+          "internal_2026_qt_tnt_39__art_2",
+          "law_2005_qh11_36__art_301",
+          "law_2020_nd_cp_98__art_75",
+          "law_2016_tt_bxd_08__art_24",
+          "law_2014_nd_cp_71__art_12",
+          "law_2016_tt_bxd_09__art_21",
+          "law_2014_nd_cp_71__art_8",
+          "law_2015_qh13_91__art_418",
+          "law_2014_nd_cp_71__art_20",
+          "law_2019_tt_bgtvt_35__art_28"
+        ]
+      }
+    }
+  ]
+}
